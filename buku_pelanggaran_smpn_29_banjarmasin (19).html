@@ -1,0 +1,2345 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Informasi Poin Pelanggaran - SMP Negeri 29 Banjarmasin</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f1f5f9;
+        }
+        /* Animasi halus untuk modal dan transisi */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+        /* Styling khusus saat mode cetak (Print) */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #print-area, #print-area * {
+                visibility: visible;
+            }
+            #print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                padding: 20px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        /* Styling khusus Mode Android App */
+        body.android-mode {
+            background: radial-gradient(circle at top, #dbeafe 0%, #e2e8f0 45%, #cbd5e1 100%);
+        }
+        body.android-mode header {
+            background: transparent;
+            box-shadow: none;
+            padding-top: 0.5rem;
+        }
+        body.android-mode header .header-inner {
+            border-radius: 1.25rem;
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 55%, #312e81 100%);
+            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        body.android-mode header .header-inner,
+        body.android-mode main#view-siswa,
+        body.android-mode section#view-guru {
+            max-width: 480px !important;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        body.android-mode section#view-guru {
+            background-color: #f8fafc;
+            min-height: calc(100vh - 130px);
+            padding-bottom: 100px;
+            border-radius: 1.5rem 1.5rem 0 0;
+            margin-top: 0.5rem;
+            box-shadow: 0 -4px 30px rgba(15, 23, 42, 0.08);
+        }
+        body.android-mode main#view-siswa {
+            padding-bottom: 96px;
+        }
+        body.android-mode .guru-grid-utama {
+            grid-template-columns: 1fr !important;
+        }
+        body.android-mode .guru-stat-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+            gap: 0.5rem !important;
+        }
+        body.android-mode .guru-stat-grid > div {
+            padding: 0.75rem !important;
+        }
+        body.android-mode .guru-stat-grid p.text-3xl {
+            font-size: 1.35rem !important;
+        }
+        /* Animasi halus pada tab aktif Android */
+        .android-tab-active {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            color: #1d4ed8 !important;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
+            transform: translateY(-2px);
+        }
+        /* Penyesuaian Master Data Siswa & Poin pada Android Menu (Tampilan Kartu Mobile) */
+        body.android-mode #print-area {
+            padding: 1rem !important;
+            border-radius: 1.25rem !important;
+        }
+        body.android-mode #print-area .overflow-x-auto {
+            border: none !important;
+            max-height: calc(100vh - 300px) !important;
+            padding-right: 2px;
+        }
+        body.android-mode #print-area table,
+        body.android-mode #print-area tbody {
+            display: block !important;
+            width: 100% !important;
+        }
+        body.android-mode #print-area thead {
+            display: none !important;
+        }
+        body.android-mode #tabel-master-siswa {
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 0.75rem !important;
+            border: none !important;
+        }
+        body.android-mode #tabel-master-siswa tr {
+            display: grid !important;
+            grid-template-columns: 1fr auto;
+            gap: 0.5rem;
+            background: #ffffff;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 1rem;
+            padding: 0.85rem;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+        }
+        body.android-mode #tabel-master-siswa td {
+            display: block !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        /* Baris 1 Kiri: Nama Siswa */
+        body.android-mode #tabel-master-siswa td:nth-child(1) {
+            grid-column: 1 / 2;
+            align-self: center;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(1) p {
+            font-size: 0.9rem !important;
+            line-height: 1.25;
+        }
+        /* Baris 1 Kanan: Dropdown Kelas Cepat */
+        body.android-mode #tabel-master-siswa td:nth-child(2) {
+            grid-column: 2 / 3;
+            justify-self: end;
+            align-self: center;
+        }
+        /* Baris 2: PIN + Status Sanksi sejajar */
+        body.android-mode #tabel-master-siswa td:nth-child(3) {
+            grid-column: 1 / 2;
+            align-self: center;
+            font-size: 0.7rem !important;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(3)::before {
+            content: "PIN: ";
+            font-family: 'Inter', sans-serif;
+            font-weight: 700;
+            color: #94a3b8;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(5) {
+            grid-column: 2 / 3;
+            justify-self: end;
+            align-self: center;
+        }
+        /* Baris 3 Full: Kotak Ringkasan Total & Rincian Kelas */
+        body.android-mode #tabel-master-siswa td:nth-child(4) {
+            grid-column: 1 / -1;
+            text-align: left !important;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0 !important;
+            border-radius: 0.75rem;
+            padding: 0.6rem 0.75rem !important;
+            margin-top: 0.15rem;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(4) > div:first-child {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            font-size: 1rem !important;
+            color: #1e3a8a;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(4) > div:first-child::before {
+            content: "Total Akumulasi Poin";
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(4) > div:nth-child(2) {
+            white-space: normal !important;
+            margin-top: 0.25rem;
+            line-height: 1.35;
+        }
+        /* Baris 4 Full: Tombol Aksi Lebar & Mudah Diketuk */
+        body.android-mode #tabel-master-siswa td:nth-child(6) {
+            grid-column: 1 / -1;
+            display: flex !important;
+            gap: 0.4rem;
+            margin-top: 0.25rem;
+            padding-top: 0.5rem !important;
+            border-top: 1px dashed #e2e8f0 !important;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(6) button:first-child {
+            flex: 1;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            font-size: 0.75rem;
+        }
+        body.android-mode #tabel-master-siswa td:nth-child(6) button:nth-child(2),
+        body.android-mode #tabel-master-siswa td:nth-child(6) button:nth-child(3) {
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800 transition-colors">
+
+    <!-- ==================== HEADER SEKOLAH ==================== -->
+    <header class="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-xl sticky top-0 z-30 border-b border-white/10 transition-all">
+        <div class="header-inner max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-wrap justify-between items-center gap-3 transition-all">
+            <!-- Identitas Aplikasi & Sekolah -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 text-slate-950 flex items-center justify-center shadow-lg shadow-amber-500/25 flex-shrink-0">
+                    <i class="fas fa-shield-alt text-lg"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-sm sm:text-base md:text-lg font-extrabold tracking-tight leading-snug bg-gradient-to-r from-white via-blue-100 to-amber-200 bg-clip-text text-transparent">
+                            Sistem Poin & Kedisiplinan
+                        </h1>
+                        <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                            E-BK 29
+                        </span>
+                    </div>
+                    <p class="text-[11px] sm:text-xs text-blue-200/90 font-medium flex items-center gap-1.5">
+                        <i class="fas fa-school text-amber-300 text-[10px]"></i>
+                        <span>SMP Negeri 29 Banjarmasin</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Kontrol Menu Elegan (Website Menu / Android Menu & Akses Guru) -->
+            <div class="flex items-center gap-2.5 ml-auto">
+                <!-- Toggle Website Menu vs Android Menu -->
+                <div class="inline-flex bg-slate-950/60 border border-white/15 p-1 rounded-2xl backdrop-blur-md shadow-inner" role="group" aria-label="Pilih Tampilan Menu">
+                    <button type="button" id="btn-mode-web" onclick="setAppMode('web')" class="px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-gradient-to-r from-white to-blue-50 text-blue-950 shadow-md transition-all duration-200 flex items-center gap-1.5">
+                        <i class="fas fa-desktop text-blue-600"></i>
+                        <span>Website Menu</span>
+                    </button>
+                    <button type="button" id="btn-mode-android" onclick="setAppMode('android')" class="px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-1.5">
+                        <i class="fab fa-android text-emerald-400"></i>
+                        <span>Android Menu</span>
+                    </button>
+                </div>
+
+                <!-- Tombol Akses Guru -->
+                <button id="btn-nav-login" onclick="openLoginModal()" class="bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 text-xs sm:text-sm font-extrabold px-3.5 py-2 sm:px-4 sm:py-2 rounded-2xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-amber-500/20 active:scale-95">
+                    <i class="fas fa-user-shield text-slate-900"></i>
+                    <span class="hidden sm:inline">Login Guru / BK</span>
+                    <span class="sm:hidden">Guru</span>
+                </button>
+                <button id="btn-nav-logout" onclick="logoutGuru()" class="hidden bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-600 hover:to-red-700 text-white text-xs sm:text-sm font-bold px-3.5 py-2 sm:px-4 sm:py-2 rounded-2xl transition-all duration-200 flex items-center gap-2 shadow-lg shadow-rose-600/25 active:scale-95">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span class="hidden sm:inline">Keluar</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ==================== BAGIAN 1: PORTAL CEK POIN MANDIRI (SISWA) ==================== -->
+    <main id="view-siswa" class="flex-grow flex flex-col items-center justify-center p-4 sm:p-6">
+        
+        <!-- Kotak Kartu Utama -->
+        <div id="siswa-card-cek" class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden animate-fade-in">
+            <!-- Header Kartu -->
+            <div class="bg-slate-800 text-white px-6 py-5 text-center">
+                <span class="inline-block bg-blue-500/20 text-blue-300 border border-blue-400/30 text-[11px] font-semibold uppercase tracking-wider px-3 py-1 rounded-full mb-2">
+                    Layanan Mandiri Siswa
+                </span>
+                <h2 class="text-lg sm:text-xl font-bold">Cek Poin Pelanggaran Pribadi</h2>
+                <p class="text-xs text-slate-300 mt-1">Masukkan nama lengkap dan PIN rahasia Anda</p>
+            </div>
+
+            <!-- Form Cek Poin -->
+            <form id="form-cek-poin" onsubmit="handleCekPoin(event)" class="p-6 space-y-5" autocomplete="off">
+                <!-- Input 1: Nama Lengkap -->
+                <div>
+                    <label for="input-nama" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                        Nama Lengkap Siswa
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <input 
+                            type="text" 
+                            id="input-nama" 
+                            name="siswa_nama_lengkap"
+                            autocomplete="off" 
+                            required
+                            placeholder="Contoh: Adelia Putri" 
+                            class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition"
+                        >
+                    </div>
+                </div>
+
+                <!-- Input 2: PIN / Kode Rahasia -->
+                <div>
+                    <label for="input-pin" class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-1.5">
+                        PIN / Kode Rahasia (6 Digit)
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="input-pin" 
+                            name="siswa_pin_rahasia"
+                            autocomplete="new-password"
+                            maxlength="6"
+                            inputmode="numeric"
+                            required
+                            placeholder="••••••" 
+                            class="w-full pl-10 pr-11 py-3 bg-slate-50 border border-slate-300 rounded-xl text-sm tracking-widest focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white transition"
+                        >
+                        <!-- Tombol Mata Intip/Sembunyikan PIN -->
+                        <button 
+                            type="button" 
+                            onclick="togglePinVisibility()" 
+                            class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                            title="Tampilkan/Sembunyikan PIN"
+                        >
+                            <i id="icon-eye" class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kotak Peringatan Gagal (Tersembunyi secara default) -->
+                <div id="alert-gagal" class="hidden bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl text-xs sm:text-sm flex items-start gap-2.5 animate-fade-in">
+                    <i class="fas fa-exclamation-circle text-rose-500 mt-0.5 text-base"></i>
+                    <span>Data tidak ditemukan! Pastikan penulisan <strong>Nama Lengkap</strong> dan <strong>PIN</strong> sudah sesuai.</span>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-semibold py-3.5 rounded-xl shadow-md hover:shadow-lg transition transform active:scale-[0.99] flex items-center justify-center gap-2 text-sm sm:text-base"
+                >
+                    <i class="fas fa-search"></i>
+                    <span>Cek Poin Saya</span>
+                </button>
+
+                <!-- Catatan Privasi -->
+                <div class="pt-2 border-t border-slate-100 text-center">
+                    <p class="text-[11px] sm:text-xs text-slate-500 flex items-center justify-center gap-1.5">
+                        <i class="fas fa-user-secret text-slate-400"></i>
+                        <span>Data bersifat rahasia. Dilarang mengecek data milik siswa lain.</span>
+                    </p>
+                </div>
+            </form>
+        </div>
+
+        <!-- Panel Panduan Sanksi Siswa (Khusus Tab Info di Android Menu) -->
+        <div id="siswa-card-info" class="hidden w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200/80 overflow-hidden animate-fade-in">
+            <div class="bg-slate-800 text-white px-5 py-4 flex items-center gap-2.5">
+                <i class="fas fa-gavel text-amber-300"></i>
+                <div>
+                    <h3 class="font-bold text-base">Ketentuan Poin & Sanksi</h3>
+                    <p class="text-[11px] text-slate-300">Tata Tertib SMP Negeri 29 Banjarmasin</p>
+                </div>
+            </div>
+            <div class="p-5 space-y-2.5 text-xs">
+                <div class="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 flex justify-between items-center">
+                    <span class="font-bold">0 – 20 Poin</span>
+                    <span class="font-semibold">Aman / Baik</span>
+                </div>
+                <div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 flex justify-between items-center">
+                    <span class="font-bold">21 – 99 Poin</span>
+                    <span class="font-semibold">Pembinaan Wali Kelas / BK</span>
+                </div>
+                <div class="p-3 rounded-xl bg-orange-50 border border-orange-200 text-orange-950 flex justify-between items-center">
+                    <span class="font-bold">100 Poin</span>
+                    <span class="font-semibold">Panggilan Orang Tua ke-1</span>
+                </div>
+                <div class="p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 flex justify-between items-center">
+                    <span class="font-bold">150 Poin</span>
+                    <span class="font-semibold">Panggilan Orang Tua ke-2</span>
+                </div>
+                <div class="p-3 rounded-xl bg-rose-100 border border-rose-300 text-rose-950 flex justify-between items-center">
+                    <span class="font-bold">200 Poin</span>
+                    <span class="font-semibold">Panggilan Orang Tua ke-3</span>
+                </div>
+                <div class="p-3 rounded-xl bg-red-900 text-white flex justify-between items-center">
+                    <span class="font-bold">≥ 300 Poin</span>
+                    <span class="font-semibold text-amber-200">Dikembalikan ke Orang Tua</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panduan Demo Singkat untuk Pengujian -->
+        <div id="siswa-card-demo" class="mt-6 max-w-md w-full bg-white/80 backdrop-blur border border-slate-200 rounded-xl p-4 text-xs text-slate-600 shadow-sm">
+            <p class="font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
+                <i class="fas fa-info-circle text-blue-600"></i> Data Contoh untuk Uji Coba (255 Siswa Terdaftar):
+            </p>
+            <ul class="space-y-1 list-disc list-inside text-[11px]">
+                <li><strong>Siswa VII A:</strong> Adelia Putri (PIN: <code class="bg-slate-200 px-1 rounded">290701</code>)</li>
+                <li><strong>Siswa VIII A:</strong> Aditya Ernanando Seputra (PIN: <code class="bg-slate-200 px-1 rounded">290897</code>)</li>
+                <li><strong>Login Guru/BK:</strong> Username <code class="bg-slate-200 px-1 rounded">bk29</code> | Pass <code class="bg-slate-200 px-1 rounded">smpn29bjm</code></li>
+            </ul>
+        </div>
+    </main>
+
+    <!-- ==================== BAGIAN 2: MODAL HASIL PENCARIAN SISWA ==================== -->
+    <div id="modal-hasil-siswa" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-6 animate-fade-in">
+            <!-- Header Modal Hasil -->
+            <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <span class="text-[10px] uppercase tracking-wider text-blue-300 font-bold">Laporan Kedisiplinan Pribadi</span>
+                    <h3 id="res-nama" class="text-lg sm:text-xl font-extrabold">-</h3>
+                    <p class="text-xs text-blue-200">Kelas Aktif: <strong id="res-kelas" class="text-amber-300">-</strong></p>
+                </div>
+                <button onclick="tutupDanBersihkan()" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-5">
+                <!-- Kartu Status Poin Dinamis -->
+                <div id="res-status-card" class="p-4 rounded-xl border flex flex-col justify-between transition-colors">
+                    <div class="flex items-center justify-between gap-3">
+                        <div>
+                            <p class="text-xs font-bold uppercase opacity-75">Total Poin Keseluruhan</p>
+                            <p class="text-3xl sm:text-4xl font-black mt-0.5"><span id="res-total-poin">0</span> <span class="text-sm font-bold">Poin</span></p>
+                        </div>
+                        <i id="res-status-icon" class="fas fa-check-circle text-2xl"></i>
+                    </div>
+                    <div id="res-rincian-tingkat" class="flex flex-wrap gap-1.5 text-[11px] mt-3 pt-2.5 border-t border-black/10">
+                        <span id="res-label-sekarang" class="bg-white/65 px-2 py-0.5 rounded">Kelas Saat Ini: 0</span>
+                        <span id="res-label-sebelumnya" class="bg-white/65 px-2 py-0.5 rounded">Kelas Sebelumnya: 0</span>
+                    </div>
+                    <div class="mt-3">
+                        <span id="res-status-badge" class="text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit">Status: Aman</span>
+                    </div>
+                </div>
+
+                <!-- Tabel Riwayat Pelanggaran Pribadi -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Riwayat Catatan Pelanggaran</h4>
+                    <div class="overflow-x-auto border border-slate-200 rounded-xl max-h-64 overflow-y-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead class="sticky top-0 bg-slate-100 text-slate-600 uppercase border-b border-slate-200">
+                                <tr>
+                                    <th class="py-2.5 px-4">Tanggal</th>
+                                    <th class="py-2.5 px-4">Kelas</th>
+                                    <th class="py-2.5 px-4">Jenis Pelanggaran</th>
+                                    <th class="py-2.5 px-4 text-center">Poin</th>
+                                    <th class="py-2.5 px-4">Keterangan</th>
+                                </tr>
+                            </thead>
+                            <tbody id="res-tabel-riwayat" class="divide-y divide-slate-100"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Footer Tombol Bersihkan Layar -->
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-100">
+                    <p class="text-[11px] text-slate-500">
+                        <i class="fas fa-shield-alt text-emerald-600 mr-1"></i> Klik tombol di samping untuk menghapus jejak data dari layar.
+                    </p>
+                    <button 
+                        onclick="tutupDanBersihkan()" 
+                        class="w-full sm:w-auto bg-slate-800 hover:bg-slate-900 text-white font-semibold px-6 py-2.5 rounded-xl transition flex items-center justify-center gap-2 text-sm shadow"
+                    >
+                        <i class="fas fa-broom"></i>
+                        <span>Selesai & Tutup Data</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL LOGIN GURU / BK ==================== -->
+    <div id="modal-login-guru" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in">
+            <div class="bg-blue-900 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i class="fas fa-user-lock text-amber-300"></i>
+                    <span>Akses Khusus Guru / BK</span>
+                </h3>
+                <button onclick="closeLoginModal()" class="text-blue-200 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form onsubmit="handleLoginGuru(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Username Guru / BK</label>
+                    <input type="text" id="guru-user" required placeholder="Masukkan username" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Password</label>
+                    <input type="password" id="guru-pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
+                </div>
+                <div id="alert-login-guru" class="hidden bg-rose-50 text-rose-700 text-xs p-3 rounded-xl border border-rose-200">
+                    Username atau Password salah!
+                </div>
+                <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow">
+                    Masuk ke Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== BAGIAN 3: DASHBOARD GURU / BK ==================== -->
+    <section id="view-guru" class="hidden flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 animate-fade-in">
+        
+        <!-- Header Dashboard -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+            <div>
+                <h2 class="text-xl font-bold text-slate-800">Dashboard Bimbingan Konseling (BK)</h2>
+                <p class="text-xs sm:text-sm text-slate-500">Kelola data pelanggaran, kenaikan kelas massal, dan pembinaan siswa SMPN 29 Banjarmasin.</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button onclick="openModalKenaikanKelas()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Kenaikan / Tinggal Kelas</span>
+                </button>
+                <button onclick="openModalTambahSiswa()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Tambah Siswa</span>
+                </button>
+                <button onclick="cetakLaporan()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                    <i class="fas fa-print"></i>
+                    <span>Cetak Rekap</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel Ringkasan (Atas) -->
+        <div class="guru-stat-grid grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase">Total Siswa Terdata</p>
+                    <p id="stat-total-siswa" class="text-3xl font-extrabold text-blue-700 mt-1">0</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                    <i class="fas fa-users"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase">Total Catatan Pelanggaran</p>
+                    <p id="stat-total-kasus" class="text-3xl font-extrabold text-amber-600 mt-1">0</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-bold text-slate-400 uppercase">Panggilan Ortu (≥ 100 Poin)</p>
+                    <p id="stat-perlu-pembinaan" class="text-3xl font-extrabold text-rose-600 mt-1">0</p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grid Utama Dashboard (Form Input Cepat + Tabel Master Siswa) -->
+        <div class="guru-grid-utama grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Form Input Pelanggaran Baru (Kolom Kiri - Mode Turbo 1-Klik & Multi-Siswa) -->
+            <div id="box-form-pelanggaran" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 h-fit transition-all">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+                    <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-bolt text-amber-500"></i>
+                        <span>Input Super Cepat</span>
+                    </h3>
+                    <!-- Toggle Mode 1-Klik Langsung Simpan -->
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-lg" title="Jika aktif, klik tombol pelanggaran langsung otomatis menyimpan tanpa tekan tombol Simpan">
+                        <input type="checkbox" id="toggle-auto-save" checked class="w-3.5 h-3.5 rounded text-amber-600 focus:ring-amber-500">
+                        <span class="text-[11px] font-bold text-amber-800">⚡ 1-Klik Simpan</span>
+                    </label>
+                </div>
+
+                <form id="form-input-pelanggaran" onsubmit="handleSimpanPelanggaran(event)" class="space-y-4">
+                    <!-- 1. Pilih Siswa (Bisa Multi-Siswa / Rombongan sekaligus!) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-bold text-slate-700">1. Target Siswa <span id="badge-jumlah-antrean" class="hidden ml-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></label>
+                            <button type="button" onclick="resetPilihSiswa()" class="text-[11px] text-slate-400 hover:text-rose-600">Kosongkan</button>
+                        </div>
+
+                        <!-- Container Chip Siswa Terpilih (Bisa banyak siswa sekaligus) -->
+                        <div id="selected-students-chips" class="flex flex-wrap gap-1.5 mb-2 empty:hidden"></div>
+
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fas fa-search text-xs"></i>
+                            </span>
+                            <input 
+                                type="text"
+                                id="guru-pilih-siswa" 
+                                oninput="handleLiveSearchSiswa(this.value)"
+                                onkeydown="handleEnterSiswa(event)"
+                                autocomplete="off"
+                                placeholder="Ketik 2 huruf nama / pilih kelas..." 
+                                class="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm font-medium focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white"
+                            >
+                            <!-- Dropdown Hasil Pencarian Instan (Klik langsung masuk antrean) -->
+                            <div id="live-search-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto z-20 divide-y divide-slate-100"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-1">Bisa pilih <strong>lebih dari 1 siswa</strong> sekaligus (misal rombongan terlambat).</p>
+                    </div>
+
+                    <!-- 2. Pilihan Cepat (1-Klik Langsung Eksekusi jika Mode Turbo Aktif) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-1.5">
+                            <label class="block text-xs font-bold text-slate-700">2. Ketuk Pelanggaran</label>
+                            <span class="text-[10px] text-emerald-700 font-semibold">Otomatis tercatat!</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-1.5 mb-2" id="quick-chips">
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.1.01] Terlambat (per hari)|1')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">⏰ Terlambat</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+1</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.2.10] Tidak lengkap atribut seragam/pramuka|20')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">👔 Atribut</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+20</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.2.01] Berambut gondrong / panjang (>3 cm)|10')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">💇 Rambut</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+10</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[I.4.03] Membawa HP bukan untuk pembelajaran|25')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">📱 Bawa HP</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+25</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.1.10] Membolos|20')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">🏃 Membolos</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+20</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.2.06] Baju seragam dikeluarkan (laki-laki)|20')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">👕 Baju Keluar</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+20</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.2.12] Berkuku panjang|5')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">💅 Kuku Panjang</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+5</span>
+                            </button>
+                            <button type="button" onclick="eksekusiAtauPilihCepat(this, '[II.2.11] Salah memakai seragam (tidak sesuai jadwal)|10')" class="chip-pelanggaran text-left p-2.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-400 active:scale-95 transition text-xs flex justify-between items-center shadow-2xs">
+                                <span class="font-semibold text-slate-700 truncate">🎽 Salah Seragam</span>
+                                <span class="font-extrabold text-rose-600 ml-1">+10</span>
+                            </button>
+                        </div>
+
+                        <!-- Pencarian Instan & Filter Tab Seluruh Kategori Tata Tertib -->
+                        <div class="mt-2 pt-2 border-t border-slate-100">
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                    <i class="fas fa-bolt text-amber-500 text-xs"></i>
+                                </span>
+                                <input 
+                                    type="text" 
+                                    id="search-kategori-cepat" 
+                                    oninput="filterKategoriCepat(this.value)" 
+                                    onfocus="filterKategoriCepat(this.value)"
+                                    autocomplete="off"
+                                    placeholder="Ketik kata kunci pelanggaran (misal: tugas, upacara, alpha, rokok)..." 
+                                    class="w-full pl-8 pr-8 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:bg-white"
+                                >
+                                <button type="button" id="btn-clear-search-kat" onclick="clearSearchKategori()" class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-slate-400 hover:text-rose-500">
+                                    <i class="fas fa-times-circle text-xs"></i>
+                                </button>
+                            </div>
+
+                            <!-- Tab Filter Kelompok Singkat -->
+                            <div class="flex gap-1 overflow-x-auto py-1.5 no-scrollbar text-[10px] font-bold">
+                                <button type="button" onclick="pilihTabKategori('SEMUA', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-blue-100 text-blue-800 whitespace-nowrap">Semua (67)</button>
+                                <button type="button" onclick="pilihTabKategori('KELAKUAN', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Kelakuan & Sopan</button>
+                                <button type="button" onclick="pilihTabKategori('TUGAS', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Tugas & KBM</button>
+                                <button type="button" onclick="pilihTabKategori('SERAGAM', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Seragam & Fisik</button>
+                                <button type="button" onclick="pilihTabKategori('BERAT', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Rokok/HP/Berat</button>
+                            </div>
+
+                            <!-- Daftar Hasil Pencarian / Pilihan Instan (1-Klik Langsung Simpan) -->
+                            <div id="list-kategori-instan" class="hidden max-h-44 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white shadow-inner"></div>
+                            <input type="hidden" id="guru-kategori" value="">
+                        </div>
+                    </div>
+
+                    <!-- 3. Opsi Tambahan Ringkas (Tanggal & Catatan Opsional dalam 1 Baris / Toggle) -->
+                    <div class="pt-1">
+                        <button type="button" onclick="toggleOpsiTambahan()" class="text-xs text-blue-700 hover:underline font-medium flex items-center gap-1.5">
+                            <i id="icon-opsi-tambahan" class="fas fa-chevron-right text-[10px]"></i>
+                            <span>Ubah tanggal atau tambah catatan (Opsional)</span>
+                        </button>
+                        
+                        <div id="box-opsi-tambahan" class="hidden mt-3 space-y-3 bg-slate-50 p-3 rounded-xl border border-slate-200/80 animate-fade-in">
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Tanggal Kejadian</label>
+                                <input type="date" id="guru-tanggal" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Catatan Singkat Guru</label>
+                                <input type="text" id="guru-catatan" placeholder="Contoh: Terlambat apel pagi..." class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btn-submit-pelanggaran" class="w-full bg-blue-800 hover:bg-blue-900 active:bg-blue-950 text-white font-bold py-3 rounded-xl text-sm transition shadow-md flex items-center justify-center gap-2">
+                        <i class="fas fa-save"></i>
+                        <span>Simpan Pelanggaran</span>
+                    </button>
+
+                    <!-- Riwayat Log Kilat Terakhir (Bisa Undo 1-Klik jika salah ketuk!) -->
+                    <div id="box-undo-terakhir" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs animate-fade-in">
+                        <div class="truncate text-emerald-900">
+                            <i class="fas fa-check-circle text-emerald-600 mr-1"></i>
+                            <span id="text-undo-terakhir" class="font-medium">-</span>
+                        </div>
+                        <button type="button" onclick="batalkanInputTerakhir()" class="flex-shrink-0 bg-white hover:bg-rose-50 text-rose-600 border border-rose-200 font-bold px-2 py-1 rounded-lg text-[11px] transition">
+                            <i class="fas fa-undo"></i> Batal
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabel Master Data Siswa & Poin (Kolom Kanan - 2/3 Lebar) -->
+            <div id="print-area" class="lg:col-span-2 bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 mb-4">
+                    <div>
+                        <h3 class="font-bold text-base text-slate-800 flex items-center gap-2">
+                            <i class="fas fa-table text-blue-600"></i>
+                            <span>Master Data Siswa & Poin</span>
+                        </h3>
+                        <p class="text-[11px] text-slate-400 mt-0.5 no-print">Tip: Ubah dropdown kelas di tabel untuk memindahkan 1 siswa secara instan (tinggal/pindah kelas).</p>
+                    </div>
+                    <!-- Filter Pencarian & Filter Kelas Tabel Guru -->
+                    <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto no-print">
+                        <select id="filter-kelas-master" onchange="renderTabelMaster()" class="w-full sm:w-auto px-3 py-2 sm:py-1.5 bg-slate-50 border border-slate-300 rounded-xl sm:rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                            <option value="ALL">Semua Kelas (255)</option>
+                            <option value="VII A">VII A</option>
+                            <option value="VII B">VII B</option>
+                            <option value="VII C">VII C</option>
+                            <option value="VIII A">VIII A</option>
+                            <option value="VIII B">VIII B</option>
+                            <option value="VIII C">VIII C</option>
+                            <option value="IX A">IX A</option>
+                            <option value="IX B">IX B</option>
+                            <option value="IX C">IX C</option>
+                            <option value="ALUMNI">Alumni / Lulus</option>
+                        </select>
+                        <div class="relative w-full sm:w-48">
+                            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
+                                <i class="fas fa-search text-xs"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                id="search-master-siswa" 
+                                onkeyup="renderTabelMaster()" 
+                                placeholder="Cari nama / kelas..." 
+                                class="pl-8 pr-3 py-2 sm:py-1.5 bg-slate-50 border border-slate-300 rounded-xl sm:rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-600 w-full"
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto max-h-[560px] overflow-y-auto border border-slate-100 rounded-xl">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead class="sticky top-0 z-10">
+                            <tr class="bg-slate-100 text-slate-600 text-xs uppercase border-b border-slate-200">
+                                <th class="py-3 px-3 font-semibold">Nama Siswa</th>
+                                <th class="py-3 px-3 font-semibold">Kelas (Edit Cepat)</th>
+                                <th class="py-3 px-3 font-semibold no-print">PIN</th>
+                                <th class="py-3 px-3 font-semibold text-center">Total / Rincian Kelas</th>
+                                <th class="py-3 px-3 font-semibold">Status Sanksi</th>
+                                <th class="py-3 px-3 font-semibold text-right no-print">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-master-siswa" class="divide-y divide-slate-100">
+                            <!-- Diisi dinamis via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== MODAL KENAIKAN KELAS / TINGGAL KELAS MASSAL ==================== -->
+    <div id="modal-kenaikan-kelas" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-6 animate-fade-in">
+            <div class="bg-indigo-800 text-white px-6 py-4 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-base flex items-center gap-2">
+                        <i class="fas fa-graduation-cap text-amber-300"></i>
+                        <span>Proses Kenaikan Kelas / Tinggal Kelas per Rombel</span>
+                    </h3>
+                    <p class="text-xs text-indigo-200 mt-0.5">Hapus centang pada siswa yang <strong>Tinggal Kelas</strong> agar tetap di kelas lama.</p>
+                </div>
+                <button onclick="closeModalKenaikanKelas()" class="text-indigo-200 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <!-- Pengaturan Kelas Asal & Tujuan -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">1. Pilih Kelas Asal</label>
+                        <select id="promo-kelas-asal" onchange="loadDaftarKenaikanKelas()" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold">
+                            <option value="VII A">VII A</option>
+                            <option value="VII B">VII B</option>
+                            <option value="VII C">VII C</option>
+                            <option value="VIII A">VIII A</option>
+                            <option value="VIII B">VIII B</option>
+                            <option value="VIII C">VIII C</option>
+                            <option value="IX A">IX A</option>
+                            <option value="IX B">IX B</option>
+                            <option value="IX C">IX C</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">2. Pindahkan Siswa Tercentang Ke:</label>
+                        <select id="promo-kelas-tujuan" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-indigo-700">
+                            <option value="VIII A">VIII A</option>
+                            <option value="VIII B">VIII B</option>
+                            <option value="VIII C">VIII C</option>
+                            <option value="IX A">IX A</option>
+                            <option value="IX B">IX B</option>
+                            <option value="IX C">IX C</option>
+                            <option value="ALUMNI">ALUMNI / LULUS</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Kontrol Ceklis Cepat -->
+                <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
+                    <div class="space-x-2">
+                        <button type="button" onclick="toggleSemuaCeklisKenaikan(true)" class="text-indigo-700 font-semibold hover:underline">Centang Semua (Naik)</button>
+                        <span class="text-slate-300">|</span>
+                        <button type="button" onclick="toggleSemuaCeklisKenaikan(false)" class="text-slate-500 font-semibold hover:underline">Kosongkan Semua</button>
+                    </div>
+                    <span id="promo-counter-terpilih" class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg">0 Naik | 0 Tinggal Kelas</span>
+                </div>
+
+                <!-- Daftar Siswa dalam Rombel -->
+                <div id="promo-list-siswa" class="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
+                    <!-- Diisi otomatis via JS -->
+                </div>
+
+                <!-- Info Akumulasi Poin Saat Naik Kelas -->
+                <div class="flex items-start gap-2.5 bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
+                    <i class="fas fa-info-circle text-blue-600 mt-0.5 flex-shrink-0"></i>
+                    <span><strong>Akumulasi Poin Otomatis:</strong> Total poin keseluruhan tetap menyimpan akumulasi dari kelas sebelumnya dan kelas baru secara terpisah (tidak hilang/terhapus).</span>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModalKenaikanKelas()" class="px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100">Batal</button>
+                    <button type="button" onclick="prosesKenaikanKelas()" class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl text-xs font-bold shadow flex items-center gap-2">
+                        <i class="fas fa-check-double"></i>
+                        <span>Proses Kenaikan Kelas</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL TAMBAH SISWA BARU (SATUAN & MASSAL EXCEL) ==================== -->
+    <div id="modal-tambah-siswa" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-6 animate-fade-in">
+            <div class="bg-emerald-700 text-white px-6 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-base flex items-center gap-2">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Tambah Siswa Baru (Satuan / Copy-Paste Excel)</span>
+                </h3>
+                <button onclick="closeModalTambahSiswa()" class="text-emerald-100 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- Tab Switcher Satuan vs Massal Excel -->
+            <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-bold">
+                <button type="button" id="tab-btn-satuan" onclick="switchTabTambahSiswa('satuan')" class="flex-1 py-3 text-emerald-700 border-b-2 border-emerald-600 bg-white">
+                    <i class="fas fa-user mr-1"></i> Input 1 Siswa
+                </button>
+                <button type="button" id="tab-btn-massal" onclick="switchTabTambahSiswa('massal')" class="flex-1 py-3 text-slate-500 hover:text-slate-700">
+                    <i class="fas fa-file-excel mr-1"></i> Paste Massal dari Excel (Kelas VII Baru)
+                </button>
+            </div>
+
+            <!-- Form 1: Satuan -->
+            <form id="form-tambah-satuan" onsubmit="handleTambahSiswa(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
+                    <input type="text" id="new-nama" required placeholder="Contoh: Budi Santoso" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Kelas</label>
+                        <select id="new-kelas" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold">
+                            <option value="VII A">VII A</option>
+                            <option value="VII B">VII B</option>
+                            <option value="VII C">VII C</option>
+                            <option value="VIII A">VIII A</option>
+                            <option value="VIII B">VIII B</option>
+                            <option value="VIII C">VIII C</option>
+                            <option value="IX A">IX A</option>
+                            <option value="IX B">IX B</option>
+                            <option value="IX C">IX C</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">PIN (DDMMYY)</label>
+                        <input type="text" id="new-pin" maxlength="6" pattern="\d{6}" required placeholder="Contoh: 150412" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm">
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow">
+                    Simpan Data Siswa
+                </button>
+            </form>
+
+            <!-- Form 2: Paste Massal dari Excel -->
+            <form id="form-tambah-massal" onsubmit="handleTambahSiswaMassal(event)" class="hidden p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Masukkan ke Kelas Tujuan</label>
+                    <select id="massal-kelas-tujuan" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-sm font-semibold">
+                        <option value="VII A">VII A</option>
+                        <option value="VII B">VII B</option>
+                        <option value="VII C">VII C</option>
+                        <option value="VIII A">VIII A</option>
+                        <option value="VIII B">VIII B</option>
+                        <option value="VIII C">VIII C</option>
+                        <option value="IX A">IX A</option>
+                        <option value="IX B">IX B</option>
+                        <option value="IX C">IX C</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Tempel (Paste) Daftar Nama dari Excel (1 baris = 1 siswa)</label>
+                    <textarea id="massal-daftar-nama" rows="5" required placeholder="Adelia Putri&#10;Ahmad Humaidi&#10;Ahmad Ihsan&#10;..." class="w-full px-3.5 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-mono"></textarea>
+                    <p class="text-[11px] text-slate-500 mt-1">PIN 6 digit akan dibuat otomatis untuk masing-masing siswa.</p>
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow">
+                    <i class="fas fa-file-import mr-1"></i> Impor Semua Siswa ke Kelas
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL DETAIL & EDIT RIWAYAT SISWA (GURU) ==================== -->
+    <div id="modal-detail-guru" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-200 overflow-hidden my-8 animate-fade-in">
+            <div class="bg-slate-800 text-white px-6 py-4 flex justify-between items-center">
+                <h3 id="detail-guru-title" class="font-bold text-base">Detail & Edit Riwayat Pelanggaran</h3>
+                <button onclick="closeModalDetailGuru()" class="text-slate-300 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div id="detail-guru-info" class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs text-slate-700"></div>
+                <div class="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 text-slate-600 uppercase border-b border-slate-200">
+                                <th class="py-2.5 px-3">Tanggal</th>
+                                <th class="py-2.5 px-3">Kelas</th>
+                                <th class="py-2.5 px-3">Pelanggaran & Keterangan</th>
+                                <th class="py-2.5 px-3 text-center">Poin</th>
+                                <th class="py-2.5 px-3 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detail-guru-tbody" class="divide-y divide-slate-100"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== BOTTOM NAVIGATION BAR (KHUSUS ANDROID MENU) ==================== -->
+    <nav id="android-bottom-nav" class="hidden fixed bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-[464px] bg-white/90 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-[0_12px_32px_rgba(15,23,42,0.18)] z-40 px-2 py-1.5 no-print">
+        <!-- Menu Bawah Portal Siswa -->
+        <div id="android-nav-siswa" class="grid grid-cols-3 gap-1.5">
+            <button type="button" onclick="switchAndroidTab('siswa-cek')" id="nav-tab-siswa-cek" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
+                <i class="fas fa-search text-base mb-0.5"></i>
+                <span class="text-[11px] tracking-tight">Cek Poin</span>
+            </button>
+            <button type="button" onclick="switchAndroidTab('siswa-info')" id="nav-tab-siswa-info" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
+                <i class="fas fa-book-open text-base mb-0.5"></i>
+                <span class="text-[11px] tracking-tight">Info Sanksi</span>
+            </button>
+            <button type="button" onclick="openLoginModal()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-amber-700 bg-amber-50/80 hover:bg-amber-100 font-bold transition-all duration-200">
+                <i class="fas fa-user-shield text-base mb-0.5 text-amber-500"></i>
+                <span class="text-[11px] tracking-tight">Menu Guru</span>
+            </button>
+        </div>
+
+        <!-- Menu Bawah Dashboard Guru / BK -->
+        <div id="android-nav-guru" class="hidden grid grid-cols-4 gap-1">
+            <button type="button" onclick="switchAndroidTab('guru-input')" id="nav-tab-guru-input" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
+                <i class="fas fa-bolt text-base mb-0.5"></i>
+                <span class="text-[10px] tracking-tight">Input Cepat</span>
+            </button>
+            <button type="button" onclick="switchAndroidTab('guru-data')" id="nav-tab-guru-data" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
+                <i class="fas fa-users text-base mb-0.5"></i>
+                <span class="text-[10px] tracking-tight">Data Siswa</span>
+            </button>
+            <button type="button" onclick="openModalKenaikanKelas()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-indigo-600 hover:bg-indigo-50 font-semibold transition-all duration-200">
+                <i class="fas fa-graduation-cap text-base mb-0.5"></i>
+                <span class="text-[10px] tracking-tight">Naik Kelas</span>
+            </button>
+            <button type="button" onclick="openModalTambahSiswa()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-emerald-600 hover:bg-emerald-50 font-semibold transition-all duration-200">
+                <i class="fas fa-user-plus text-base mb-0.5"></i>
+                <span class="text-[10px] tracking-tight">+ Siswa</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== TOAST NOTIFICATION (PENGGANTI ALERT) ==================== -->
+    <div id="toast-notif" class="hidden fixed bottom-5 right-5 bg-slate-900 text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium flex items-center gap-2.5 z-50 animate-fade-in">
+        <i class="fas fa-check-circle text-emerald-400"></i>
+        <span id="toast-message">Berhasil disimpan!</span>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="bg-white border-t border-slate-200 py-4 px-4 text-center text-xs text-slate-500 mt-auto no-print">
+        <p>&copy; 2026 Bimbingan Konseling & Kesiswaan — <strong>SMP Negeri 29 Banjarmasin</strong>. Hak Cipta Dilindungi.</p>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // 1. DATABASE LENGKAP 255 SISWA SMP NEGERI 29 BANJARMASIN
+        const rawDaftarSiswa = [
+            // VII A (32 Siswa)
+            ["Adelia Putri", "VII A"], ["Ahmad Humaidi", "VII A"], ["Ahmad Ihsan", "VII A"], ["Ahmad Reza", "VII A"],
+            ["Ahmad Zazuli Ramadhan", "VII A"], ["Alika Putri Hairunnisa", "VII A"], ["Anggi Mutiara Ramadhan Syarief", "VII A"], ["Billqis Azzahra", "VII A"],
+            ["Faiz Rizkian Fauzi", "VII A"], ["Gilang Prasetyo", "VII A"], ["Gusti Sofia Azkiya", "VII A"], ["Hasna Arifah", "VII A"],
+            ["Johan Arifin", "VII A"], ["Julia Salsabella", "VII A"], ["Lidia Pertiwi", "VII A"], ["M. Sultan Hawari Haikal", "VII A"],
+            ["Maura Kasafa", "VII A"], ["Muhammad Aidil", "VII A"], ["Muhammad Farid", "VII A"], ["Muhammad Hafizi", "VII A"],
+            ["Muhammad Irfan", "VII A"], ["Muhammad Ramadhan", "VII A"], ["Muhammad Rifki", "VII A"], ["Muhammad Wildan Muharam", "VII A"],
+            ["Muhlis Padillah", "VII A"], ["Nada Fitria", "VII A"], ["Nor Azizah Lastari", "VII A"], ["Putri Saira Asykia", "VII A"],
+            ["Rapi Padilah", "VII A"], ["Raudah", "VII A"], ["Rizkia Fitriani", "VII A"], ["Siti Tarawiah", "VII A"],
+            // VII B (32 Siswa)
+            ["Adiba Husna", "VII B"], ["Ahmad", "VII B"], ["Ahmad Risky", "VII B"], ["Akhmad Humaidi", "VII B"],
+            ["Alya Anwar", "VII B"], ["Aqila Azzahra", "VII B"], ["Bunga Husnul Khotimah", "VII B"], ["Fariz Ahsan Zuhdi", "VII B"],
+            ["Hafizha Adzkia", "VII B"], ["Hairil", "VII B"], ["Huzaifah", "VII B"], ["Khalifah", "VII B"],
+            ["M. Rani", "VII B"], ["M. Syaddat Ridho", "VII B"], ["Mahmud", "VII B"], ["Mahrisa Azkia", "VII B"],
+            ["Mawaddah", "VII B"], ["Muhammad Andri Wirdana", "VII B"], ["Muhamad Airlangga Pratama Putra", "VII B"], ["Muhammad Galip", "VII B"],
+            ["Muhammad Haikal Amin", "VII B"], ["Muhammad Ramadhan", "VII B"], ["Muhammad Rifqi", "VII B"], ["Natasya Putri", "VII B"],
+            ["Naufal Wijaya", "VII B"], ["Norsabila", "VII B"], ["Raidatul Aisyah", "VII B"], ["Resmawati", "VII B"],
+            ["Rizqa An-Nuri", "VII B"], ["Saipul Azhar", "VII B"], ["Salsabila Zahra", "VII B"], ["Taufik Hidayat", "VII B"],
+            // VII C (32 Siswa)
+            ["Ahmad Abizar", "VII C"], ["Ahmad Ramadhan Al-Karimi", "VII C"], ["Ahmad Zaki", "VII C"], ["Alika", "VII C"],
+            ["Amira Faliha", "VII C"], ["Ana Fakhrina", "VII C"], ["Armadani", "VII C"], ["Assyifa Azza Auryn", "VII C"],
+            ["Dahlia", "VII C"], ["Fathur Rohman", "VII C"], ["Halika", "VII C"], ["Hamdan", "VII C"],
+            ["Haykal", "VII C"], ["Iin Jujro Atiah", "VII C"], ["Laili Munawarah", "VII C"], ["M. Rizqy Aulia", "VII C"],
+            ["Mahdani Aji Syaputra", "VII C"], ["Maimunah", "VII C"], ["Mutmainah", "VII C"], ["Muhammad Afrizal Iqbal", "VII C"],
+            ["Muhammad Erfan", "VII C"], ["Muhammad Hafizhi", "VII C"], ["Muhammad Hanif", "VII C"], ["Muhammad Nazza Alkhalifi", "VII C"],
+            ["Muhammad Raqib", "VII C"], ["Muhammad Zen", "VII C"], ["Nazma Amania", "VII C"], ["Nur Liana", "VII C"],
+            ["Nurrahim", "VII C"], ["Raisha Sabrina", "VII C"], ["Rima Melati", "VII C"], ["Shafa", "VII C"],
+            // VIII A (29 Siswa)
+            ["Aditya Ernanando Seputra", "VIII A"], ["Ahmad Muzakki", "VIII A"], ["Ahmad Nabil Afrianor", "VIII A"], ["Alisa", "VIII A"],
+            ["Amelia Putri", "VIII A"], ["Amelia Safitri", "VIII A"], ["Asma Salsabila", "VIII A"], ["Bunga", "VIII A"],
+            ["Fadillah", "VIII A"], ["Kevin Ahmad Riansyah", "VIII A"], ["Khairannor", "VIII A"], ["M. Adriyani", "VIII A"],
+            ["M. Harun", "VIII A"], ["Marwaa Aulia Siswadi", "VIII A"], ["Mina Zaskia", "VIII A"], ["Muhammad Aufa", "VIII A"],
+            ["Muhammad Haikal", "VIII A"], ["Muhammad Mujakir", "VIII A"], ["Muhammad Rehan", "VIII A"], ["Muhammad Syamil Muhtadi", "VIII A"],
+            ["Nor Apika Putri", "VIII A"], ["Nurma", "VIII A"], ["Putri Senja Talia", "VIII A"], ["Rara Dewi", "VIII A"],
+            ["Saira Ramadhani", "VIII A"], ["Salsabila", "VIII A"], ["Selvia", "VIII A"], ["Silvia Putri Jasmin Maulani", "VIII A"],
+            ["Syafa'atul Marwah", "VIII A"],
+            // VIII B (29 Siswa)
+            ["Ahmad Arif Rahman", "VIII B"], ["Ahmad Nabil", "VIII B"], ["Akhmad Aulia", "VIII B"], ["Alya Humairo", "VIII B"],
+            ["Arjuna Rifqi Al Pakih", "VIII B"], ["Bimau Lidan", "VIII B"], ["Faizah Humaira", "VIII B"], ["Hafisah Syahfitri", "VIII B"],
+            ["M. Azka Firdaus", "VIII B"], ["Madinatussafa", "VIII B"], ["Miftahul Ghina", "VIII B"], ["Muh. Wahyu Hidayat Noriski", "VIII B"],
+            ["Muhammad Bagir", "VIII B"], ["Muhammad Hanafi", "VIII B"], ["Muhammad Ibnu Zamil", "VIII B"], ["Muhammad Naufal", "VIII B"],
+            ["Muhammad Restu", "VIII B"], ["Nadila", "VIII B"], ["Nor Hasyifa", "VIII B"], ["Nur Syafa'ah", "VIII B"],
+            ["Putri Amanda", "VIII B"], ["Raesa Aziza", "VIII B"], ["Raudhatul Jannah", "VIII B"], ["Rio Abdul Rahman", "VIII B"],
+            ["Rizky Ramadhan", "VIII B"], ["Shelia Ahmadiana", "VIII B"], ["Siti Humairah", "VIII B"], ["Siti Yuanna Hanifah", "VIII B"],
+            ["Yulia Sabila", "VIII B"],
+            // VIII C (29 Siswa)
+            ["Ahmad Aufar Ridhoni", "VIII C"], ["Alia Safitri", "VIII C"], ["Alifurrahman", "VIII C"], ["Ardiansyah", "VIII C"],
+            ["Asmah", "VIII C"], ["Fahmi", "VIII C"], ["Ikma Ariyanti", "VIII C"], ["Khumairah", "VIII C"],
+            ["Mahmudah", "VIII C"], ["Marsaa Aulia Siswadi", "VIII C"], ["Maysa Amira", "VIII C"], ["Muhammad Baihaki", "VIII C"],
+            ["Muhammad Fahri", "VIII C"], ["Muhammad Haidir Ali", "VIII C"], ["Muhammad Ibnu Akbari", "VIII C"], ["Muhammad Jaid Jidan", "VIII C"],
+            ["Muhammad Rizki Abdillah", "VIII C"], ["Nazwa Anggraini Putri", "VIII C"], ["Nor Aradiba Husna", "VIII C"], ["Nur Latifah Zahra", "VIII C"],
+            ["Raisya Khumairo", "VIII C"], ["Rehanisa Humairoh", "VIII C"], ["Rizkia Aditia", "VIII C"], ["Rizkya Azzahra", "VIII C"],
+            ["Risty Alya Zahra", "VIII C"], ["Saina Ramadhani", "VIII C"], ["Selvina Nayla", "VIII C"], ["Sri Kumala Sari", "VIII C"],
+            ["Tasyama", "VIII C"],
+            // IX A (26 Siswa)
+            ["Abdul Khair", "IX A"], ["Ahmad Zaini", "IX A"], ["Aisyah", "IX A"], ["Ajmal Syarif", "IX A"],
+            ["Ambariah", "IX A"], ["Amelia", "IX A"], ["Aprilia", "IX A"], ["Azkia Zulfa", "IX A"],
+            ["Irfan Rosadyi", "IX A"], ["Ivan", "IX A"], ["Lola Amelia", "IX A"], ["Marisa", "IX A"],
+            ["Muhammad Ashfiansyah", "IX A"], ["Muhammad Jumri", "IX A"], ["Muhammad Saufi Rahman", "IX A"], ["Muhammad Syaipul", "IX A"],
+            ["Nabila Apriani", "IX A"], ["Norjanah", "IX A"], ["Putri Hajahrah Mulya", "IX A"], ["Raihanah Padilah", "IX A"],
+            ["Rokayah", "IX A"], ["Salma Zakiya", "IX A"], ["Salsabilla Azhara", "IX A"], ["Syawali Munawar", "IX A"],
+            ["Wardah Salsabila", "IX A"], ["Zahra", "IX A"],
+            // IX B (25 Siswa)
+            ["Ahmad Dailami", "IX B"], ["Ahmad Muzakir", "IX B"], ["Aisya Asfia", "IX B"], ["Amanda Azzahra", "IX B"],
+            ["Amrah", "IX B"], ["Anisa", "IX B"], ["Cahaya Maberurah", "IX B"], ["Febri Monalisa", "IX B"],
+            ["Karmila", "IX B"], ["Kayla Zahra Nurqonitah", "IX B"], ["Khairul Ma'ani", "IX B"], ["Mispuah", "IX B"],
+            ["Muhammad Alfiyan", "IX B"], ["Muhammad Maulidan", "IX B"], ["Muhammad Nabil", "IX B"], ["Muhammad Rangga Rabiullah", "IX B"],
+            ["Muhammad Syahid", "IX B"], ["Nur Madinah", "IX B"], ["Nur Syifa Sabila", "IX B"], ["Raudatul Asiah", "IX B"],
+            ["Risky Anwary", "IX B"], ["Safa Marwah", "IX B"], ["Samsir Yudi", "IX B"], ["Siti Rahmadina", "IX B"],
+            ["Winey Gifni", "IX B"],
+            // IX C (25 Siswa)
+            ["Ahmad Fairuz", "IX C"], ["Ahmad Robbi Ramadani", "IX C"], ["Aliya Armadania", "IX C"], ["Ameliya Kasih", "IX C"],
+            ["Dawiyah", "IX C"], ["Ervina Puspita Sari", "IX C"], ["Fitrhia Ramadhana", "IX C"], ["Friskilla Putri", "IX C"],
+            ["Ilyas", "IX C"], ["Isnawati", "IX C"], ["M. Adittia", "IX C"], ["Muhammad Fikri", "IX C"],
+            ["Muhammad Hunaifi", "IX C"], ["Muhammad Hulwani Faisal", "IX C"], ["Muhammad Rijali", "IX C"], ["Muz'zalifah", "IX C"],
+            ["Nazwa Azzahra", "IX C"], ["Norhasifa", "IX C"], ["Nur Rosidah", "IX C"], ["Nurmainah Azzahra", "IX C"],
+            ["Risqia Azza", "IX C"], ["Safa", "IX C"], ["Safwati", "IX C"], ["Sami Yusuf", "IX C"],
+            ["Vita", "IX C"]
+        ];
+
+        // Bangun array objek dataSiswa dengan PIN unik otomatis
+        let dataSiswa = rawDaftarSiswa.map((item, idx) => {
+            const tingkatCode = item[1].startsWith("IX") ? "09" : item[1].startsWith("VIII") ? "08" : "07";
+            return {
+                id: idx + 1,
+                nama: item[0],
+                kelas: item[1],
+                pin: `29${tingkatCode}${String((idx % 99) + 1).padStart(2, '0')}`,
+                riwayat: []
+            };
+        });
+
+        // Kredensial Guru / BK
+        const GURU_USER = "bk29";
+        const GURU_PASS = "smpn29bjm";
+
+        // Daftar Lengkap 67 Tata Tertib Resmi SMPN 29 Banjarmasin untuk Pencarian Kilat
+        const daftarTataTertib = [
+            // KELAKUAN & KEPRIBADIAN
+            { grp: "KELAKUAN", val: "[I.1.01] Tidak sopan kepada guru / karyawan|20", label: "01. Tidak sopan kepada guru / karyawan", poin: 20 },
+            { grp: "KELAKUAN", val: "[I.1.02] Mengancam atau mengintimidasi|30", label: "02. Mengancam atau mengintimidasi", poin: 30 },
+            { grp: "KELAKUAN", val: "[I.1.03] Mencuri / memalak di lingkungan sekolah|20", label: "03. Mencuri / memalak di lingkungan sekolah", poin: 20 },
+            { grp: "KELAKUAN", val: "[I.1.04] Menyembunyikan/menghilangkan barang orang lain|30", label: "04. Menyembunyikan/menghilangkan barang orang lain", poin: 30 },
+            { grp: "BERAT", val: "[I.1.05] Berperilaku asusila / konten pornografi|75", label: "05. Berperilaku asusila / konten pornografi", poin: 75 },
+            { grp: "KELAKUAN", val: "[I.1.06] Bermain bola di luar jam olahraga|10", label: "06. Bermain bola di luar jam olahraga", poin: 10 },
+            { grp: "BERAT", val: "[I.1.08] Bercanda mengakibatkan orang lain cedera|50", label: "08. Bercanda mengakibatkan orang lain cedera", poin: 50 },
+            { grp: "TUGAS", val: "[I.1.09] Keluar kelas saat KBM tanpa izin|10", label: "09. Keluar kelas saat KBM tanpa izin", poin: 10 },
+            { grp: "BERAT", val: "[I.1.10] Pembullyan secara verbal (menghina)|50", label: "10. Pembullyan secara verbal (menghina/bully)", poin: 50 },
+            { grp: "BERAT", val: "[I.1.11] Pembullyan secara fisik|50", label: "11. Pembullyan secara fisik (bully)", poin: 50 },
+            { grp: "TUGAS", val: "[I.1.12] Ketidakhadiran tanpa kabar / Alpha (per hari)|1", label: "12. Ketidakhadiran tanpa kabar / Alpha (per hari)", poin: 1 },
+            { grp: "KELAKUAN", val: "[I.2.01] Mengotori / mencoret fasilitas sekolah|20", label: "01. Mengotori / mencoret fasilitas sekolah", poin: 20 },
+            { grp: "KELAKUAN", val: "[I.2.02] Merusak/menghilangkan fasilitas sekolah/siswa|20", label: "02. Merusak/menghilangkan fasilitas sekolah/siswa", poin: 20 },
+            { grp: "KELAKUAN", val: "[I.2.03] Membawa barang tidak terkait pelajaran|10", label: "03. Membawa barang tidak terkait pelajaran", poin: 10 },
+            { grp: "KELAKUAN", val: "[I.2.04] Memarkir sepeda di luar tempat parkir|5", label: "04. Memarkir sepeda di luar tempat parkir", poin: 5 },
+            { grp: "KELAKUAN", val: "[I.2.05] Tidak mengikuti upacara (berada di sekolah)|10", label: "05. Tidak mengikuti upacara (ada di sekolah)", poin: 10 },
+            { grp: "KELAKUAN", val: "[I.2.06] Tidak mengikuti majelis taklim|10", label: "06. Tidak mengikuti majelis taklim", poin: 10 },
+            { grp: "TUGAS", val: "[I.2.07] Tidak mengikuti les|10", label: "07. Tidak mengikuti les", poin: 10 },
+            { grp: "TUGAS", val: "[I.2.08] Tidak mengikuti pengembangan diri (Ekskul)|10", label: "08. Tidak mengikuti pengembangan diri / Ekskul", poin: 10 },
+            { grp: "KELAKUAN", val: "[I.2.09] Masuk Ruang Kepsek/Guru/TU/Lab/BK tanpa izin|5", label: "09. Masuk ruang kantor/lab/BK tanpa izin", poin: 5 },
+            { grp: "KELAKUAN", val: "[I.2.10] Membuang sampah tidak pada tempatnya|5", label: "10. Membuang sampah tidak pada tempatnya", poin: 5 },
+            { grp: "KELAKUAN", val: "[I.2.11] Tidak tertib saat upacara|5", label: "11. Tidak tertib saat upacara", poin: 5 },
+            // ROKOK, MEDIA, SENJATA, NARKOBA, PERKELAHIAN, PERGAULAN BEBAS
+            { grp: "BERAT", val: "[I.3.01] Membawa / menghisap rokok di sekolah|30", label: "Rokok 01. Membawa/menghisap rokok di sekolah", poin: 30 },
+            { grp: "BERAT", val: "[I.3.02] Merokok berseragam di luar sekolah|25", label: "Rokok 02. Merokok berseragam di luar sekolah", poin: 25 },
+            { grp: "BERAT", val: "[I.4.01] Membawa buku/majalah/gambar terlarang|25", label: "Media 01. Membawa buku/gambar terlarang", poin: 25 },
+            { grp: "BERAT", val: "[I.4.02] Memperjualbelikan buku/majalah terlarang|40", label: "Media 02. Memperjualbelikan media terlarang", poin: 40 },
+            { grp: "BERAT", val: "[I.4.03] Membawa HP bukan untuk pembelajaran|25", label: "Media 03. Membawa HP tanpa izin pembelajaran", poin: 25 },
+            { grp: "BERAT", val: "[I.4.04] Membawa HP & mengedarkan video porno|40", label: "Media 04. Membawa HP & edarkan video porno", poin: 40 },
+            { grp: "BERAT", val: "[I.5.01] Membawa senjata tajam tanpa izin|75", label: "Senjata 01. Membawa senjata tajam tanpa izin", poin: 75 },
+            { grp: "BERAT", val: "[I.5.02] Membawa sajam/senpi & melukai orang lain|300", label: "Senjata 02. Sajam/senpi melukai orang lain", poin: 300 },
+            { grp: "BERAT", val: "[I.6.01] Membawa narkoba/miras/alkohol|300", label: "Narkoba 01. Membawa narkoba/miras/alkohol", poin: 300 },
+            { grp: "BERAT", val: "[I.6.02] Berjudi / membawa kartu domino/uno|50", label: "Judi 02. Berjudi / bawa kartu domino/uno", poin: 50 },
+            { grp: "BERAT", val: "[I.6.03] Membawa dan menghisap lem|100", label: "Narkoba 03. Membawa & menghisap lem", poin: 100 },
+            { grp: "BERAT", val: "[I.6.04] Menggunakan narkoba/miras di sekolah|75", label: "Narkoba 04. Menggunakan narkoba/miras", poin: 75 },
+            { grp: "BERAT", val: "[I.6.05] Mengedarkan narkoba/miras di sekolah|100", label: "Narkoba 05. Mengedarkan narkoba/miras", poin: 100 },
+            { grp: "BERAT", val: "[I.7.01] Perkelahian berat mengakibatkan cedera|100", label: "Kelahi 01. Perkelahian berat / cedera", poin: 100 },
+            { grp: "BERAT", val: "[I.7.02] Perkelahian menggunakan seragam sekolah|100", label: "Kelahi 02. Perkelahian berseragam sekolah", poin: 100 },
+            { grp: "BERAT", val: "[I.7.03] Pemicu perkelahian sesama siswa SMPN 29|50", label: "Kelahi 03. Pemicu kelahi sesama siswa", poin: 50 },
+            { grp: "BERAT", val: "[I.7.04] Pemicu perkelahian dengan orang luar|100", label: "Kelahi 04. Pemicu kelahi dengan orang luar", poin: 100 },
+            { grp: "BERAT", val: "[I.7.05] Terlibat tindak kriminal|300", label: "Kelahi 05. Terlibat tindak kriminal", poin: 300 },
+            { grp: "BERAT", val: "[I.8.01] Berduaan / bergandengan tangan lawan jenis|30", label: "Pergaulan 01. Berduaan / gandengan tangan", poin: 30 },
+            { grp: "BERAT", val: "[I.8.02] Berduaan, berpelukan / berciuman|100", label: "Pergaulan 02. Berpelukan / berciuman", poin: 100 },
+            { grp: "BERAT", val: "[I.8.03] Melakukan pelecehan seksual|75", label: "Pergaulan 03. Pelecehan seksual", poin: 75 },
+            { grp: "KELAKUAN", val: "[I.8.04] Mendorong teman sengaja/tidak sengaja|50", label: "Pergaulan 04. Mendorong teman", poin: 50 },
+            { grp: "BERAT", val: "[I.8.05] Konten medsos tidak menutup aurat|25", label: "Medsos 05. Konten medsos tidak menutup aurat", poin: 25 },
+            { grp: "BERAT", val: "[I.8.06] Konten kekerasan di medsos|75", label: "Medsos 06. Konten kekerasan di medsos", poin: 75 },
+            { grp: "BERAT", val: "[I.8.07] Menyebarkan video kekerasan di medsos|50", label: "Medsos 07. Menyebarkan video kekerasan", poin: 50 },
+            { grp: "KELAKUAN", val: "[I.8.08] Mengirim stiker grup menyinggung/merendahkan|25", label: "Medsos 08. Stiker grup menyinggung/merendahkan", poin: 25 },
+            { grp: "BERAT", val: "[I.8.09] Menikah atau berzina|300", label: "Pergaulan 09. Menikah atau berzina", poin: 300 },
+            { grp: "BERAT", val: "[I.8.10] Siswa hamil|300", label: "Pergaulan 10. Siswa hamil", poin: 300 },
+            // TUGAS & KETERLAMBATAN
+            { grp: "TUGAS", val: "[II.1.01] Terlambat (per hari)|1", label: "01. Terlambat per hari", poin: 1 },
+            { grp: "TUGAS", val: "[II.1.02] Terlambat >5 kali dalam 1 minggu|5", label: "02. Terlambat >5 kali dalam 1 minggu", poin: 5 },
+            { grp: "TUGAS", val: "[II.1.03] Terlambat masuk karena izin keluar|3", label: "03. Terlambat masuk karena izin keluar", poin: 3 },
+            { grp: "TUGAS", val: "[II.1.04a] Tidak mengerjakan tugas (ke-1)|4", label: "04a. Tidak mengerjakan tugas ke-1", poin: 4 },
+            { grp: "TUGAS", val: "[II.1.04b] Tidak mengerjakan tugas (ke-2)|8", label: "04b. Tidak mengerjakan tugas ke-2", poin: 8 },
+            { grp: "TUGAS", val: "[II.1.04c] Tidak mengerjakan tugas (ke-3 dst)|12", label: "04c. Tidak mengerjakan tugas ke-3 dst", poin: 12 },
+            { grp: "TUGAS", val: "[II.1.05a] Tidak bawa buku jadwal / alat sholat (ke-1)|2", label: "05a. Tidak bawa buku/alat sholat ke-1", poin: 2 },
+            { grp: "TUGAS", val: "[II.1.05b] Tidak bawa buku jadwal / alat sholat (ke-2)|4", label: "05b. Tidak bawa buku/alat sholat ke-2", poin: 4 },
+            { grp: "TUGAS", val: "[II.1.05c] Tidak bawa buku jadwal / alat sholat (ke-3 dst)|6", label: "05c. Tidak bawa buku/alat sholat ke-3 dst", poin: 6 },
+            { grp: "SERAGAM", val: "[II.1.06a] Tidak pakai baju olahraga (ke-1)|5", label: "06a. Tidak pakai baju olahraga ke-1", poin: 5 },
+            { grp: "SERAGAM", val: "[II.1.06b] Tidak pakai baju olahraga (ke-2)|10", label: "06b. Tidak pakai baju olahraga ke-2", poin: 10 },
+            { grp: "SERAGAM", val: "[II.1.06c] Tidak pakai baju olahraga (ke-3 dst)|15", label: "06c. Tidak pakai baju olahraga ke-3 dst", poin: 15 },
+            { grp: "TUGAS", val: "[II.1.07a] Meninggalkan buku di kelas saat pulang (ke-1)|4", label: "07a. Meninggalkan buku di kelas ke-1", poin: 4 },
+            { grp: "TUGAS", val: "[II.1.07b] Meninggalkan buku di kelas saat pulang (ke-2)|8", label: "07b. Meninggalkan buku di kelas ke-2", poin: 8 },
+            { grp: "TUGAS", val: "[II.1.07c] Meninggalkan buku di kelas saat pulang (ke-3 dst)|12", label: "07c. Meninggalkan buku di kelas ke-3 dst", poin: 12 },
+            { grp: "TUGAS", val: "[II.1.08a] Tidak ikut ekstrakurikuler (ke-1)|5", label: "08a. Tidak ikut ekstrakurikuler ke-1", poin: 5 },
+            { grp: "TUGAS", val: "[II.1.08b] Tidak ikut ekstrakurikuler (ke-2)|10", label: "08b. Tidak ikut ekstrakurikuler ke-2", poin: 10 },
+            { grp: "TUGAS", val: "[II.1.08c] Tidak ikut ekstrakurikuler (ke-3 dst)|15", label: "08c. Tidak ikut ekstrakurikuler ke-3 dst", poin: 15 },
+            { grp: "TUGAS", val: "[II.1.09] Ketinggalan kartu ulangan|10", label: "09. Ketinggalan kartu ulangan", poin: 10 },
+            { grp: "TUGAS", val: "[II.1.10] Membolos|20", label: "10. Membolos", poin: 20 },
+            // SERAGAM & KEDISIPLINAN FISIK
+            { grp: "SERAGAM", val: "[II.2.01] Berambut gondrong / panjang (>3 cm)|10", label: "01. Berambut gondrong / panjang (>3 cm)", poin: 10 },
+            { grp: "SERAGAM", val: "[II.2.02] Model rambut tidak sesuai ketentuan|10", label: "02. Model rambut tidak sesuai ketentuan", poin: 10 },
+            { grp: "SERAGAM", val: "[II.2.03] Semir rambut, lipstik, kutek, dll|10", label: "03. Semir rambut, lipstik, kutek, dll", poin: 10 },
+            { grp: "SERAGAM", val: "[II.2.04] Bertato di anggota badan|15", label: "04. Bertato di anggota badan", poin: 15 },
+            { grp: "SERAGAM", val: "[II.2.05] Bertindik, bonel, gelang, kalung (laki-laki)|6", label: "05. Bertindik / aksesoris laki-laki", poin: 6 },
+            { grp: "SERAGAM", val: "[II.2.06] Baju seragam dikeluarkan (laki-laki)|20", label: "06. Baju seragam dikeluarkan", poin: 20 },
+            { grp: "SERAGAM", val: "[II.2.07] Rok pendek / baju crop top (perempuan)|20", label: "07. Rok pendek / crop top", poin: 20 },
+            { grp: "SERAGAM", val: "[II.2.08] Lengan baju dilipat (perempuan)|5", label: "08. Lengan baju dilipat", poin: 5 },
+            { grp: "SERAGAM", val: "[II.2.09] Memakai celana jeans|20", label: "09. Memakai celana jeans", poin: 20 },
+            { grp: "SERAGAM", val: "[II.2.10] Tidak lengkap atribut seragam & pramuka|20", label: "10. Tidak lengkap atribut seragam & pramuka", poin: 20 },
+            { grp: "SERAGAM", val: "[II.2.11] Salah memakai seragam (tidak sesuai jadwal)|10", label: "11. Salah memakai seragam (tidak sesuai jadwal)", poin: 10 },
+            { grp: "SERAGAM", val: "[II.2.12] Berkuku panjang|5", label: "12. Berkuku panjang", poin: 5 }
+        ];
+        let activeTabKategori = 'SEMUA';
+
+        // Set tanggal hari ini pada form input guru saat halaman dimuat
+        window.onload = function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('guru-tanggal').value = today;
+        };
+
+        // ==================== FUNGSI PORTAL SISWA ====================
+        function togglePinVisibility() {
+            const inputPin = document.getElementById('input-pin');
+            const iconEye = document.getElementById('icon-eye');
+            if (inputPin.type === 'password') {
+                inputPin.type = 'text';
+                iconEye.classList.remove('fa-eye');
+                iconEye.classList.add('fa-eye-slash');
+            } else {
+                inputPin.type = 'password';
+                iconEye.classList.remove('fa-eye-slash');
+                iconEye.classList.add('fa-eye');
+            }
+        }
+
+        function hitungTotalPoin(riwayat) {
+            return riwayat.reduce((total, item) => total + item.poin, 0);
+        }
+
+        function ambilTingkatKelas(namaKelas) {
+            if (!namaKelas) return '-';
+            if (namaKelas === 'ALUMNI') return 'Alumni';
+            const bagian = namaKelas.trim().split(' ')[0];
+            if (bagian === 'VII' || bagian === 'VIII' || bagian === 'IX') {
+                return `Kelas ${bagian}`;
+            }
+            return namaKelas;
+        }
+
+        function hitungRincianPoin(siswa) {
+            let poinSaatIni = 0;
+            let poinSebelumnya = 0;
+            const mapKelasSebelumnya = new Map();
+            const poinPerTingkat = { VII: 0, VIII: 0, IX: 0 };
+
+            siswa.riwayat.forEach(item => {
+                const kelasKejadian = item.kelasSaatKejadian || siswa.kelas;
+                const tingkat = kelasKejadian.trim().split(' ')[0];
+                if (poinPerTingkat.hasOwnProperty(tingkat)) {
+                    poinPerTingkat[tingkat] += item.poin;
+                }
+
+                if (kelasKejadian === siswa.kelas) {
+                    poinSaatIni += item.poin;
+                } else {
+                    poinSebelumnya += item.poin;
+                    mapKelasSebelumnya.set(kelasKejadian, `${ambilTingkatKelas(kelasKejadian)} (${kelasKejadian})`);
+                }
+            });
+
+            const daftarKelasLalu = Array.from(mapKelasSebelumnya.values());
+            const tingkatSekarang = ambilTingkatKelas(siswa.kelas);
+
+            return {
+                total: poinSaatIni + poinSebelumnya,
+                saatIni: poinSaatIni,
+                sebelumnya: poinSebelumnya,
+                poinPerTingkat,
+                labelKelasSekarang: `${tingkatSekarang} (${siswa.kelas})`,
+                labelKelasSebelumnya: daftarKelasLalu.length > 0 ? daftarKelasLalu.join(', ') : '-'
+            };
+        }
+
+        function handleCekPoin(event) {
+            event.preventDefault();
+            const namaInput = document.getElementById('input-nama').value.trim();
+            const pinInput = document.getElementById('input-pin').value.trim();
+            const alertGagal = document.getElementById('alert-gagal');
+
+            const siswaCocok = dataSiswa.find(s =>
+                s.nama.toLowerCase() === namaInput.toLowerCase() &&
+                s.pin === pinInput
+            );
+
+            if (!siswaCocok) {
+                alertGagal.classList.remove('hidden');
+                return;
+            }
+
+            alertGagal.classList.add('hidden');
+            tampilkanHasilSiswa(siswaCocok);
+        }
+
+        function tampilkanHasilSiswa(siswa) {
+            document.getElementById('res-nama').textContent = siswa.nama;
+            document.getElementById('res-kelas').textContent = siswa.kelas;
+
+            const rincian = hitungRincianPoin(siswa);
+            const totalPoin = rincian.total;
+            document.getElementById('res-total-poin').textContent = totalPoin;
+            document.getElementById('res-label-sekarang').innerHTML = `Kelas Saat Ini [${rincian.labelKelasSekarang}]: <strong>${rincian.saatIni}</strong>`;
+            document.getElementById('res-label-sebelumnya').innerHTML = `Kelas Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong>${rincian.sebelumnya}</strong>`;
+            document.getElementById('res-rincian-tingkat').innerHTML = `
+                <span id="res-label-sekarang" class="bg-white/65 px-2 py-0.5 rounded">Kelas Saat Ini [${rincian.labelKelasSekarang}]: <strong>${rincian.saatIni}</strong></span>
+                <span id="res-label-sebelumnya" class="bg-white/65 px-2 py-0.5 rounded">Kelas Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong>${rincian.sebelumnya}</strong></span>
+                <span class="w-full text-[10px] opacity-85 mt-0.5">Rekap Jenjang: <strong>Kelas VII:</strong> ${rincian.poinPerTingkat.VII} | <strong>Kelas VIII:</strong> ${rincian.poinPerTingkat.VIII} | <strong>Kelas IX:</strong> ${rincian.poinPerTingkat.IX}</span>
+            `;
+
+            const statusCard = document.getElementById('res-status-card');
+            const statusIcon = document.getElementById('res-status-icon');
+            const statusBadge = document.getElementById('res-status-badge');
+
+            statusCard.className = "p-4 rounded-xl border flex flex-col justify-between transition-colors";
+
+            if (totalPoin <= 20) {
+                statusCard.classList.add("bg-emerald-50", "border-emerald-200", "text-emerald-900");
+                statusIcon.className = "fas fa-check-circle text-2xl text-emerald-600";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-emerald-200/80 text-emerald-900";
+                statusBadge.textContent = "Status: Aman / Baik";
+            } else if (totalPoin < 100) {
+                statusCard.classList.add("bg-amber-50", "border-amber-200", "text-amber-900");
+                statusIcon.className = "fas fa-exclamation-circle text-2xl text-amber-600";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-amber-200/80 text-amber-900";
+                statusBadge.textContent = "Status: Pembinaan Wali Kelas / BK";
+            } else if (totalPoin < 150) {
+                statusCard.classList.add("bg-orange-50", "border-orange-300", "text-orange-950");
+                statusIcon.className = "fas fa-bell text-2xl text-orange-600";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-orange-200 text-orange-950";
+                statusBadge.textContent = "Sanksi: Panggilan Orang Tua ke-1 (≥100)";
+            } else if (totalPoin < 200) {
+                statusCard.classList.add("bg-rose-50", "border-rose-300", "text-rose-900");
+                statusIcon.className = "fas fa-exclamation-triangle text-2xl text-rose-600";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-rose-200 text-rose-900";
+                statusBadge.textContent = "Sanksi: Panggilan Orang Tua ke-2 (≥150)";
+            } else if (totalPoin < 300) {
+                statusCard.classList.add("bg-rose-100", "border-rose-400", "text-rose-950");
+                statusIcon.className = "fas fa-exclamation-triangle text-2xl text-rose-700";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-rose-300 text-rose-950";
+                statusBadge.textContent = "Sanksi: Panggilan Orang Tua ke-3 (≥200)";
+            } else {
+                statusCard.classList.add("bg-red-900", "border-red-950", "text-white");
+                statusIcon.className = "fas fa-ban text-2xl text-amber-300";
+                statusBadge.className = "text-xs font-bold px-2.5 py-1.5 rounded-lg inline-block w-fit bg-red-800 text-amber-200";
+                statusBadge.textContent = "Sanksi Maksimal: Dikembalikan ke Ortu (≥300)";
+            }
+
+            const tbody = document.getElementById('res-tabel-riwayat');
+            tbody.innerHTML = '';
+
+            if (siswa.riwayat.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-6 px-4 text-center text-slate-400 text-xs">
+                            <i class="fas fa-smile-beam text-emerald-500 text-lg mb-1 block"></i>
+                            Tidak ada catatan pelanggaran. Pertahankan kedisiplinan Anda!
+                        </td>
+                    </tr>
+                `;
+            } else {
+                siswa.riwayat.forEach(item => {
+                    const kelasLabel = item.kelasSaatKejadian || siswa.kelas;
+                    const isKelasLama = kelasLabel !== siswa.kelas;
+                    const badgeKelas = isKelasLama
+                        ? `<span class="bg-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-bold">${kelasLabel}</span>`
+                        : `<span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded text-[11px] font-bold">${kelasLabel}</span>`;
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 text-slate-600 whitespace-nowrap">${item.tanggal}</td>
+                        <td class="py-3 px-4 whitespace-nowrap">${badgeKelas}</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">${item.jenis}</td>
+                        <td class="py-3 px-4 text-center">
+                            <span class="bg-rose-100 text-rose-700 font-bold px-2 py-0.5 rounded-md text-xs">+${item.poin}</span>
+                        </td>
+                        <td class="py-3 px-4 text-slate-500 text-xs">${item.keterangan || '-'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('modal-hasil-siswa').classList.remove('hidden');
+        }
+
+        function tutupDanBersihkan() {
+            document.getElementById('modal-hasil-siswa').classList.add('hidden');
+            document.getElementById('form-cek-poin').reset();
+            document.getElementById('input-pin').type = 'password';
+            document.getElementById('icon-eye').classList.remove('fa-eye-slash');
+            document.getElementById('icon-eye').classList.add('fa-eye');
+            document.getElementById('alert-gagal').classList.add('hidden');
+
+            document.getElementById('res-nama').textContent = '-';
+            document.getElementById('res-kelas').textContent = '-';
+            document.getElementById('res-total-poin').textContent = '0';
+            document.getElementById('res-label-sekarang').textContent = 'Kelas Saat Ini: 0';
+            document.getElementById('res-label-sebelumnya').textContent = 'Kelas Sebelumnya: 0';
+            document.getElementById('res-tabel-riwayat').innerHTML = '';
+        }
+
+        // ==================== FUNGSI LOGIN & DASHBOARD GURU ====================
+        function openLoginModal() {
+            document.getElementById('modal-login-guru').classList.remove('hidden');
+            document.getElementById('alert-login-guru').classList.add('hidden');
+            document.getElementById('guru-user').focus();
+        }
+
+        function closeLoginModal() {
+            document.getElementById('modal-login-guru').classList.add('hidden');
+        }
+
+        function handleLoginGuru(event) {
+            event.preventDefault();
+            const user = document.getElementById('guru-user').value.trim();
+            const pass = document.getElementById('guru-pass').value.trim();
+
+            if (user === GURU_USER && pass === GURU_PASS) {
+                closeLoginModal();
+                document.getElementById('guru-user').value = '';
+                document.getElementById('guru-pass').value = '';
+
+                document.getElementById('view-siswa').classList.add('hidden');
+                document.getElementById('view-guru').classList.remove('hidden');
+                document.getElementById('btn-nav-login').classList.add('hidden');
+                document.getElementById('btn-nav-logout').classList.remove('hidden');
+
+                syncAndroidNavRole();
+                refreshDashboardGuru();
+                showToast("Selamat datang di Dashboard BK SMPN 29 Banjarmasin");
+            } else {
+                document.getElementById('alert-login-guru').classList.remove('hidden');
+            }
+        }
+
+        function logoutGuru() {
+            document.getElementById('view-guru').classList.add('hidden');
+            document.getElementById('view-siswa').classList.remove('hidden');
+            document.getElementById('btn-nav-logout').classList.add('hidden');
+            document.getElementById('btn-nav-login').classList.remove('hidden');
+            syncAndroidNavRole();
+            tutupDanBersihkan();
+        }
+
+        // ==================== PENGATUR MODE WEBSITE MENU VS ANDROID MENU ====================
+        let currentAppMode = 'web';
+        let currentAndroidTab = 'guru-input';
+
+        function setAppMode(mode) {
+            currentAppMode = mode;
+            const btnWeb = document.getElementById('btn-mode-web');
+            const btnAndroid = document.getElementById('btn-mode-android');
+            const bottomNav = document.getElementById('android-bottom-nav');
+
+            if (mode === 'android') {
+                document.body.classList.add('android-mode');
+                btnAndroid.className = "px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-gradient-to-r from-white to-emerald-50 text-blue-950 shadow-md transition-all duration-200 flex items-center gap-1.5";
+                btnWeb.className = "px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-1.5";
+                bottomNav.classList.remove('hidden');
+                syncAndroidNavRole();
+                showToast("Beralih ke tampilan Android Menu");
+            } else {
+                document.body.classList.remove('android-mode');
+                btnWeb.className = "px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold bg-gradient-to-r from-white to-blue-50 text-blue-950 shadow-md transition-all duration-200 flex items-center gap-1.5";
+                btnAndroid.className = "px-3 py-1.5 rounded-xl text-[11px] sm:text-xs font-bold text-slate-300 hover:text-white hover:bg-white/5 transition-all duration-200 flex items-center gap-1.5";
+                bottomNav.classList.add('hidden');
+
+                // Kembalikan semua panel agar tampil berdampingan di Website Menu
+                document.getElementById('siswa-card-cek').classList.remove('hidden');
+                document.getElementById('siswa-card-demo').classList.remove('hidden');
+                document.getElementById('siswa-card-info').classList.add('hidden');
+                document.getElementById('box-form-pelanggaran').classList.remove('hidden');
+                document.getElementById('print-area').classList.remove('hidden');
+                showToast("Beralih ke tampilan Website Menu");
+            }
+        }
+
+        function syncAndroidNavRole() {
+            const isGuruAktif = !document.getElementById('view-guru').classList.contains('hidden');
+            const navSiswa = document.getElementById('android-nav-siswa');
+            const navGuru = document.getElementById('android-nav-guru');
+
+            if (isGuruAktif) {
+                navSiswa.classList.add('hidden');
+                navGuru.classList.remove('hidden');
+                if (currentAppMode === 'android') {
+                    switchAndroidTab(currentAndroidTab.startsWith('guru-') ? currentAndroidTab : 'guru-input');
+                }
+            } else {
+                navGuru.classList.add('hidden');
+                navSiswa.classList.remove('hidden');
+                if (currentAppMode === 'android') {
+                    switchAndroidTab('siswa-cek');
+                }
+            }
+        }
+
+        function switchAndroidTab(tabName) {
+            currentAndroidTab = tabName;
+            document.querySelectorAll('.android-tab-item').forEach(btn => {
+                btn.classList.remove('android-tab-active', 'text-blue-700', 'font-bold');
+                if (btn.id) {
+                    btn.classList.add('text-slate-500', 'font-semibold');
+                }
+            });
+            const activeBtn = document.getElementById(`nav-tab-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('text-slate-500', 'font-semibold');
+                activeBtn.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
+            }
+
+            if (tabName === 'siswa-cek') {
+                document.getElementById('siswa-card-cek').classList.remove('hidden');
+                document.getElementById('siswa-card-demo').classList.remove('hidden');
+                document.getElementById('siswa-card-info').classList.add('hidden');
+            } else if (tabName === 'siswa-info') {
+                document.getElementById('siswa-card-cek').classList.add('hidden');
+                document.getElementById('siswa-card-demo').classList.add('hidden');
+                document.getElementById('siswa-card-info').classList.remove('hidden');
+            } else if (tabName === 'guru-input') {
+                document.getElementById('box-form-pelanggaran').classList.remove('hidden');
+                document.getElementById('print-area').classList.add('hidden');
+            } else if (tabName === 'guru-data') {
+                document.getElementById('box-form-pelanggaran').classList.add('hidden');
+                document.getElementById('print-area').classList.remove('hidden');
+            }
+        }
+
+        function refreshDashboardGuru() {
+            document.getElementById('stat-total-siswa').textContent = dataSiswa.length;
+            let totalKasus = 0;
+            let perluPembinaan = 0;
+
+            dataSiswa.forEach(s => {
+                totalKasus += s.riwayat.length;
+                if (hitungTotalPoin(s.riwayat) >= 100) perluPembinaan++;
+            });
+
+            document.getElementById('stat-total-kasus').textContent = totalKasus;
+            document.getElementById('stat-perlu-pembinaan').textContent = perluPembinaan;
+
+            renderTabelMaster();
+        }
+
+        // ==================== MULTI-SISWA & INPUT SUPER CEPAT ====================
+        let antreanSiswaIds = [];
+        let riwayatUndoTerakhir = null;
+
+        function handleLiveSearchSiswa(keyword) {
+            const dropdown = document.getElementById('live-search-dropdown');
+            const q = keyword.trim().toLowerCase();
+
+            if (q.length < 2) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            const cocok = dataSiswa.filter(s =>
+                !antreanSiswaIds.includes(s.id) &&
+                (s.nama.toLowerCase().includes(q) || s.kelas.toLowerCase().includes(q))
+            ).slice(0, 12);
+
+            if (cocok.length === 0) {
+                dropdown.innerHTML = `<div class="p-2.5 text-xs text-slate-400 text-center">Tidak ditemukan / sudah dipilih</div>`;
+            } else {
+                dropdown.innerHTML = cocok.map(s => `
+                    <button type="button" onclick="tambahSiswaKeAntrean(${s.id})" class="w-full text-left px-3 py-2 hover:bg-blue-50 flex items-center justify-between text-xs transition">
+                        <span class="font-semibold text-slate-800">${s.nama}</span>
+                        <span class="bg-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded text-[11px]">${s.kelas}</span>
+                    </button>
+                `).join('');
+            }
+            dropdown.classList.remove('hidden');
+        }
+
+        function handleEnterSiswa(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const firstBtn = document.querySelector('#live-search-dropdown button');
+                if (firstBtn) firstBtn.click();
+            }
+        }
+
+        function tambahSiswaKeAntrean(siswaId) {
+            if (!antreanSiswaIds.includes(siswaId)) {
+                antreanSiswaIds.push(siswaId);
+                renderChipAntreanSiswa();
+            }
+            const inputEl = document.getElementById('guru-pilih-siswa');
+            inputEl.value = '';
+            document.getElementById('live-search-dropdown').classList.add('hidden');
+            inputEl.focus();
+        }
+
+        function hapusSiswaDariAntrean(siswaId) {
+            antreanSiswaIds = antreanSiswaIds.filter(id => id !== siswaId);
+            renderChipAntreanSiswa();
+        }
+
+        function resetPilihSiswa() {
+            antreanSiswaIds = [];
+            renderChipAntreanSiswa();
+            document.getElementById('guru-pilih-siswa').value = '';
+            document.getElementById('live-search-dropdown').classList.add('hidden');
+        }
+
+        function renderChipAntreanSiswa() {
+            const container = document.getElementById('selected-students-chips');
+            const badge = document.getElementById('badge-jumlah-antrean');
+
+            if (antreanSiswaIds.length === 0) {
+                container.innerHTML = '';
+                badge.classList.add('hidden');
+                return;
+            }
+
+            badge.textContent = `${antreanSiswaIds.length} Siswa`;
+            badge.classList.remove('hidden');
+
+            container.innerHTML = antreanSiswaIds.map(id => {
+                const s = dataSiswa.find(x => x.id === id);
+                if (!s) return '';
+                return `
+                    <span class="inline-flex items-center gap-1.5 bg-blue-100 text-blue-900 border border-blue-200 px-2.5 py-1 rounded-lg text-xs font-semibold animate-fade-in">
+                        <span>${s.nama} <span class="text-blue-600 text-[10px]">(${s.kelas})</span></span>
+                        <button type="button" onclick="hapusSiswaDariAntrean(${s.id})" class="text-blue-500 hover:text-rose-600 focus:outline-none">
+                            <i class="fas fa-times-circle"></i>
+                        </button>
+                    </span>
+                `;
+            }).join('');
+        }
+
+        function pilihSiswaCepat(siswaId) {
+            tambahSiswaKeAntrean(siswaId);
+            if (currentAppMode === 'android') {
+                switchAndroidTab('guru-input');
+            }
+            const boxForm = document.getElementById('box-form-pelanggaran');
+            boxForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            boxForm.classList.add('ring-2', 'ring-amber-400');
+            setTimeout(() => boxForm.classList.remove('ring-2', 'ring-amber-400'), 900);
+            const s = dataSiswa.find(x => x.id === siswaId);
+            if (s) showToast(`${s.nama} masuk antrean (${antreanSiswaIds.length} siswa)`);
+        }
+
+        function eksekusiAtauPilihCepat(btnElement, nilaiKategori) {
+            document.getElementById('guru-kategori').value = nilaiKategori;
+            document.querySelectorAll('.chip-pelanggaran').forEach(el => {
+                el.classList.remove('bg-blue-100', 'border-blue-500', 'ring-1', 'ring-blue-500');
+                el.classList.add('bg-slate-50', 'border-slate-200');
+            });
+            btnElement.classList.remove('bg-slate-50', 'border-slate-200');
+            btnElement.classList.add('bg-blue-100', 'border-blue-500', 'ring-1', 'ring-blue-500');
+
+            const isAutoSave = document.getElementById('toggle-auto-save').checked;
+            if (isAutoSave) {
+                if (antreanSiswaIds.length === 0) {
+                    showToast("Pilih minimal 1 siswa terlebih dahulu!");
+                    document.getElementById('guru-pilih-siswa').focus();
+                    return;
+                }
+                prosesSimpanKeAntrean(nilaiKategori);
+            }
+        }
+
+        function pilihTabKategori(grp, btnEl) {
+            activeTabKategori = grp;
+            document.querySelectorAll('.tab-kat-btn').forEach(b => {
+                b.className = "tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap";
+            });
+            if (btnEl) {
+                btnEl.className = "tab-kat-btn px-2 py-1 rounded-lg bg-blue-100 text-blue-800 whitespace-nowrap";
+            }
+            const keyword = document.getElementById('search-kategori-cepat').value;
+            filterKategoriCepat(keyword, true);
+        }
+
+        function filterKategoriCepat(keyword, forceShow = false) {
+            const q = (keyword || '').trim().toLowerCase();
+            const listBox = document.getElementById('list-kategori-instan');
+            const btnClear = document.getElementById('btn-clear-search-kat');
+
+            if (q.length > 0) {
+                btnClear.classList.remove('hidden');
+            } else {
+                btnClear.classList.add('hidden');
+            }
+
+            if (q.length === 0 && !forceShow && activeTabKategori === 'SEMUA') {
+                listBox.classList.add('hidden');
+                return;
+            }
+
+            const hasil = daftarTataTertib.filter(item => {
+                const matchTab = activeTabKategori === 'SEMUA' || item.grp === activeTabKategori;
+                const matchKata = q === '' || item.label.toLowerCase().includes(q) || item.val.toLowerCase().includes(q);
+                return matchTab && matchKata;
+            });
+
+            if (hasil.length === 0) {
+                listBox.innerHTML = `<div class="p-3 text-center text-xs text-slate-400">Tidak ada aturan yang cocok dengan "${keyword}".</div>`;
+            } else {
+                listBox.innerHTML = hasil.map(item => `
+                    <button type="button" onclick="pilihDariHasilCariKategori(this, '${item.val.replace(/'/g, "\\'")}')" class="w-full text-left px-3 py-2 hover:bg-amber-50 active:bg-amber-100 flex items-center justify-between gap-2 text-xs transition">
+                        <span class="text-slate-700 font-medium leading-snug">${item.label}</span>
+                        <span class="flex-shrink-0 font-extrabold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">+${item.poin}</span>
+                    </button>
+                `).join('');
+            }
+            listBox.classList.remove('hidden');
+        }
+
+        function pilihDariHasilCariKategori(btnEl, val) {
+            document.getElementById('guru-kategori').value = val;
+            document.querySelectorAll('#list-kategori-instan button').forEach(b => b.classList.remove('bg-blue-100'));
+            btnEl.classList.add('bg-blue-100');
+
+            const isAutoSave = document.getElementById('toggle-auto-save').checked;
+            if (isAutoSave) {
+                if (antreanSiswaIds.length === 0) {
+                    showToast("Pilih minimal 1 siswa terlebih dahulu!");
+                    document.getElementById('guru-pilih-siswa').focus();
+                    return;
+                }
+                prosesSimpanKeAntrean(val);
+            } else {
+                const [label] = val.split('|');
+                showToast(`Dipilih: ${label}`);
+            }
+        }
+
+        function clearSearchKategori() {
+            const input = document.getElementById('search-kategori-cepat');
+            if (input) input.value = '';
+            const btnClear = document.getElementById('btn-clear-search-kat');
+            if (btnClear) btnClear.classList.add('hidden');
+            const listBox = document.getElementById('list-kategori-instan');
+            if (listBox) listBox.classList.add('hidden');
+        }
+
+        function toggleOpsiTambahan() {
+            const box = document.getElementById('box-opsi-tambahan');
+            const icon = document.getElementById('icon-opsi-tambahan');
+            box.classList.toggle('hidden');
+            icon.classList.toggle('fa-chevron-right');
+            icon.classList.toggle('fa-chevron-down');
+        }
+
+        function handleSimpanPelanggaran(event) {
+            event.preventDefault();
+            const kategoriVal = document.getElementById('guru-kategori').value;
+
+            if (antreanSiswaIds.length === 0) {
+                showToast("Pilih minimal 1 nama siswa terlebih dahulu!");
+                document.getElementById('guru-pilih-siswa').focus();
+                return;
+            }
+            if (!kategoriVal) {
+                showToast("Pilih jenis pelanggaran terlebih dahulu!");
+                return;
+            }
+            prosesSimpanKeAntrean(kategoriVal);
+        }
+
+        function prosesSimpanKeAntrean(kategoriVal) {
+            const tanggal = document.getElementById('guru-tanggal').value || new Date().toISOString().split('T')[0];
+            const catatan = document.getElementById('guru-catatan').value.trim();
+
+            const [jenis, poinStr] = kategoriVal.split('|');
+            const poin = parseInt(poinStr, 10);
+
+            const logBatch = [];
+            const namaTercatat = [];
+
+            antreanSiswaIds.forEach(siswaId => {
+                const siswa = dataSiswa.find(s => s.id === siswaId);
+                if (siswa) {
+                    const entry = {
+                        id: Date.now() + Math.floor(Math.random() * 10000),
+                        tanggal,
+                        kelasSaatKejadian: siswa.kelas,
+                        jenis,
+                        poin,
+                        keterangan: catatan || '-'
+                    };
+                    siswa.riwayat.unshift(entry);
+                    logBatch.push({ siswaId: siswa.id, entryId: entry.id });
+                    namaTercatat.push(siswa.nama);
+                }
+            });
+
+            riwayatUndoTerakhir = logBatch;
+            const boxUndo = document.getElementById('box-undo-terakhir');
+            const labelUndo = namaTercatat.length === 1
+                ? `${namaTercatat[0]} (+${poin})`
+                : `${namaTercatat.length} Siswa (+${poin})`;
+            document.getElementById('text-undo-terakhir').textContent = `Tersimpan: ${labelUndo}`;
+            boxUndo.classList.remove('hidden');
+
+            // Reset antrean & form agar langsung siap untuk input berikutnya
+            antreanSiswaIds = [];
+            renderChipAntreanSiswa();
+            document.getElementById('guru-pilih-siswa').value = '';
+            document.getElementById('guru-kategori').value = '';
+            clearSearchKategori();
+            document.getElementById('guru-catatan').value = '';
+            document.querySelectorAll('.chip-pelanggaran').forEach(el => {
+                el.classList.remove('bg-blue-100', 'border-blue-500', 'ring-1', 'ring-blue-500');
+                el.classList.add('bg-slate-50', 'border-slate-200');
+            });
+
+            refreshDashboardGuru();
+            showToast(`⚡ Tercatat +${poin} poin untuk ${labelUndo}!`);
+            document.getElementById('guru-pilih-siswa').focus();
+        }
+
+        function batalkanInputTerakhir() {
+            if (!riwayatUndoTerakhir || riwayatUndoTerakhir.length === 0) return;
+
+            riwayatUndoTerakhir.forEach(item => {
+                const siswa = dataSiswa.find(s => s.id === item.siswaId);
+                if (siswa) {
+                    siswa.riwayat = siswa.riwayat.filter(r => r.id !== item.entryId);
+                }
+            });
+
+            riwayatUndoTerakhir = null;
+            document.getElementById('box-undo-terakhir').classList.add('hidden');
+            refreshDashboardGuru();
+            showToast("Catatan pelanggaran terakhir dibatalkan!");
+        }
+
+        // ==================== TABEL MASTER & EDIT KELAS CEPAT ====================
+        const daftarOpsiKelas = ["VII A", "VII B", "VII C", "VIII A", "VIII B", "VIII C", "IX A", "IX B", "IX C", "ALUMNI"];
+
+        function renderTabelMaster() {
+            const filterKeyword = document.getElementById('search-master-siswa').value.toLowerCase();
+            const filterKelas = document.getElementById('filter-kelas-master').value;
+            const tbody = document.getElementById('tabel-master-siswa');
+            tbody.innerHTML = '';
+
+            const filtered = dataSiswa.filter(s => {
+                const matchKelas = filterKelas === 'ALL' || s.kelas === filterKelas;
+                const matchKata = s.nama.toLowerCase().includes(filterKeyword) ||
+                                  s.kelas.toLowerCase().includes(filterKeyword);
+                return matchKelas && matchKata;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-xs text-slate-400">Tidak ada siswa yang cocok dengan filter pencarian.</td></tr>`;
+                return;
+            }
+
+            filtered.forEach(s => {
+                const rincian = hitungRincianPoin(s);
+                const totalPoin = rincian.total;
+                let badgeStatus = '';
+                if (totalPoin <= 20) {
+                    badgeStatus = '<span class="bg-emerald-100 text-emerald-800 text-[11px] font-bold px-2 py-0.5 rounded-md">Aman</span>';
+                } else if (totalPoin < 100) {
+                    badgeStatus = '<span class="bg-amber-100 text-amber-800 text-[11px] font-bold px-2 py-0.5 rounded-md">Pembinaan</span>';
+                } else if (totalPoin < 150) {
+                    badgeStatus = '<span class="bg-orange-100 text-orange-800 text-[11px] font-bold px-2 py-0.5 rounded-md">Panggilan Ortu 1</span>';
+                } else if (totalPoin < 200) {
+                    badgeStatus = '<span class="bg-rose-100 text-rose-800 text-[11px] font-bold px-2 py-0.5 rounded-md">Panggilan Ortu 2</span>';
+                } else if (totalPoin < 300) {
+                    badgeStatus = '<span class="bg-rose-200 text-rose-900 text-[11px] font-bold px-2 py-0.5 rounded-md">Panggilan Ortu 3</span>';
+                } else {
+                    badgeStatus = '<span class="bg-red-800 text-white text-[11px] font-bold px-2 py-0.5 rounded-md">Dikembalikan (≥300)</span>';
+                }
+
+                const opsiKelasHTML = daftarOpsiKelas.map(k =>
+                    `<option value="${k}" ${s.kelas === k ? 'selected' : ''}>${k}</option>`
+                ).join('');
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition";
+                tr.innerHTML = `
+                    <td class="py-2.5 px-3">
+                        <p class="font-semibold text-slate-800 text-xs sm:text-sm">${s.nama}</p>
+                    </td>
+                    <td class="py-2.5 px-3">
+                        <select onchange="ubahKelasCepat(${s.id}, this.value)" class="px-2 py-1 bg-slate-50 hover:bg-white border border-slate-200 rounded-lg text-xs font-bold text-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            ${opsiKelasHTML}
+                        </select>
+                    </td>
+                    <td class="py-2.5 px-3 font-mono text-xs text-slate-600 no-print">${s.pin}</td>
+                    <td class="py-2.5 px-3 text-center">
+                        <div class="font-extrabold text-slate-800 text-sm">${totalPoin}</div>
+                        <div class="text-[10px] text-slate-500 whitespace-nowrap">
+                            Saat Ini [${rincian.labelKelasSekarang}]: <strong class="text-blue-700">${rincian.saatIni}</strong> | Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong class="text-slate-600">${rincian.sebelumnya}</strong>
+                        </div>
+                        <div class="text-[9px] text-slate-400 mt-0.5">
+                            VII: ${rincian.poinPerTingkat.VII} • VIII: ${rincian.poinPerTingkat.VIII} • IX: ${rincian.poinPerTingkat.IX}
+                        </div>
+                    </td>
+                    <td class="py-2.5 px-3">${badgeStatus}</td>
+                    <td class="py-2.5 px-3 text-right space-x-1 whitespace-nowrap no-print">
+                        <button onclick="pilihSiswaCepat(${s.id})" class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold px-2.5 py-1.5 rounded-lg transition" title="Catat Pelanggaran">
+                            <i class="fas fa-plus"></i> Poin
+                        </button>
+                        <button onclick="bukaDetailGuru(${s.id})" class="text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 font-semibold px-2.5 py-1.5 rounded-lg transition" title="Lihat & Edit Riwayat">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button onclick="hapusSiswa(${s.id})" class="text-xs bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2.5 py-1.5 rounded-lg transition" title="Hapus Siswa">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function ubahKelasCepat(siswaId, kelasBaru) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+            const kelasLama = siswa.kelas;
+            siswa.kelas = kelasBaru;
+            renderTabelMaster();
+            showToast(`${siswa.nama} dipindahkan: ${kelasLama} → ${kelasBaru}`);
+        }
+
+        // ==================== KENAIKAN / TINGGAL KELAS MASSAL ====================
+        function openModalKenaikanKelas() {
+            document.getElementById('modal-kenaikan-kelas').classList.remove('hidden');
+            loadDaftarKenaikanKelas();
+        }
+
+        function closeModalKenaikanKelas() {
+            document.getElementById('modal-kenaikan-kelas').classList.add('hidden');
+        }
+
+        function loadDaftarKenaikanKelas() {
+            const kelasAsal = document.getElementById('promo-kelas-asal').value;
+            const selectTujuan = document.getElementById('promo-kelas-tujuan');
+
+            const petaNaik = {
+                "VII A": "VIII A", "VII B": "VIII B", "VII C": "VIII C",
+                "VIII A": "IX A", "VIII B": "IX B", "VIII C": "IX C",
+                "IX A": "ALUMNI", "IX B": "ALUMNI", "IX C": "ALUMNI"
+            };
+            if (petaNaik[kelasAsal]) {
+                selectTujuan.value = petaNaik[kelasAsal];
+            }
+
+            const siswaRombel = dataSiswa.filter(s => s.kelas === kelasAsal);
+            const container = document.getElementById('promo-list-siswa');
+            container.innerHTML = '';
+
+            if (siswaRombel.length === 0) {
+                container.innerHTML = `<div class="p-6 text-center text-xs text-slate-400">Tidak ada siswa di kelas ${kelasAsal}.</div>`;
+                updateCounterKenaikan();
+                return;
+            }
+
+            siswaRombel.forEach((s, i) => {
+                const poin = hitungTotalPoin(s.riwayat);
+                const div = document.createElement('label');
+                div.className = "flex items-center justify-between px-4 py-2.5 hover:bg-indigo-50/50 cursor-pointer text-xs transition";
+                div.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" value="${s.id}" checked onchange="updateCounterKenaikan()" class="promo-checkbox w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500">
+                        <span class="text-slate-400 font-mono w-5">${i + 1}.</span>
+                        <span class="font-semibold text-slate-800">${s.nama}</span>
+                    </div>
+                    <span class="text-[11px] font-bold ${poin >= 100 ? 'text-rose-600' : 'text-slate-500'}">${poin} Poin</span>
+                `;
+                container.appendChild(div);
+            });
+
+            updateCounterKenaikan();
+        }
+
+        function toggleSemuaCeklisKenaikan(status) {
+            document.querySelectorAll('.promo-checkbox').forEach(cb => cb.checked = status);
+            updateCounterKenaikan();
+        }
+
+        function updateCounterKenaikan() {
+            const semua = document.querySelectorAll('.promo-checkbox');
+            const tercentang = document.querySelectorAll('.promo-checkbox:checked');
+            const tinggal = semua.length - tercentang.length;
+            document.getElementById('promo-counter-terpilih').textContent = `${tercentang.length} Naik | ${tinggal} Tinggal Kelas`;
+        }
+
+        function prosesKenaikanKelas() {
+            const kelasAsal = document.getElementById('promo-kelas-asal').value;
+            const kelasTujuan = document.getElementById('promo-kelas-tujuan').value;
+
+            const tercentangIds = Array.from(document.querySelectorAll('.promo-checkbox:checked')).map(cb => parseInt(cb.value, 10));
+            const totalRombel = document.querySelectorAll('.promo-checkbox').length;
+            const tinggalCount = totalRombel - tercentangIds.length;
+
+            if (totalRombel === 0) {
+                showToast("Tidak ada siswa di kelas yang dipilih!");
+                return;
+            }
+
+            tercentangIds.forEach(id => {
+                const siswa = dataSiswa.find(s => s.id === id);
+                if (siswa) {
+                    // Pastikan riwayat lama tercatat dengan kelas asal sebelum naik kelas
+                    siswa.riwayat.forEach(r => {
+                        if (!r.kelasSaatKejadian) r.kelasSaatKejadian = kelasAsal;
+                    });
+                    siswa.kelas = kelasTujuan;
+                }
+            });
+
+            closeModalKenaikanKelas();
+            refreshDashboardGuru();
+            showToast(`${tercentangIds.length} siswa naik ke ${kelasTujuan} (${tinggalCount} tinggal di ${kelasAsal}). Total poin tetap terakumulasi.`);
+        }
+
+        // ==================== DETAIL & HAPUS RIWAYAT / SISWA ====================
+        function bukaDetailGuru(siswaId) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+
+            const rincian = hitungRincianPoin(siswa);
+            document.getElementById('detail-guru-title').textContent = `Riwayat: ${siswa.nama} (${siswa.kelas})`;
+            document.getElementById('detail-guru-info').innerHTML = `
+                <div class="flex flex-wrap justify-between items-center gap-2">
+                    <span><strong>Kelas:</strong> ${siswa.kelas} | <strong>PIN:</strong> ${siswa.pin}</span>
+                    <div class="text-right">
+                        <span class="font-bold text-blue-800">Total Keseluruhan: ${rincian.total} Poin</span>
+                        <span class="block text-[11px] text-slate-600">Kelas Saat Ini [${rincian.labelKelasSekarang}]: <strong>${rincian.saatIni}</strong> | Kelas Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong>${rincian.sebelumnya}</strong></span>
+                        <span class="block text-[10px] text-slate-400">Jenjang: Kelas VII (${rincian.poinPerTingkat.VII}) • Kelas VIII (${rincian.poinPerTingkat.VIII}) • Kelas IX (${rincian.poinPerTingkat.IX})</span>
+                    </div>
+                </div>
+            `;
+
+            const tbody = document.getElementById('detail-guru-tbody');
+            tbody.innerHTML = '';
+
+            if (siswa.riwayat.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-slate-400">Belum ada catatan pelanggaran.</td></tr>`;
+            } else {
+                siswa.riwayat.forEach(r => {
+                    const kelasKejadian = r.kelasSaatKejadian || siswa.kelas;
+                    const badgeKelas = kelasKejadian !== siswa.kelas
+                        ? `<span class="bg-slate-200 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold">${kelasKejadian}</span>`
+                        : `<span class="bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded text-[10px] font-bold">${kelasKejadian}</span>`;
+                    const tr = document.createElement('tr');
+                    tr.id = `row-riwayat-${r.id}`;
+                    tr.className = "hover:bg-slate-50 transition";
+                    tr.innerHTML = `
+                        <td class="py-2.5 px-3 whitespace-nowrap align-top">${r.tanggal}</td>
+                        <td class="py-2.5 px-3 whitespace-nowrap align-top">${badgeKelas}</td>
+                        <td class="py-2.5 px-3 align-top">
+                            <p class="font-semibold text-slate-800">${r.jenis}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">${r.keterangan || '-'}</p>
+                        </td>
+                        <td class="py-2.5 px-3 text-center font-bold text-rose-600 align-top">+${r.poin}</td>
+                        <td class="py-2.5 px-3 text-right whitespace-nowrap align-top space-x-1">
+                            <button onclick="aktifkanEditCepatRiwayat(${siswa.id}, ${r.id})" class="bg-amber-100 hover:bg-amber-200 text-amber-900 font-semibold px-2 py-1 rounded-lg transition" title="Edit Cepat Pelanggaran">
+                                <i class="fas fa-pen"></i> Edit
+                            </button>
+                            <button onclick="hapusSatuPelanggaran(${siswa.id}, ${r.id})" class="bg-rose-50 hover:bg-rose-100 text-rose-600 font-semibold px-2 py-1 rounded-lg transition" title="Hapus Catatan">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            document.getElementById('modal-detail-guru').classList.remove('hidden');
+        }
+
+        function aktifkanEditCepatRiwayat(siswaId, riwayatId) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+            const item = siswa.riwayat.find(r => r.id === riwayatId);
+            if (!item) return;
+
+            const tr = document.getElementById(`row-riwayat-${riwayatId}`);
+            if (!tr) return;
+
+            const kelasSaatIni = item.kelasSaatKejadian || siswa.kelas;
+            const opsiKelas = daftarOpsiKelas.map(k =>
+                `<option value="${k}" ${kelasSaatIni === k ? 'selected' : ''}>${k}</option>`
+            ).join('');
+
+            tr.className = "bg-amber-50/70";
+            tr.innerHTML = `
+                <td colspan="5" class="p-3">
+                    <div class="space-y-2.5 border border-amber-300 bg-white p-3 rounded-xl shadow-sm animate-fade-in">
+                        <div class="flex items-center justify-between text-[11px] font-bold text-amber-800 border-b border-amber-100 pb-1.5">
+                            <span><i class="fas fa-bolt text-amber-500 mr-1"></i> Edit Cepat Catatan Pelanggaran</span>
+                            <span>ID #${String(riwayatId).slice(-4)}</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Tanggal</label>
+                                <input type="date" id="edit-tgl-${riwayatId}" value="${item.tanggal}" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Kelas Kejadian</label>
+                                <select id="edit-kelas-${riwayatId}" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-semibold text-blue-800">
+                                    ${opsiKelas}
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 mb-0.5">Poin</label>
+                                <input type="number" id="edit-poin-${riwayatId}" value="${item.poin}" min="1" max="300" class="w-full px-2 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs font-bold text-rose-600">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="block text-[10px] font-bold text-slate-500">Pilih Cepat / Cari Aturan Pengganti (1-Klik)</label>
+                            <!-- Chip Populer 1-Klik -->
+                            <div class="flex flex-wrap gap-1">
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[II.1.01] Terlambat (per hari)|1')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">⏰ Terlambat (+1)</button>
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[II.2.10] Tidak lengkap atribut seragam & pramuka|20')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">👔 Atribut (+20)</button>
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[II.2.01] Berambut gondrong / panjang (>3 cm)|10')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">💇 Rambut (+10)</button>
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[I.4.03] Membawa HP bukan untuk pembelajaran|25')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">📱 Bawa HP (+25)</button>
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[II.1.10] Membolos|20')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">🏃 Membolos (+20)</button>
+                                <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '[I.1.12] Ketidakhadiran tanpa kabar / Alpha (per hari)|1')" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-700 text-[10px] font-semibold transition">📅 Alpha (+1)</button>
+                            </div>
+                            <!-- Pencarian Kilat Live Search -->
+                            <div class="relative">
+                                <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center text-slate-400">
+                                    <i class="fas fa-search text-[10px]"></i>
+                                </span>
+                                <input type="text" id="edit-cari-aturan-${riwayatId}" oninput="filterAturanEditCepat(${riwayatId}, this.value)" placeholder="Ketik 2 huruf untuk cari aturan lain (misal: rokok, tugas, kuku, jeans)..." class="w-full pl-7 pr-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white">
+                                <div id="edit-hasil-aturan-${riwayatId}" class="hidden mt-1 max-h-32 overflow-y-auto border border-slate-200 rounded-lg divide-y divide-slate-100 bg-white shadow-md"></div>
+                            </div>
+                            <!-- Hasil Jenis Pelanggaran Terpilih (Bisa tetap diedit manual) -->
+                            <input type="text" id="edit-jenis-${riwayatId}" value="${item.jenis.replace(/"/g, '&quot;')}" class="w-full px-2.5 py-1.5 bg-amber-50/50 border border-amber-300 rounded-lg text-xs font-semibold text-slate-800" placeholder="Nama pelanggaran">
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 pt-1">
+                            <input type="text" id="edit-ket-${riwayatId}" value="${(item.keterangan === '-' ? '' : item.keterangan).replace(/"/g, '&quot;')}" placeholder="Keterangan / catatan guru (opsional)..." class="flex-1 px-2.5 py-1.5 bg-slate-50 border border-slate-300 rounded-lg text-xs">
+                            <div class="flex items-center justify-end gap-1.5">
+                                <button type="button" onclick="bukaDetailGuru(${siswaId})" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-100">
+                                    Batal
+                                </button>
+                                <button type="button" onclick="simpanEditCepatRiwayat(${siswaId}, ${riwayatId})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-lg text-xs font-bold shadow-sm flex items-center gap-1">
+                                    <i class="fas fa-check"></i> Simpan Perubahan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            `;
+        }
+
+        function filterAturanEditCepat(riwayatId, keyword) {
+            const box = document.getElementById(`edit-hasil-aturan-${riwayatId}`);
+            const q = (keyword || '').trim().toLowerCase();
+            if (q.length < 2) {
+                box.classList.add('hidden');
+                return;
+            }
+            const cocok = daftarTataTertib.filter(t =>
+                t.label.toLowerCase().includes(q) || t.val.toLowerCase().includes(q)
+            ).slice(0, 10);
+
+            if (cocok.length === 0) {
+                box.innerHTML = `<div class="p-2 text-[11px] text-slate-400 text-center">Aturan tidak ditemukan.</div>`;
+            } else {
+                box.innerHTML = cocok.map(t => `
+                    <button type="button" onclick="sinkronPoinEditCepat(${riwayatId}, '${t.val.replace(/'/g, "\\'")}')" class="w-full text-left px-2.5 py-1.5 hover:bg-amber-50 flex items-center justify-between gap-2 text-[11px]">
+                        <span class="text-slate-700 font-medium">${t.label}</span>
+                        <span class="font-bold text-rose-600">+${t.poin}</span>
+                    </button>
+                `).join('');
+            }
+            box.classList.remove('hidden');
+        }
+
+        function sinkronPoinEditCepat(riwayatId, val) {
+            if (!val) return;
+            const [jenisBaru, poinBaru] = val.split('|');
+            document.getElementById(`edit-jenis-${riwayatId}`).value = jenisBaru;
+            document.getElementById(`edit-poin-${riwayatId}`).value = poinBaru;
+            const boxHasil = document.getElementById(`edit-hasil-aturan-${riwayatId}`);
+            if (boxHasil) boxHasil.classList.add('hidden');
+            const inputCari = document.getElementById(`edit-cari-aturan-${riwayatId}`);
+            if (inputCari) inputCari.value = '';
+        }
+
+        function simpanEditCepatRiwayat(siswaId, riwayatId) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+            const item = siswa.riwayat.find(r => r.id === riwayatId);
+            if (!item) return;
+
+            const tglBaru = document.getElementById(`edit-tgl-${riwayatId}`).value || item.tanggal;
+            const kelasBaru = document.getElementById(`edit-kelas-${riwayatId}`).value;
+            const poinBaru = parseInt(document.getElementById(`edit-poin-${riwayatId}`).value, 10);
+            const jenisBaru = document.getElementById(`edit-jenis-${riwayatId}`).value.trim();
+            const ketBaru = document.getElementById(`edit-ket-${riwayatId}`).value.trim();
+
+            if (!jenisBaru || isNaN(poinBaru) || poinBaru < 1) {
+                showToast("Jenis pelanggaran dan poin wajib valid!");
+                return;
+            }
+
+            item.tanggal = tglBaru;
+            item.kelasSaatKejadian = kelasBaru;
+            item.jenis = jenisBaru;
+            item.poin = poinBaru;
+            item.keterangan = ketBaru || '-';
+
+            bukaDetailGuru(siswaId);
+            refreshDashboardGuru();
+            showToast(`Perubahan pelanggaran ${siswa.nama} berhasil disimpan!`);
+        }
+
+        function closeModalDetailGuru() {
+            document.getElementById('modal-detail-guru').classList.add('hidden');
+        }
+
+        function hapusSatuPelanggaran(siswaId, riwayatId) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+            siswa.riwayat = siswa.riwayat.filter(r => r.id !== riwayatId);
+            bukaDetailGuru(siswaId);
+            refreshDashboardGuru();
+            showToast("Catatan pelanggaran dihapus.");
+        }
+
+        function hapusSiswa(siswaId) {
+            const siswa = dataSiswa.find(s => s.id === siswaId);
+            if (!siswa) return;
+            dataSiswa = dataSiswa.filter(s => s.id !== siswaId);
+            refreshDashboardGuru();
+            showToast(`Data siswa "${siswa.nama}" dihapus.`);
+        }
+
+        // ==================== TAMBAH SISWA BARU (SATUAN & MASSAL EXCEL) ====================
+        function openModalTambahSiswa() {
+            document.getElementById('modal-tambah-siswa').classList.remove('hidden');
+            switchTabTambahSiswa('satuan');
+        }
+
+        function closeModalTambahSiswa() {
+            document.getElementById('modal-tambah-siswa').classList.add('hidden');
+        }
+
+        function switchTabTambahSiswa(tab) {
+            const btnSatuan = document.getElementById('tab-btn-satuan');
+            const btnMassal = document.getElementById('tab-btn-massal');
+            const formSatuan = document.getElementById('form-tambah-satuan');
+            const formMassal = document.getElementById('form-tambah-massal');
+
+            if (tab === 'satuan') {
+                btnSatuan.className = "flex-1 py-3 text-emerald-700 border-b-2 border-emerald-600 bg-white";
+                btnMassal.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                formSatuan.classList.remove('hidden');
+                formMassal.classList.add('hidden');
+            } else {
+                btnMassal.className = "flex-1 py-3 text-emerald-700 border-b-2 border-emerald-600 bg-white";
+                btnSatuan.className = "flex-1 py-3 text-slate-500 hover:text-slate-700";
+                formMassal.classList.remove('hidden');
+                formSatuan.classList.add('hidden');
+            }
+        }
+
+        function handleTambahSiswa(event) {
+            event.preventDefault();
+            const nama = document.getElementById('new-nama').value.trim();
+            const kelas = document.getElementById('new-kelas').value;
+            const pin = document.getElementById('new-pin').value.trim();
+
+            dataSiswa.push({
+                id: Date.now(),
+                nama,
+                kelas,
+                pin,
+                riwayat: []
+            });
+
+            document.getElementById('form-tambah-satuan').reset();
+            closeModalTambahSiswa();
+            refreshDashboardGuru();
+            showToast(`Siswa baru "${nama}" (${kelas}) berhasil ditambahkan!`);
+        }
+
+        function handleTambahSiswaMassal(event) {
+            event.preventDefault();
+            const kelasTujuan = document.getElementById('massal-kelas-tujuan').value;
+            const rawText = document.getElementById('massal-daftar-nama').value;
+            const barisNama = rawText.split(/\r?\n/).map(n => n.trim()).filter(n => n.length > 0);
+
+            if (barisNama.length === 0) {
+                showToast("Daftar nama masih kosong!");
+                return;
+            }
+
+            const baseId = Date.now();
+            barisNama.forEach((nama, idx) => {
+                dataSiswa.push({
+                    id: baseId + idx,
+                    nama,
+                    kelas: kelasTujuan,
+                    pin: `2907${String((idx % 99) + 1).padStart(2, '0')}`,
+                    riwayat: []
+                });
+            });
+
+            document.getElementById('form-tambah-massal').reset();
+            closeModalTambahSiswa();
+            refreshDashboardGuru();
+            showToast(`${barisNama.length} siswa baru berhasil diimpor ke kelas ${kelasTujuan}!`);
+        }
+
+        function cetakLaporan() {
+            window.print();
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast-notif');
+            document.getElementById('toast-message').textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
