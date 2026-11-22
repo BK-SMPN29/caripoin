@@ -902,6 +902,65 @@
             </div>
         </div>
 
+        <!-- ==================== PANEL GRAFIK ANALISA POIN 3 BULAN TERAKHIR (LINE CHART) ==================== -->
+        <div id="panel-statistik-grafik" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-base sm:text-lg text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-indigo-600"></i>
+                        <span>Analisa Poin Pelanggaran 3 Bulan Terakhir</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Grafik garis (line chart) perkembangan akumulasi poin pelanggaran 3 bulan terakhir per kelas atau seluruh kelas.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="stat-filter-kelas" onchange="renderGrafikStatistik()" class="px-3 py-2 bg-indigo-50 border border-indigo-300 rounded-xl text-xs font-bold text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="ALL">Semua Kelas (9 Rombel)</option>
+                        <option value="VII A">Kelas VII A</option>
+                        <option value="VII B">Kelas VII B</option>
+                        <option value="VII C">Kelas VII C</option>
+                        <option value="VIII A">Kelas VIII A</option>
+                        <option value="VIII B">Kelas VIII B</option>
+                        <option value="VIII C">Kelas VIII C</option>
+                        <option value="IX A">Kelas IX A</option>
+                        <option value="IX B">Kelas IX B</option>
+                        <option value="IX C">Kelas IX C</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <!-- Kolom Kiri (2/3): Line Chart Poin 3 Bulan Terakhir -->
+                <div class="lg:col-span-2 bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 space-y-3">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                            <i class="fas fa-wave-square text-blue-600"></i>
+                            <span id="judul-line-chart">Tren Total Poin 3 Bulan Terakhir — Semua Kelas</span>
+                        </h4>
+                        <div class="flex items-center gap-1.5">
+                            <span id="stat-grafik-total-poin" class="text-[11px] font-extrabold bg-rose-100 text-rose-800 px-2.5 py-0.5 rounded-full">0 Poin</span>
+                            <span id="stat-grafik-total-kasus" class="text-[11px] font-bold bg-indigo-100 text-indigo-800 px-2.5 py-0.5 rounded-full">0 Kasus</span>
+                        </div>
+                    </div>
+                    <div id="chart-line-3bulan" class="pt-1"></div>
+                </div>
+
+                <!-- Kolom Kanan (1/3): Sebaran Kasus & Poin per Jenjang (VII, VIII, IX) -->
+                <div class="bg-slate-50/70 border border-slate-200/80 rounded-2xl p-4 flex flex-col justify-between space-y-4">
+                    <div>
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 flex items-center gap-1.5 mb-3">
+                            <i class="fas fa-layer-group text-blue-600"></i>
+                            <span>Perbandingan Jenjang (3 Bulan Terakhir)</span>
+                        </h4>
+                        <div id="chart-sebaran-jenjang" class="space-y-3.5"></div>
+                    </div>
+                    <div id="stat-insight-bk" class="bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-[11px] text-indigo-950 leading-relaxed">
+                        <i class="fas fa-lightbulb text-amber-500 mr-1"></i>
+                        <span>Belum ada data pelanggaran dalam 3 bulan terakhir untuk dianalisis.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- ==================== PANEL PERINGKAT POIN TERTINGGI - TERENDAH PER KELAS ==================== -->
         <div id="panel-peringkat-kelas" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
@@ -1251,7 +1310,7 @@
                 </div>
             </div>
 
-            <!-- Baris Simpan Pengaturan -->
+            <!-- Bar Simpan Pengaturan -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
                 <p class="text-[11px] text-slate-500">
                     <i class="fas fa-shield-alt text-emerald-600 mr-1"></i> Tekan tombol di samping untuk memastikan seluruh data tersimpan ganda di penyimpanan permanen.
@@ -1455,6 +1514,12 @@
 
                     <select id="print-sub-tahun" onchange="renderPratinjauCetak()" class="hidden px-2 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none"></select>
 
+                    <!-- Input Filter Tanggal Cetak -->
+                    <div class="inline-flex items-center gap-1.5 bg-slate-800 border border-slate-600 px-2.5 py-1 rounded-xl text-xs" title="Ubah Tanggal Cetak & Acuan Analisa 3 Bulan">
+                        <span class="text-slate-300 text-[11px] font-semibold">Tgl Cetak:</span>
+                        <input type="date" id="print-input-tanggal-cetak" onchange="renderPratinjauCetak()" class="bg-slate-900 text-amber-300 font-bold text-xs px-1.5 py-0.5 rounded border border-slate-700 focus:outline-none">
+                    </div>
+
                     <label class="inline-flex items-center gap-1.5 bg-slate-800 border border-slate-600 px-2.5 py-1.5 rounded-xl text-xs cursor-pointer">
                         <input type="checkbox" id="print-only-poin" onchange="renderPratinjauCetak()" class="rounded text-amber-400 focus:ring-0">
                         <span>Hanya yang Berpoin (&gt;0)</span>
@@ -1510,6 +1575,26 @@
                             <span class="text-slate-500 block text-[10px] uppercase">Tanggal Cetak</span>
                             <strong id="print-meta-tanggal" class="text-slate-800">-</strong>
                         </div>
+                    </div>
+
+                    <!-- ==================== BLOK ANALISA POIN PELANGGARAN 3 BULAN TERAKHIR (DI ATAS TABEL) ==================== -->
+                    <div id="print-analisa-3bulan-box" class="mb-4 p-3.5 rounded-lg border border-slate-300 bg-slate-50/70 space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+                            <h3 class="text-xs font-extrabold uppercase tracking-wide text-slate-900 flex items-center gap-1.5">
+                                <i class="fas fa-chart-line text-indigo-700"></i>
+                                <span id="print-analisa-judul">Analisa Poin Pelanggaran 3 Bulan Terakhir</span>
+                            </h3>
+                            <span id="print-analisa-badge-total" class="text-[10px] font-extrabold bg-slate-800 text-white px-2 py-0.5 rounded">0 Poin • 0 Kejadian</span>
+                        </div>
+
+                        <!-- 3 Kartu Ringkasan Bulanan -->
+                        <div id="print-analisa-kartu-bulan" class="grid grid-cols-3 gap-2 text-center"></div>
+
+                        <!-- Narasi Kesimpulan Tren -->
+                        <div id="print-analisa-narasi" class="text-[11px] text-slate-700 leading-relaxed bg-white p-2.5 rounded border border-slate-200"></div>
+
+                        <!-- Penjelasan Detail per Nama Siswa & Kelas dalam 3 Bulan Terakhir -->
+                        <div id="print-analisa-detail-siswa" class="space-y-1.5 pt-0.5"></div>
                     </div>
 
                     <table class="w-full table-fixed border-collapse border border-slate-300 text-[11px] sm:text-xs">
@@ -1668,10 +1753,17 @@
             </button>
             <button type="button" onclick="openLoginModal()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-amber-700 bg-amber-50/80 hover:bg-amber-100 font-bold transition-all duration-200">
                 <i class="fas fa-user-shield text-base mb-0.5 text-amber-500"></i>
+                <span class="text-[11px] tracking-tight">Guru</span>
+            </button>
+        </div>
         <div id="android-nav-guru" class="hidden grid grid-cols-5 gap-1">
             <button type="button" onclick="switchAndroidTab('guru-input')" id="nav-tab-guru-input" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
                 <i class="fas fa-bolt text-base mb-0.5"></i>
                 <span class="text-[10px] tracking-tight">Input</span>
+            </button>
+            <button type="button" onclick="switchAndroidTab('guru-statistik')" id="nav-tab-guru-statistik" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
+                <i class="fas fa-chart-line text-base mb-0.5 text-indigo-600"></i>
+                <span class="text-[10px] tracking-tight">Analisa</span>
             </button>
             <button type="button" onclick="switchAndroidTab('guru-ranking')" id="nav-tab-guru-ranking" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
                 <i class="fas fa-sort-amount-down text-base mb-0.5 text-rose-600"></i>
@@ -1680,10 +1772,6 @@
             <button type="button" onclick="switchAndroidTab('guru-data')" id="nav-tab-guru-data" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
                 <i class="fas fa-users text-base mb-0.5"></i>
                 <span class="text-[10px] tracking-tight">Siswa</span>
-            </button>
-            <button type="button" onclick="openModalKenaikanKelas()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-indigo-700 hover:bg-indigo-50 font-semibold transition-all duration-200">
-                <i class="fas fa-graduation-cap text-base mb-0.5"></i>
-                <span class="text-[10px] tracking-tight">Naik Kelas</span>
             </button>
             <button type="button" onclick="openModalTambahSiswa()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-emerald-700 hover:bg-emerald-50 font-semibold transition-all duration-200">
                 <i class="fas fa-user-plus text-base mb-0.5"></i>
@@ -1922,13 +2010,9 @@
             };
             const jsonStr = JSON.stringify(payload);
 
-            // 1. Simpan ke LocalStorage
             try { localStorage.setItem(DB_KEY, jsonStr); } catch (e) {}
-
-            // 2. Simpan ke window.name (cadangan sesi anti-hilang)
             try { window.name = jsonStr; } catch (e) {}
 
-            // 3. Simpan ke IndexedDB (kapasitas besar & permanen di browser)
             try {
                 const db = await bukaIndexedDB();
                 if (db) {
@@ -1947,7 +2031,6 @@
         async function muatDatabasePermanen() {
             let sumberTerbaru = null;
 
-            // Cek LocalStorage
             try {
                 const rawLS = localStorage.getItem(DB_KEY);
                 if (rawLS) {
@@ -1956,7 +2039,6 @@
                 }
             } catch (e) {}
 
-            // Cek IndexedDB (ambil yang paling baru jika ada)
             try {
                 const db = await bukaIndexedDB();
                 if (db) {
@@ -1974,7 +2056,6 @@
                 }
             } catch (e) {}
 
-            // Cek window.name jika keduanya kosong
             if (!sumberTerbaru) {
                 try {
                     if (window.name && window.name.startsWith('{')) {
@@ -1989,7 +2070,6 @@
             if (sumberTerbaru && Array.isArray(sumberTerbaru.siswa)) {
                 dataSiswa = sumberTerbaru.siswa;
             } else {
-                // Pertama kali dibuka: langsung simpan 255 data awal ke database permanen
                 await simpanDatabasePermanen();
             }
         }
@@ -2394,6 +2474,7 @@
                 document.getElementById('siswa-card-info').classList.add('hidden');
                 document.getElementById('siswa-card-demo').classList.remove('hidden');
                 document.getElementById('box-form-pelanggaran').classList.remove('hidden');
+                document.getElementById('panel-statistik-grafik').classList.remove('hidden');
                 document.getElementById('panel-peringkat-kelas').classList.remove('hidden');
                 document.getElementById('print-area').classList.remove('hidden');
                 showToast("Beralih ke Tampilan Website Menu");
@@ -2444,19 +2525,22 @@
                 }
             } else if (tabName.startsWith('guru-')) {
                 const boxInput = document.getElementById('box-form-pelanggaran');
+                const boxStatistik = document.getElementById('panel-statistik-grafik');
                 const boxRanking = document.getElementById('panel-peringkat-kelas');
                 const boxData = document.getElementById('print-area');
                 const tabInput = document.getElementById('nav-tab-guru-input');
+                const tabStatistik = document.getElementById('nav-tab-guru-statistik');
                 const tabRanking = document.getElementById('nav-tab-guru-ranking');
                 const tabData = document.getElementById('nav-tab-guru-data');
 
-                [tabInput, tabRanking, tabData].forEach(t => {
+                [tabInput, tabStatistik, tabRanking, tabData].forEach(t => {
                     if (!t) return;
                     t.classList.remove('android-tab-active', 'text-blue-700', 'font-bold');
                     t.classList.add('text-slate-500', 'font-semibold');
                 });
 
                 boxInput.classList.add('hidden');
+                boxStatistik.classList.add('hidden');
                 boxRanking.classList.add('hidden');
                 boxData.classList.add('hidden');
 
@@ -2464,6 +2548,10 @@
                     boxInput.classList.remove('hidden');
                     tabInput.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
                     tabInput.classList.remove('text-slate-500', 'font-semibold');
+                } else if (tabName === 'guru-statistik') {
+                    boxStatistik.classList.remove('hidden');
+                    tabStatistik.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
+                    tabStatistik.classList.remove('text-slate-500', 'font-semibold');
                 } else if (tabName === 'guru-ranking') {
                     boxRanking.classList.remove('hidden');
                     tabRanking.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
@@ -2492,9 +2580,359 @@
             document.getElementById('stat-total-kasus').textContent = totalKasus;
             document.getElementById('stat-perlu-pembinaan').textContent = perluPembinaan;
 
+            renderGrafikStatistik();
             renderPeringkatPerKelas();
             renderTabelMaster();
             updateIndikatorMemori();
+        }
+
+        // ==================== GRAFIK LINE CHART ANALISA POIN 3 BULAN TERAKHIR ====================
+        function hitungDataAnalisa3Bulan(filterKelas = 'ALL', tanggalAcuan = null) {
+            const namaBulanShort = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            const namaBulanFull = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            const now = tanggalAcuan instanceof Date && !isNaN(tanggalAcuan) ? tanggalAcuan : new Date();
+            const daftar3Bulan = [];
+
+            for (let offset = 2; offset >= 0; offset--) {
+                const d = new Date(now.getFullYear(), now.getMonth() - offset, 1);
+                const ym = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+                daftar3Bulan.push({
+                    ym,
+                    labelShort: `${namaBulanShort[d.getMonth()]} ${d.getFullYear()}`,
+                    labelFull: `${namaBulanFull[d.getMonth()]} ${d.getFullYear()}`,
+                    poin: 0,
+                    kasus: 0
+                });
+            }
+
+            const setYmValid = new Set(daftar3Bulan.map(b => b.ym));
+            const jenjangStats = {
+                VII: { kasus: 0, poin: 0 },
+                VIII: { kasus: 0, poin: 0 },
+                IX: { kasus: 0, poin: 0 }
+            };
+
+            let totalPoin3Bulan = 0;
+            let totalKasus3Bulan = 0;
+            const rincianSiswaMap = new Map();
+
+            dataSiswa.forEach(siswa => {
+                if (siswa.kelas === 'ALUMNI') return;
+
+                (siswa.riwayat || []).forEach(item => {
+                    const tgl = item.tanggal || '';
+                    const ymItem = tgl.slice(0, 7);
+                    if (!setYmValid.has(ymItem)) return;
+
+                    const kelasKejadian = item.kelasSaatKejadian || siswa.kelas || '';
+                    const jenjang = kelasKejadian.trim().split(' ')[0];
+
+                    if (jenjangStats[jenjang]) {
+                        jenjangStats[jenjang].kasus += 1;
+                        jenjangStats[jenjang].poin += (item.poin || 0);
+                    }
+
+                    if (filterKelas !== 'ALL' && kelasKejadian !== filterKelas && siswa.kelas !== filterKelas) return;
+
+                    const bucket = daftar3Bulan.find(b => b.ym === ymItem);
+                    if (bucket) {
+                        bucket.poin += (item.poin || 0);
+                        bucket.kasus += 1;
+                        totalPoin3Bulan += (item.poin || 0);
+                        totalKasus3Bulan += 1;
+
+                        if (!rincianSiswaMap.has(siswa.id)) {
+                            rincianSiswaMap.set(siswa.id, {
+                                id: siswa.id,
+                                nama: siswa.nama,
+                                kelas: siswa.kelas,
+                                poin3Bulan: 0,
+                                kasus3Bulan: 0,
+                                poinPerBulan: {
+                                    [daftar3Bulan[0].ym]: 0,
+                                    [daftar3Bulan[1].ym]: 0,
+                                    [daftar3Bulan[2].ym]: 0
+                                },
+                                daftarJenis: []
+                            });
+                        }
+                        const rec = rincianSiswaMap.get(siswa.id);
+                        rec.poin3Bulan += (item.poin || 0);
+                        rec.kasus3Bulan += 1;
+                        if (rec.poinPerBulan.hasOwnProperty(ymItem)) {
+                            rec.poinPerBulan[ymItem] += (item.poin || 0);
+                        }
+                        const namaPelanggaranSingkat = (item.jenis || '').replace(/^\[[^\]]+\]\s*/, '');
+                        if (namaPelanggaranSingkat && !rec.daftarJenis.includes(namaPelanggaranSingkat)) {
+                            rec.daftarJenis.push(namaPelanggaranSingkat);
+                        }
+                    }
+                });
+            });
+
+            const daftarDetailSiswa = Array.from(rincianSiswaMap.values()).sort(
+                (a, b) => b.poin3Bulan - a.poin3Bulan || a.nama.localeCompare(b.nama)
+            );
+
+            return {
+                daftar3Bulan,
+                jenjangStats,
+                totalPoin3Bulan,
+                totalKasus3Bulan,
+                daftarDetailSiswa
+            };
+        }
+
+        function renderGrafikStatistik() {
+            const chartLineEl = document.getElementById('chart-line-3bulan');
+            const chartJenjangEl = document.getElementById('chart-sebaran-jenjang');
+            const judulEl = document.getElementById('judul-line-chart');
+            const totalPoinBadgeEl = document.getElementById('stat-grafik-total-poin');
+            const totalKasusBadgeEl = document.getElementById('stat-grafik-total-kasus');
+            const insightEl = document.getElementById('stat-insight-bk');
+            if (!chartLineEl || !chartJenjangEl) return;
+
+            const filterKelas = document.getElementById('stat-filter-kelas')?.value || 'ALL';
+            if (judulEl) {
+                judulEl.textContent = filterKelas === 'ALL'
+                    ? 'Tren Total Poin 3 Bulan Terakhir — Semua Kelas'
+                    : `Tren Total Poin 3 Bulan Terakhir — Kelas ${filterKelas}`;
+            }
+
+            const {
+                daftar3Bulan,
+                jenjangStats,
+                totalPoin3Bulan,
+                totalKasus3Bulan
+            } = hitungDataAnalisa3Bulan(filterKelas);
+
+            if (totalPoinBadgeEl) totalPoinBadgeEl.textContent = `${totalPoin3Bulan} Poin`;
+            if (totalKasusBadgeEl) totalKasusBadgeEl.textContent = `${totalKasus3Bulan} Kasus`;
+
+            const svgW = 540;
+            const svgH = 225;
+            const padLeft = 44;
+            const padRight = 36;
+            const padTop = 34;
+            const padBottom = 42;
+            const plotW = svgW - padLeft - padRight;
+            const plotH = svgH - padTop - padBottom;
+
+            const maxPoin = Math.max(10, ...daftar3Bulan.map(b => b.poin));
+            const yMax = Math.ceil(maxPoin / 10) * 10;
+
+            const points = daftar3Bulan.map((b, idx) => {
+                const x = padLeft + (idx * (plotW / 2));
+                const y = padTop + plotH - ((b.poin / yMax) * plotH);
+                return { ...b, x, y };
+            });
+
+            const gridSteps = [0, 0.33, 0.66, 1];
+            const gridHTML = gridSteps.map(ratio => {
+                const val = Math.round(yMax * ratio);
+                const yPos = padTop + plotH - (ratio * plotH);
+                return `
+                    <line x1="${padLeft}" y1="${yPos}" x2="${svgW - padRight}" y2="${yPos}" stroke="#e2e8f0" stroke-dasharray="${ratio === 0 ? '0' : '4 4'}" stroke-width="1" />
+                    <text x="${padLeft - 8}" y="${yPos + 3.5}" text-anchor="end" fill="#64748b" font-size="10" font-weight="600">${val}</text>
+                `;
+            }).join('');
+
+            const polylineCoords = points.map(p => `${p.x},${p.y}`).join(' ');
+            const areaCoords = `${points[0].x},${padTop + plotH} ${polylineCoords} ${points[points.length - 1].x},${padTop + plotH}`;
+
+            const nodesHTML = points.map((p, idx) => {
+                const isLast = idx === points.length - 1;
+                const dotColor = isLast ? '#e11d48' : '#2563eb';
+                return `
+                    <g>
+                        <line x1="${p.x}" y1="${p.y}" x2="${p.x}" y2="${padTop + plotH}" stroke="#cbd5e1" stroke-dasharray="2 3" stroke-width="1" />
+                        <circle cx="${p.x}" cy="${p.y}" r="7" fill="${dotColor}" fill-opacity="0.16" />
+                        <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#ffffff" stroke="${dotColor}" stroke-width="2.5" />
+                        <rect x="${p.x - 34}" y="${p.y - 26}" width="68" height="18" rx="6" fill="${isLast ? '#ffe4e6' : '#eff6ff'}" stroke="${isLast ? '#fda4af' : '#bfdbfe'}" stroke-width="1" />
+                        <text x="${p.x}" y="${p.y - 14}" text-anchor="middle" fill="${isLast ? '#be123c' : '#1d4ed8'}" font-size="10" font-weight="800">${p.poin} Poin</text>
+                        <text x="${p.x}" y="${padTop + plotH + 16}" text-anchor="middle" fill="#1e293b" font-size="11" font-weight="700">${p.labelShort}</text>
+                        <text x="${p.x}" y="${padTop + plotH + 29}" text-anchor="middle" fill="#64748b" font-size="9.5" font-weight="600">(${p.kasus} kasus)</text>
+                    </g>
+                `;
+            }).join('');
+
+            chartLineEl.innerHTML = `
+                <div class="w-full overflow-hidden">
+                    <svg viewBox="0 0 ${svgW} ${svgH}" class="w-full h-auto select-none">
+                        <defs>
+                            <linearGradient id="gradLineArea" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.28" />
+                                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.01" />
+                            </linearGradient>
+                        </defs>
+                        ${gridHTML}
+                        <polygon points="${areaCoords}" fill="url(#gradLineArea)" />
+                        <polyline fill="none" stroke="#2563eb" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="${polylineCoords}" />
+                        ${nodesHTML}
+                    </svg>
+                </div>
+                <div class="grid grid-cols-3 gap-2 pt-1">
+                    ${points.map((p, i) => `
+                        <div class="bg-white border ${i === 2 ? 'border-rose-200 bg-rose-50/40' : 'border-slate-200'} rounded-xl p-2.5 text-center">
+                            <span class="block text-[10px] font-bold text-slate-500 uppercase">${p.labelShort}</span>
+                            <span class="block text-sm font-extrabold ${i === 2 ? 'text-rose-700' : 'text-blue-800'} mt-0.5">${p.poin} Poin</span>
+                            <span class="block text-[10px] text-slate-500">${p.kasus} kejadian</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+
+            const totalSemuaJenjang = jenjangStats.VII.poin + jenjangStats.VIII.poin + jenjangStats.IX.poin;
+            const listJenjang = [
+                { kode: 'VII', label: 'Kelas VII', warna: 'bg-emerald-500', badge: 'bg-emerald-100 text-emerald-800' },
+                { kode: 'VIII', label: 'Kelas VIII', warna: 'bg-blue-600', badge: 'bg-blue-100 text-blue-800' },
+                { kode: 'IX', label: 'Kelas IX', warna: 'bg-indigo-600', badge: 'bg-indigo-100 text-indigo-800' }
+            ];
+
+            chartJenjangEl.innerHTML = listJenjang.map(j => {
+                const st = jenjangStats[j.kode];
+                const pct = totalSemuaJenjang > 0 ? Math.round((st.poin / totalSemuaJenjang) * 100) : 0;
+                return `
+                    <div class="space-y-1">
+                        <div class="flex items-center justify-between text-xs">
+                            <span class="font-bold text-slate-700">${j.label}</span>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded-md ${j.badge}">
+                                ${st.poin} poin (${pct}%) • ${st.kasus} kasus
+                            </span>
+                        </div>
+                        <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                            <div class="h-full ${j.warna} rounded-full transition-all duration-500" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            if (insightEl) {
+                const bLalu = points[1];
+                const bIni = points[2];
+                const labelTarget = filterKelas === 'ALL' ? 'seluruh kelas' : `kelas ${filterKelas}`;
+
+                if (totalPoin3Bulan === 0) {
+                    insightEl.innerHTML = `
+                        <i class="fas fa-lightbulb text-amber-500 mr-1"></i>
+                        <span>Belum ada catatan poin pelanggaran pada <strong>${labelTarget}</strong> dalam 3 bulan terakhir (${points[0].labelShort} – ${points[2].labelShort}).</span>
+                    `;
+                } else {
+                    const selisih = bIni.poin - bLalu.poin;
+                    let ketTren = '';
+                    if (selisih > 0) {
+                        ketTren = `<span class="text-rose-700 font-bold">naik +${selisih} poin</span> dibanding bulan lalu (${bLalu.labelShort}: ${bLalu.poin} poin). Perlu peningkatan pengawasan & pembinaan.`;
+                    } else if (selisih < 0) {
+                        ketTren = `<span class="text-emerald-700 font-bold">turun ${Math.abs(selisih)} poin</span> dibanding bulan lalu (${bLalu.labelShort}: ${bLalu.poin} poin). Tren kedisiplinan membaik!`;
+                    } else {
+                        ketTren = `<span class="text-blue-700 font-bold">stabil (${bIni.poin} poin)</span> sama dengan bulan lalu (${bLalu.labelShort}).`;
+                    }
+
+                    insightEl.innerHTML = `
+                        <i class="fas fa-lightbulb text-amber-500 mr-1"></i>
+                        <span><strong>Analisa Tren (${labelTarget}):</strong> Bulan ini (${bIni.labelShort}) tercatat <strong>${bIni.poin} poin</strong>, ${ketTren}</span>
+                    `;
+                }
+            }
+        }
+        function renderAnalisa3BulanCetak(kelasFilter, tanggalAcuan = null) {
+            const judulEl = document.getElementById('print-analisa-judul');
+            const badgeTotalEl = document.getElementById('print-analisa-badge-total');
+            const kartuBulanEl = document.getElementById('print-analisa-kartu-bulan');
+            const narasiEl = document.getElementById('print-analisa-narasi');
+            const detailSiswaEl = document.getElementById('print-analisa-detail-siswa');
+            if (!kartuBulanEl || !narasiEl || !detailSiswaEl) return;
+
+            const labelTarget = kelasFilter === 'ALL' ? 'Semua Kelas (VII – IX)' : `Kelas ${kelasFilter}`;
+
+            const {
+                daftar3Bulan,
+                totalPoin3Bulan,
+                totalKasus3Bulan,
+                daftarDetailSiswa
+            } = hitungDataAnalisa3Bulan(kelasFilter, tanggalAcuan);
+
+            if (judulEl) {
+                judulEl.textContent = `Analisa Poin Pelanggaran 3 Bulan Terakhir (${daftar3Bulan[0].labelShort} – ${daftar3Bulan[2].labelShort}) — ${labelTarget}`;
+            }
+
+            if (badgeTotalEl) {
+                badgeTotalEl.textContent = `${totalPoin3Bulan} Poin • ${totalKasus3Bulan} Kejadian`;
+            }
+
+            // 1. Kartu 3 Bulan Terakhir
+            kartuBulanEl.innerHTML = daftar3Bulan.map((b, idx) => {
+                const isBulanIni = idx === 2;
+                return `
+                    <div class="p-2 rounded border ${isBulanIni ? 'border-slate-800 bg-white' : 'border-slate-200 bg-white'}">
+                        <span class="block text-[9px] font-bold uppercase text-slate-500">${b.labelFull}</span>
+                        <span class="block text-sm font-black ${b.poin > 0 ? 'text-rose-700' : 'text-slate-800'} mt-0.5">${b.poin} Poin</span>
+                        <span class="block text-[9.5px] text-slate-600">${b.kasus} kejadian pelanggaran</span>
+                    </div>
+                `;
+            }).join('');
+
+            // 2. Narasi Ringkasan Tren
+            const b1 = daftar3Bulan[0];
+            const b2 = daftar3Bulan[1];
+            const b3 = daftar3Bulan[2];
+
+            if (totalPoin3Bulan === 0) {
+                narasiEl.innerHTML = `<strong>Kesimpulan Tren (3 Bulan Terakhir):</strong> Pada periode <strong>${b1.labelFull} – ${b3.labelFull}</strong> untuk <strong>${labelTarget}</strong>, tercatat <strong>0 poin pelanggaran</strong> (seluruh siswa dalam kondisi tertib dan aman).`;
+            } else {
+                const selisih = b3.poin - b2.poin;
+                let arahTren = `stabil (${b3.poin} poin) dibandingkan bulan sebelumnya (${b2.labelFull}: ${b2.poin} poin)`;
+                if (selisih > 0) {
+                    arahTren = `mengalami <strong>kenaikan +${selisih} poin</strong> dibandingkan bulan sebelumnya (${b2.labelFull}: ${b2.poin} poin)`;
+                } else if (selisih < 0) {
+                    arahTren = `mengalami <strong>penurunan ${Math.abs(selisih)} poin</strong> dibandingkan bulan sebelumnya (${b2.labelFull}: ${b2.poin} poin)`;
+                }
+                narasiEl.innerHTML = `<strong>Kesimpulan Tren (3 Bulan Terakhir):</strong> Akumulasi poin pelanggaran <strong>${labelTarget}</strong> dari <strong>${b1.labelShort}</strong> (${b1.poin} poin), <strong>${b2.labelShort}</strong> (${b2.poin} poin), hingga <strong>${b3.labelShort}</strong> (${b3.poin} poin) ${arahTren}. Total tercatat <strong>${daftarDetailSiswa.length} siswa</strong> yang memiliki catatan pelanggaran pada 3 bulan terakhir.`;
+            }
+
+            // 3. Penjelasan Detail per Nama Siswa & Kelas
+            if (daftarDetailSiswa.length === 0) {
+                detailSiswaEl.innerHTML = `
+                    <p class="text-[10.5px] text-slate-500 italic px-1">Tidak ada rincian siswa yang melanggar tata tertib dalam 3 bulan terakhir pada filter ini.</p>
+                `;
+            } else {
+                const rowsDetail = daftarDetailSiswa.map((st, i) => {
+                    const p1 = st.poinPerBulan[b1.ym] || 0;
+                    const p2 = st.poinPerBulan[b2.ym] || 0;
+                    const p3 = st.poinPerBulan[b3.ym] || 0;
+                    const ketJenis = st.daftarJenis.slice(0, 3).join(', ') + (st.daftarJenis.length > 3 ? ', dll.' : '');
+                    return `
+                        <tr class="align-top">
+                            <td class="border border-slate-300 py-1 px-1.5 text-center">${i + 1}</td>
+                            <td class="border border-slate-300 py-1 px-2 font-bold text-slate-900">${st.nama}</td>
+                            <td class="border border-slate-300 py-1 px-1.5 text-center font-bold">${st.kelas}</td>
+                            <td class="border border-slate-300 py-1 px-1.5 text-center font-extrabold text-rose-700">+${st.poin3Bulan} (${st.kasus3Bulan}x)</td>
+                            <td class="border border-slate-300 py-1 px-2 text-[9.5px] leading-snug text-slate-700">
+                                <strong>Rincian Bulanan:</strong> ${b1.labelShort} (${p1}), ${b2.labelShort} (${p2}), ${b3.labelShort} (${p3}).<br>
+                                <strong>Jenis Pelanggaran:</strong> ${ketJenis || '-'}
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                detailSiswaEl.innerHTML = `
+                    <p class="text-[10.5px] font-bold text-slate-800 uppercase tracking-wide pt-1">Penjelasan Detail Siswa Berpoin (3 Bulan Terakhir — Nama, Kelas & Rincian):</p>
+                    <table class="w-full table-fixed border-collapse border border-slate-300 text-[10px] bg-white">
+                        <thead>
+                            <tr class="bg-slate-200/80 text-slate-800 font-bold uppercase">
+                                <th class="border border-slate-300 py-1 px-1 w-[6%] text-center">No</th>
+                                <th class="border border-slate-300 py-1 px-2 w-[26%] text-left">Nama Siswa</th>
+                                <th class="border border-slate-300 py-1 px-1 w-[10%] text-center">Kelas</th>
+                                <th class="border border-slate-300 py-1 px-1 w-[14%] text-center">Poin 3 Bln</th>
+                                <th class="border border-slate-300 py-1 px-2 w-[44%] text-left">Penjelasan Detail Pelanggaran & Sebaran Bulan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsDetail}
+                        </tbody>
+                    </table>
+                `;
+            }
         }
 
         function renderPeringkatPerKelas() {
@@ -2967,7 +3405,7 @@
             if (!siswa) return;
             const kelasLama = siswa.kelas;
             siswa.kelas = kelasBaru;
-            renderTabelMaster();
+            refreshDashboardGuru();
             simpanDatabasePermanen();
             showToast(`${siswa.nama} dipindahkan: ${kelasLama} → ${kelasBaru}`);
         }
@@ -3390,6 +3828,11 @@
             document.getElementById('print-sub-bulan').value = bulanSkrg;
             document.getElementById('print-sub-triwulan').value = triwulanSkrg;
 
+            const inputTglCetak = document.getElementById('print-input-tanggal-cetak');
+            if (inputTglCetak && !inputTglCetak.value) {
+                inputTglCetak.value = now.toISOString().split('T')[0];
+            }
+
             modePratinjauCetak = 'lihat';
             setModePratinjauCetak('lihat', false);
             ubahModePeriodeCetak();
@@ -3503,7 +3946,33 @@
             const triwulanVal = parseInt(document.getElementById('print-sub-triwulan').value, 10);
             const tahunVal = document.getElementById('print-sub-tahun').value;
             const onlyPoin = document.getElementById('print-only-poin').checked;
+            const inputTglCetakVal = document.getElementById('print-input-tanggal-cetak')?.value;
             const tbody = document.getElementById('print-preview-tbody');
+
+            // Tentukan objek Date untuk Tanggal Cetak yang dipilih
+            let dateCetakObj = new Date();
+            if (inputTglCetakVal) {
+                const [yC, mC, dC] = inputTglCetakVal.split('-').map(Number);
+                if (yC && mC && dC) {
+                    dateCetakObj = new Date(yC, mC - 1, dC);
+                }
+            }
+
+            // Tentukan bulan acuan untuk Analisa 3 Bulan Terakhir mengikuti filter periode & tanggal cetak
+            let dateAcuanAnalisa = new Date(dateCetakObj.getFullYear(), dateCetakObj.getMonth(), 1);
+            if (modePeriode === 'BULAN') {
+                dateAcuanAnalisa = new Date(parseInt(tahunVal, 10), parseInt(bulanVal, 10) - 1, 1);
+            } else if (modePeriode === 'TRIWULAN') {
+                const bulanAkhirTriwulan = (triwulanVal * 3) - 1;
+                dateAcuanAnalisa = new Date(parseInt(tahunVal, 10), bulanAkhirTriwulan, 1);
+            } else if (modePeriode === 'TAHUN') {
+                const thnDipilih = parseInt(tahunVal, 10);
+                const blnAcuan = thnDipilih === dateCetakObj.getFullYear() ? dateCetakObj.getMonth() : 11;
+                dateAcuanAnalisa = new Date(thnDipilih, blnAcuan, 1);
+            }
+
+            // Render blok analisa 3 bulan terakhir (otomatis berubah mengikuti filter kelas, periode & tanggal cetak)
+            renderAnalisa3BulanCetak(kelasFilter, dateAcuanAnalisa);
 
             const namaBulanMap = {
                 "01": "Januari", "02": "Februari", "03": "Maret", "04": "April",
@@ -3526,7 +3995,7 @@
                 labelPeriode = `Tahun ${tahunVal}`;
             }
 
-            const tglSekarang = new Date().toLocaleDateString('id-ID', {
+            const tglSekarang = dateCetakObj.toLocaleDateString('id-ID', {
                 day: 'numeric',
                 month: 'long',
                 year: 'numeric'
