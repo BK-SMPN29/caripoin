@@ -631,9 +631,9 @@
                     <p class="text-[11px] sm:text-xs text-blue-200/90 font-medium flex items-center gap-1.5 flex-wrap">
                         <i class="fas fa-school text-amber-300 text-[10px]"></i>
                         <span>SMP Negeri 29 Banjarmasin</span>
-                        <button type="button" onclick="sinkronisasiCloudManual(true)" id="cloud-sync-badge" title="Data otomatis tersinkron ke Cloud Online & tertanam di index.html GitHub" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 transition cursor-pointer">
+                        <button type="button" onclick="sinkronisasiCloudManual(true)" id="cloud-sync-badge" title="Klik untuk sinkronisasi paksa antara Laptop & HP" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 transition cursor-pointer">
                             <i class="fas fa-cloud text-[9px] text-emerald-300"></i>
-                            <span>Cloud & GitHub Sync Aktif</span>
+                            <span>Memeriksa Server...</span>
                         </button>
                     </p>
                 </div>
@@ -2109,67 +2109,77 @@
             ["Vita", "IX C"]
         ];
 
-        function buatDataAwalSiswa() {
+        // ==================== INISIALISASI STATE GLOBAL & EMBEDDED DATABASE ====================
+        let guruUserAktif = "bk29";
+        let guruPassAktif = "smpn29bjm";
+        let lastUpdatedAt = 0;
+        let pejabatAktif = {
+            subjudul: "Laporan Rekapitulasi Poin Pelanggaran & Kedisiplinan Siswa",
+            kepsekNama: "__________________________",
+            kepsekNip: "NIP. ........................................",
+            bkNama: "__________________________",
+            bkNip: "NIP. ........................................"
+        };
+
+        function buatDataSiswaDefault() {
             return rawDaftarSiswa.map((item, idx) => {
-                const tingkatCode = item[1].startsWith("IX") ? "09" : item[1].startsWith("VIII") ? "08" : "07";
+                const [nama, kelas] = item;
+                const tingkatCode = kelas.startsWith("IX") ? "09" : kelas.startsWith("VIII") ? "08" : "07";
+                const pin = `29${tingkatCode}${String((idx % 99) + 1).padStart(2, '0')}`;
                 return {
                     id: idx + 1,
-                    nama: item[0],
-                    kelas: item[1],
-                    pin: `29${tingkatCode}${String((idx % 99) + 1).padStart(2, '0')}`,
+                    nama,
+                    kelas,
+                    pin,
                     riwayat: []
                 };
             });
         }
 
-        // Membaca data yang tertanam langsung di dalam index.html (GitHub)
-        function bacaEmbeddedDatabase() {
-            try {
-                const el = document.getElementById('embedded-master-database');
-                if (el && el.textContent) {
-                    const parsed = JSON.parse(el.textContent.trim());
-                    if (parsed && typeof parsed === 'object') {
-                        return parsed;
-                    }
+        let dataSiswa = [];
+        try {
+            const embeddedEl = document.getElementById('embedded-master-database');
+            if (embeddedEl && embeddedEl.textContent.trim()) {
+                const parsedDb = JSON.parse(embeddedEl.textContent.trim());
+                if (parsedDb.credentials?.user && parsedDb.credentials?.pass) {
+                    guruUserAktif = parsedDb.credentials.user;
+                    guruPassAktif = parsedDb.credentials.pass;
                 }
-            } catch (e) {}
-            return null;
+                if (parsedDb.pejabat) {
+                    pejabatAktif = { ...pejabatAktif, ...parsedDb.pejabat };
+                }
+                if (typeof parsedDb.updatedAt === 'number') {
+                    lastUpdatedAt = parsedDb.updatedAt;
+                }
+                if (Array.isArray(parsedDb.siswa) && parsedDb.siswa.length > 0) {
+                    dataSiswa = parsedDb.siswa;
+                } else {
+                    dataSiswa = buatDataSiswaDefault();
+                }
+            } else {
+                dataSiswa = buatDataSiswaDefault();
+            }
+        } catch (errInit) {
+            dataSiswa = buatDataSiswaDefault();
         }
 
-        const embeddedInit = bacaEmbeddedDatabase();
-        let dataSiswa = (embeddedInit && Array.isArray(embeddedInit.siswa) && embeddedInit.siswa.length > 0)
-            ? embeddedInit.siswa
-            : buatDataAwalSiswa();
-        let lastUpdatedAt = (embeddedInit && typeof embeddedInit.updatedAt === 'number') ? embeddedInit.updatedAt : 0;
-
-        let guruUserAktif = embeddedInit?.credentials?.user || "bk29";
-        let guruPassAktif = embeddedInit?.credentials?.pass || "smpn29bjm";
-        let pejabatAktif = {
-            subjudul: embeddedInit?.pejabat?.subjudul || "Laporan Rekapitulasi Poin Pelanggaran & Kedisiplinan Siswa",
-            kepsekNama: embeddedInit?.pejabat?.kepsekNama || "__________________________",
-            kepsekNip: embeddedInit?.pejabat?.kepsekNip || "NIP. ........................................",
-            bkNama: embeddedInit?.pejabat?.bkNama || "__________________________",
-            bkNip: embeddedInit?.pejabat?.bkNip || "NIP. ........................................"
-        };
-
-        // ==================== CLOUD SYNC ONLINE BERSAMA (TANPA LOCAL STORAGE WAJIB) ====================
-        // Menggunakan beberapa endpoint cadangan agar 100% stabil di semua jaringan & perangkat tanpa setting apa pun
-        const CLOUD_BUCKET_ID = 'smpn29-banjarmasin-ebk-master-2026';
-        const CLOUD_ENDPOINTS = [
-            `https://kvdb.io/A2vR9xK4mN7pQ1wL8zT5yB/${CLOUD_BUCKET_ID}`,
-            `https://jsonblob.com/api/jsonBlob/01965c8a-4e21-7b90-9f12-smpn29bjm26`
-        ];
+        // ==================== CLOUD SYNC ONLINE BERSAMA (REAL-TIME LAPTOP <-> HP) ====================
+        // Menggunakan kanal publik real-time dengan cache history sehingga Laptop & HP membaca/menulis ke alamat yang 100% sama
+        const CLOUD_TOPIC = 'smpn29_banjarmasin_ebk_sync_v2026_99281';
+        const CLOUD_NTFY_PUBLISH = `https://ntfy.sh/${CLOUD_TOPIC}`;
+        const CLOUD_NTFY_FETCH = `https://ntfy.sh/${CLOUD_TOPIC}/json?poll=1&since=all`;
+        const CLOUD_JSON_BLOB = 'https://jsonblob.com/api/jsonBlob/1348920194829107200';
 
         function setCloudBadgeStatus(status, text) {
             const badge = document.getElementById('cloud-sync-badge');
             const modalPill = document.getElementById('modal-cloud-status-pill');
             if (badge) {
                 if (status === 'syncing') {
-                    badge.innerHTML = `<i class="fas fa-sync-alt fa-spin text-[9px] text-amber-300"></i><span>${text || 'Menyinkronkan Online...'}</span>`;
+                    badge.innerHTML = `<i class="fas fa-sync-alt fa-spin text-[9px] text-amber-300"></i><span>${text || 'Menyinkronkan...'}</span>`;
                 } else if (status === 'ok') {
-                    badge.innerHTML = `<i class="fas fa-cloud text-[9px] text-emerald-300"></i><span>${text || 'Cloud & GitHub Sync Aktif'}</span>`;
+                    badge.innerHTML = `<i class="fas fa-check-circle text-[9px] text-emerald-300"></i><span>${text || 'Online (Laptop & HP Sinkron)'}</span>`;
                 } else {
-                    badge.innerHTML = `<i class="fas fa-file-code text-[9px] text-amber-300"></i><span>${text || 'Data Tertanam index.html'}</span>`;
+                    badge.innerHTML = `<i class="fas fa-exclamation-triangle text-[9px] text-amber-300"></i><span>${text || 'Mode Offline / Tertanam'}</span>`;
                 }
             }
             if (modalPill) {
@@ -2180,15 +2190,15 @@
                     modalPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800';
                     modalPill.textContent = 'Online Terhubung';
                 } else {
-                    modalPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-100 text-blue-800';
-                    modalPill.textContent = 'Data Tertanam HTML';
+                    modalPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800';
+                    modalPill.textContent = 'Koneksi Terbatas';
                 }
             }
         }
 
         function buatPayloadLengkap() {
             return {
-                version: "2026.1",
+                version: "2026.2",
                 updatedAt: lastUpdatedAt || Date.now(),
                 credentials: {
                     user: guruUserAktif,
@@ -2213,7 +2223,6 @@
                 pejabatAktif = { ...pejabatAktif, ...payload.pejabat };
                 terapkanIdentitasPejabatKeDOM();
             }
-            // Perbarui juga tag <script id="embedded-master-database"> di DOM saat ini
             const embeddedTag = document.getElementById('embedded-master-database');
             if (embeddedTag) {
                 embeddedTag.textContent = '\n' + JSON.stringify(buatPayloadLengkap(), null, 2) + '\n    ';
@@ -2225,63 +2234,102 @@
         }
 
         async function kirimDataKeCloud(tampilkanNotif = false) {
-            setCloudBadgeStatus('syncing', 'Menyimpan ke Cloud...');
+            setCloudBadgeStatus('syncing', 'Mengirim ke Server...');
             const payload = buatPayloadLengkap();
+            const jsonStr = JSON.stringify(payload);
+
             const embeddedTag = document.getElementById('embedded-master-database');
             if (embeddedTag) {
                 embeddedTag.textContent = '\n' + JSON.stringify(payload, null, 2) + '\n    ';
             }
 
             let berhasil = false;
-            for (const url of CLOUD_ENDPOINTS) {
-                try {
-                    const method = url.includes('jsonblob.com') ? 'PUT' : 'POST';
-                    const res = await fetch(url, {
-                        method,
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-                    if (res.ok) {
-                        berhasil = true;
-                        break;
-                    }
-                } catch (e) {}
-            }
+
+            // Jalur 1: Kirim ke ntfy.sh (Mendukung CORS penuh dari file:// maupun GitHub Pages & menyimpan riwayat pesan)
+            try {
+                const resNtfy = await fetch(CLOUD_NTFY_PUBLISH, {
+                    method: 'POST',
+                    headers: {
+                        'Title': 'SMPN29_SYNC',
+                        'Cache': 'yes'
+                    },
+                    body: jsonStr
+                });
+                if (resNtfy.ok) {
+                    berhasil = true;
+                }
+            } catch (e) {}
+
+            // Jalur 2: Cadangan JSONBlob
+            try {
+                const resBlob = await fetch(CLOUD_JSON_BLOB, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: jsonStr
+                });
+                if (resBlob.ok) {
+                    berhasil = true;
+                }
+            } catch (e) {}
 
             if (berhasil) {
-                setCloudBadgeStatus('ok', 'Tersinkron Online');
+                const totalKasus = dataSiswa.reduce((a, s) => a + (s.riwayat?.length || 0), 0);
+                setCloudBadgeStatus('ok', `Online (${dataSiswa.length} Siswa • ${totalKasus} Poin)`);
                 const elLast = document.getElementById('modal-cloud-last-sync');
                 if (elLast) {
-                    elLast.textContent = `Terakhir terkirim online: ${new Date().toLocaleTimeString('id-ID')}`;
+                    elLast.textContent = `Terkirim ke server pada ${new Date().toLocaleTimeString('id-ID')} (${totalKasus} catatan poin).`;
                 }
                 if (tampilkanNotif) {
-                    showToast(`Berhasil! Seluruh data (${dataSiswa.length} siswa) tersimpan online & siap dilihat di perangkat lain.`);
+                    showToast(`Tersimpan Online! (${dataSiswa.length} siswa & ${totalKasus} catatan poin siap dibuka di HP).`);
                 }
             } else {
-                setCloudBadgeStatus('offline', 'Data Tertanam index.html');
+                setCloudBadgeStatus('offline', 'Gagal Kirim ke Server');
                 if (tampilkanNotif) {
-                    showToast("Koneksi internet terbatas. Klik 'Simpan Full Data ke index.html' untuk menyimpannya langsung ke file GitHub.");
+                    showToast("Gagal terhubung ke server internet. Pastikan Laptop/HP terhubung internet lalu klik 'Kirim ke Server'.");
                 }
             }
             return berhasil;
         }
 
         async function tarikDataDariCloud(tampilkanNotif = false) {
-            setCloudBadgeStatus('syncing', 'Memuat Data Online...');
+            setCloudBadgeStatus('syncing', 'Mengambil Data Server...');
             let cloudPayload = null;
 
-            for (const baseUrl of CLOUD_ENDPOINTS) {
+            // Jalur 1: Ambil pesan terbaru dari kanal ntfy.sh
+            try {
+                const resNtfy = await fetch(`${CLOUD_NTFY_FETCH}&_=${Date.now()}`, {
+                    method: 'GET',
+                    cache: 'no-store'
+                });
+                if (resNtfy.ok) {
+                    const rawLines = await resNtfy.text();
+                    const lines = rawLines.trim().split('\n').filter(Boolean);
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        try {
+                            const wrapper = JSON.parse(lines[i]);
+                            if (wrapper && wrapper.message) {
+                                const parsedMsg = JSON.parse(wrapper.message);
+                                if (parsedMsg && Array.isArray(parsedMsg.siswa)) {
+                                    cloudPayload = parsedMsg;
+                                    break;
+                                }
+                            }
+                        } catch (errLine) {}
+                    }
+                }
+            } catch (e) {}
+
+            // Jalur 2: Cadangan jika ntfy kosong/terbatas
+            if (!cloudPayload) {
                 try {
-                    const sep = baseUrl.includes('?') ? '&' : '?';
-                    const res = await fetch(`${baseUrl}${sep}t=${Date.now()}`, {
+                    const resBlob = await fetch(`${CLOUD_JSON_BLOB}?_=${Date.now()}`, {
                         method: 'GET',
                         cache: 'no-store'
                     });
-                    if (res.ok) {
-                        const data = await res.json();
+                    if (resBlob.ok) {
+                        const data = await resBlob.json();
                         if (data && Array.isArray(data.siswa)) {
                             cloudPayload = data;
-                            break;
                         }
                     }
                 } catch (e) {}
@@ -2292,31 +2340,37 @@
                 const kasusCloud = cloudPayload.siswa.reduce((a, s) => a + (s.riwayat?.length || 0), 0);
                 const kasusSekarang = dataSiswa.reduce((a, s) => a + (s.riwayat?.length || 0), 0);
 
-                // Gunakan data yang paling baru (antara tertanam di index.html GitHub vs Cloud Online)
-                if (cloudTime > lastUpdatedAt || (kasusCloud > 0 && kasusSekarang === 0 && cloudTime >= lastUpdatedAt)) {
+                // Jika server punya data lebih baru atau punya catatan poin sedangkan perangkat ini masih 0
+                if (cloudTime > lastUpdatedAt || (kasusCloud > 0 && kasusSekarang === 0)) {
                     terapkanPayloadKeState(cloudPayload);
                     if (!document.getElementById('view-guru').classList.contains('hidden')) {
                         refreshDashboardGuru();
                     }
-                } else if (lastUpdatedAt > cloudTime) {
-                    // Data di index.html GitHub lebih baru -> dorong ke Cloud Online
+                } else if (lastUpdatedAt > cloudTime || (kasusSekarang > 0 && kasusCloud === 0)) {
+                    // Perangkat ini (misal laptop) punya data yang belum naik ke server -> langsung kirim ke server!
                     await kirimDataKeCloud(false);
                 }
 
-                setCloudBadgeStatus('ok', 'Cloud & GitHub Sync Aktif');
+                const totalKasusAkhir = dataSiswa.reduce((a, s) => a + (s.riwayat?.length || 0), 0);
+                setCloudBadgeStatus('ok', `Online (${dataSiswa.length} Siswa • ${totalKasusAkhir} Poin)`);
                 const elLast = document.getElementById('modal-cloud-last-sync');
                 if (elLast) {
-                    elLast.textContent = `Terakhir diperbarui online: ${new Date().toLocaleTimeString('id-ID')}`;
+                    elLast.textContent = `Sinkron terakhir: ${new Date().toLocaleTimeString('id-ID')} (${totalKasusAkhir} catatan poin).`;
                 }
                 if (tampilkanNotif) {
-                    showToast(`Data terbaru (${dataSiswa.length} siswa) berhasil disinkronkan!`);
+                    showToast(`Sinkron Selesai! Ditemukan ${dataSiswa.length} siswa & ${totalKasusAkhir} catatan poin.`);
                 }
                 return true;
             } else {
-                // Jika server online belum memiliki data, inisialisasi dari data tertanam index.html
-                setCloudBadgeStatus('offline', 'Data Tertanam index.html');
+                // Server belum punya data sama sekali -> jika laptop punya data, unggah sekarang
+                const kasusSekarang = dataSiswa.reduce((a, s) => a + (s.riwayat?.length || 0), 0);
+                if (kasusSekarang > 0 || lastUpdatedAt > 0) {
+                    await kirimDataKeCloud(false);
+                } else {
+                    setCloudBadgeStatus('offline', 'Server Kosong (Belum Dikirim)');
+                }
                 if (tampilkanNotif) {
-                    showToast("Menggunakan data lengkap yang tertanam di index.html.");
+                    showToast("Belum ada data tersimpan di server online. Silakan buka di laptop lalu klik 'Kirim ke Server' atau 'Simpan Full Data ke index.html'.");
                 }
                 return false;
             }
