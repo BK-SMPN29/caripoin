@@ -15,7 +15,6 @@
             font-family: 'Inter', sans-serif;
             background-color: #f1f5f9;
         }
-        /* Animasi halus untuk modal dan transisi */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
@@ -23,7 +22,6 @@
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
-        /* Styling khusus saat mode cetak (Print) */
         @media print {
             body * {
                 visibility: hidden;
@@ -105,14 +103,12 @@
         body.android-mode .guru-stat-grid p.text-3xl {
             font-size: 1.35rem !important;
         }
-        /* Animasi halus pada tab aktif Android */
         .android-tab-active {
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             color: #1d4ed8 !important;
             box-shadow: 0 2px 8px rgba(37, 99, 235, 0.18);
             transform: translateY(-2px);
         }
-        /* Penyesuaian Master Data Siswa & Poin pada Android Menu (Tampilan Kartu Mobile) */
         body.android-mode #print-area {
             padding: 1rem !important;
             border-radius: 1.25rem !important;
@@ -151,7 +147,6 @@
             padding: 0 !important;
             border: none !important;
         }
-        /* Baris 1 Kiri: Nama Siswa */
         body.android-mode #tabel-master-siswa td:nth-child(1) {
             grid-column: 1 / 2;
             align-self: center;
@@ -160,13 +155,11 @@
             font-size: 0.9rem !important;
             line-height: 1.25;
         }
-        /* Baris 1 Kanan: Dropdown Kelas Cepat */
         body.android-mode #tabel-master-siswa td:nth-child(2) {
             grid-column: 2 / 3;
             justify-self: end;
             align-self: center;
         }
-        /* Baris 2: PIN + Status Sanksi sejajar */
         body.android-mode #tabel-master-siswa td:nth-child(3) {
             grid-column: 1 / 2;
             align-self: center;
@@ -183,7 +176,6 @@
             justify-self: end;
             align-self: center;
         }
-        /* Baris 3 Full: Kotak Ringkasan Total & Rincian Kelas */
         body.android-mode #tabel-master-siswa td:nth-child(4) {
             grid-column: 1 / -1;
             text-align: left !important;
@@ -212,7 +204,6 @@
             margin-top: 0.25rem;
             line-height: 1.35;
         }
-        /* Baris 4 Full: Tombol Aksi Lebar & Mudah Diketuk */
         body.android-mode #tabel-master-siswa td:nth-child(6) {
             grid-column: 1 / -1;
             display: flex !important;
@@ -234,8 +225,6 @@
             padding-top: 0.5rem;
             padding-bottom: 0.5rem;
         }
-
-        /* ==================== PENYESUAIAN ANDROID MENU: INPUT SUPER CEPAT ==================== */
         body.android-mode #box-form-pelanggaran {
             padding: 0.85rem !important;
             border-radius: 1.25rem !important;
@@ -333,7 +322,6 @@
         body.android-mode #box-form-pelanggaran .tab-kat-btn {
             padding: 0.4rem 0.6rem !important;
         }
-        /* ==================== PENYESUAIAN ANDROID MENU: MODAL TAMBAH SISWA & KENAIKAN KELAS (BOTTOM SHEET) ==================== */
         body.android-mode #modal-hasil-siswa,
         body.android-mode #modal-tambah-siswa,
         body.android-mode #modal-kenaikan-kelas,
@@ -377,7 +365,6 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        /* Penyesuaian Modal Laporan Kedisiplinan Pribadi & Riwayat Catatan Pelanggaran di Android */
         body.android-mode #modal-hasil-siswa > div > div:nth-child(2) {
             padding: 1rem !important;
             overflow-y: auto;
@@ -426,7 +413,6 @@
             word-break: break-word !important;
             overflow-wrap: anywhere !important;
         }
-        /* Jika tabel kosong (colspan="5") */
         body.android-mode #res-tabel-riwayat tr:has(td[colspan]) {
             display: block !important;
         }
@@ -434,7 +420,6 @@
             width: 100% !important;
             padding: 1.25rem 0.75rem !important;
         }
-        /* Baris 1 Kiri: Tanggal */
         body.android-mode #res-tabel-riwayat td:nth-child(1) {
             grid-column: 1 / 2;
             font-size: 0.7rem;
@@ -442,27 +427,23 @@
             color: #64748b;
             align-self: center;
         }
-        /* Baris 1 Kanan: Kelas */
         body.android-mode #res-tabel-riwayat td:nth-child(2) {
             grid-column: 2 / 3;
             justify-self: end;
             align-self: center;
         }
-        /* Baris 2 Kiri: Jenis Pelanggaran (Teks panjang langsung turun ke bawah tanpa scroll) */
         body.android-mode #res-tabel-riwayat td:nth-child(3) {
             grid-column: 1 / 2;
             grid-row: 2 / 3;
             font-size: 0.78rem;
             line-height: 1.35;
         }
-        /* Baris 2 Kanan: Poin */
         body.android-mode #res-tabel-riwayat td:nth-child(4) {
             grid-column: 2 / 3;
             grid-row: 2 / 3;
             justify-self: end;
             align-self: start;
         }
-        /* Baris 3 Full: Keterangan */
         body.android-mode #res-tabel-riwayat td:nth-child(5) {
             grid-column: 1 / -1;
             font-size: 0.72rem;
@@ -476,7 +457,6 @@
             font-weight: 700;
             color: #94a3b8;
         }
-        /* Penyesuaian Tab & Form Tambah Siswa di Android */
         body.android-mode #modal-tambah-siswa #tab-btn-satuan,
         body.android-mode #modal-tambah-siswa #tab-btn-massal {
             padding-top: 0.85rem;
@@ -503,7 +483,6 @@
             padding-bottom: 0.85rem !important;
             font-size: 0.9rem !important;
         }
-        /* Penyesuaian Proses Kenaikan Kelas / Tinggal Kelas per Rombel di Android */
         body.android-mode #modal-kenaikan-kelas > div > div:nth-child(2) {
             padding: 0.95rem 1rem 1.25rem !important;
             overflow-y: auto;
@@ -578,9 +557,9 @@
                     <p class="text-[11px] sm:text-xs text-blue-200/90 font-medium flex items-center gap-1.5">
                         <i class="fas fa-school text-amber-300 text-[10px]"></i>
                         <span>SMP Negeri 29 Banjarmasin</span>
-                        <button type="button" onclick="openModalCloudConfig()" id="cloud-sync-badge" title="Klik untuk melihat status atau mengatur koneksi penyimpanan permanen lintas perangkat" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-white/10 hover:bg-white/20 text-blue-100 transition cursor-pointer">
-                            <i class="fas fa-cloud text-[9px] text-amber-300"></i>
-                            <span>Menghubungkan...</span>
+                        <button type="button" onclick="openModalDatabaseSimpel()" id="cloud-sync-badge" title="Klik untuk kelola database permanen & backup" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-200 border border-emerald-400/30 transition cursor-pointer">
+                            <i class="fas fa-database text-[9px] text-emerald-300"></i>
+                            <span>Database Permanen</span>
                         </button>
                     </p>
                 </div>
@@ -828,13 +807,13 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL LOGIN GURU / BK ==================== -->
+    <!-- ==================== MODAL LOGIN GURU / BK (SUPER SIMPEL) ==================== -->
     <div id="modal-login-guru" class="hidden fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in">
             <div class="bg-blue-900 text-white px-6 py-4 flex justify-between items-center">
                 <h3 class="font-bold text-base flex items-center gap-2">
                     <i class="fas fa-user-lock text-amber-300"></i>
-                    <span>Akses Khusus Guru / BK</span>
+                    <span>Login Guru / BK</span>
                 </h3>
                 <button onclick="closeLoginModal()" class="text-blue-200 hover:text-white">
                     <i class="fas fa-times"></i>
@@ -849,11 +828,15 @@
                     <label class="block text-xs font-bold text-slate-600 uppercase mb-1">Password</label>
                     <input type="password" id="guru-pass" required placeholder="••••••••" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-600">
                 </div>
+                <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 text-[11px] text-emerald-800 flex items-center gap-2">
+                    <i class="fas fa-check-circle text-emerald-600"></i>
+                    <span>Database permanen aktif otomatis. Setiap edit langsung tersimpan!</span>
+                </div>
                 <div id="alert-login-guru" class="hidden bg-rose-50 text-rose-700 text-xs p-3 rounded-xl border border-rose-200">
                     Username atau Password salah!
                 </div>
                 <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-semibold py-2.5 rounded-xl text-sm transition shadow">
-                    Masuk ke Dashboard
+                    Masuk ke Dashboard BK
                 </button>
             </form>
         </div>
@@ -869,6 +852,10 @@
                 <p class="text-xs sm:text-sm text-slate-500">Kelola data pelanggaran, kenaikan kelas massal, dan pembinaan siswa SMPN 29 Banjarmasin.</p>
             </div>
             <div class="flex flex-wrap gap-2">
+                <button onclick="openModalDatabaseSimpel()" class="bg-slate-800 hover:bg-slate-900 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
+                    <i class="fas fa-database text-emerald-400"></i>
+                    <span>Backup / Pindah HP</span>
+                </button>
                 <button onclick="openModalKenaikanKelas()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl transition flex items-center gap-2 shadow-sm">
                     <i class="fas fa-graduation-cap"></i>
                     <span>Kenaikan / Tinggal Kelas</span>
@@ -924,7 +911,6 @@
                         <i class="fas fa-bolt text-amber-500"></i>
                         <span>Input Super Cepat</span>
                     </h3>
-                    <!-- Toggle Mode 1-Klik Langsung Simpan -->
                     <label class="inline-flex items-center gap-1.5 cursor-pointer bg-amber-50 border border-amber-200 px-2 py-1 rounded-lg flex-shrink-0" title="Jika aktif, klik tombol pelanggaran langsung otomatis menyimpan tanpa tekan tombol Simpan">
                         <input type="checkbox" id="toggle-auto-save" checked class="w-3.5 h-3.5 rounded text-amber-600 focus:ring-amber-500">
                         <span class="text-[10px] sm:text-[11px] font-bold text-amber-800">⚡ 1-Klik Simpan</span>
@@ -932,14 +918,14 @@
                 </div>
 
                 <form id="form-input-pelanggaran" onsubmit="handleSimpanPelanggaran(event)" class="space-y-4">
-                    <!-- 1. Pilih Siswa (Bisa Multi-Siswa / Rombongan sekaligus!) -->
+                    <!-- 1. Pilih Siswa -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <label class="block text-xs font-bold text-slate-700">1. Target Siswa <span id="badge-jumlah-antrean" class="hidden ml-1 bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full">0</span></label>
                             <button type="button" onclick="resetPilihSiswa()" class="text-[11px] text-slate-400 hover:text-rose-600 font-semibold">Kosongkan</button>
                         </div>
 
-                        <!-- Filter Pil Kelas Cepat (Khusus Android Menu agar tidak perlu banyak mengetik di HP) -->
+                        <!-- Filter Pil Kelas Cepat (Khusus Android Menu) -->
                         <div id="android-quick-kelas-bar" class="hidden gap-1.5 overflow-x-auto pb-2 mb-1.5 no-scrollbar">
                             <button type="button" onclick="pilihFilterKelasCepatInput('ALL', this)" class="android-kelas-chip px-2.5 py-1.5 rounded-xl bg-blue-600 text-white text-[11px] font-bold whitespace-nowrap shadow-xs">Semua</button>
                             <button type="button" onclick="pilihFilterKelasCepatInput('VII A', this)" class="android-kelas-chip px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-[11px] font-bold whitespace-nowrap">VII A</button>
@@ -953,7 +939,6 @@
                             <button type="button" onclick="pilihFilterKelasCepatInput('IX C', this)" class="android-kelas-chip px-2.5 py-1.5 rounded-xl bg-slate-100 text-slate-700 text-[11px] font-bold whitespace-nowrap">IX C</button>
                         </div>
 
-                        <!-- Container Chip Siswa Terpilih (Bisa banyak siswa sekaligus) -->
                         <div id="selected-students-chips" class="flex flex-wrap gap-1.5 mb-2 empty:hidden"></div>
 
                         <div class="relative">
@@ -973,13 +958,12 @@
                             <button type="button" id="btn-close-dropdown-siswa" onclick="tutupDropdownSiswa()" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
                                 <i class="fas fa-times-circle text-xs"></i>
                             </button>
-                            <!-- Dropdown Hasil Pencarian Instan (Klik langsung masuk antrean) -->
                             <div id="live-search-dropdown" class="hidden absolute left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-xl max-h-48 overflow-y-auto z-20 divide-y divide-slate-100"></div>
                         </div>
                         <p class="text-[10px] text-slate-400 mt-1">Bisa pilih <strong>lebih dari 1 siswa</strong> sekaligus (misal rombongan terlambat).</p>
                     </div>
 
-                    <!-- 2. Pilihan Cepat (1-Klik Langsung Eksekusi jika Mode Turbo Aktif) -->
+                    <!-- 2. Pilihan Cepat -->
                     <div>
                         <div class="flex justify-between items-center mb-1.5">
                             <label class="block text-xs font-bold text-slate-700">2. Ketuk Pelanggaran</label>
@@ -1040,7 +1024,6 @@
                                 </button>
                             </div>
 
-                            <!-- Tab Filter Kelompok Singkat -->
                             <div class="flex gap-1 overflow-x-auto py-1.5 no-scrollbar text-[10px] font-bold">
                                 <button type="button" onclick="pilihTabKategori('SEMUA', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-blue-100 text-blue-800 whitespace-nowrap">Semua (67)</button>
                                 <button type="button" onclick="pilihTabKategori('KELAKUAN', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Kelakuan & Sopan</button>
@@ -1049,13 +1032,12 @@
                                 <button type="button" onclick="pilihTabKategori('BERAT', this)" class="tab-kat-btn px-2 py-1 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 whitespace-nowrap">Rokok/HP/Berat</button>
                             </div>
 
-                            <!-- Daftar Hasil Pencarian / Pilihan Instan (1-Klik Langsung Simpan) -->
                             <div id="list-kategori-instan" class="hidden max-h-44 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100 bg-white shadow-inner"></div>
                             <input type="hidden" id="guru-kategori" value="">
                         </div>
                     </div>
 
-                    <!-- 3. Opsi Tambahan Ringkas (Tanggal & Catatan Opsional dalam 1 Baris / Toggle) -->
+                    <!-- 3. Opsi Tambahan Ringkas -->
                     <div class="pt-1">
                         <button type="button" onclick="toggleOpsiTambahan()" class="text-xs text-blue-700 hover:underline font-medium flex items-center gap-1.5">
                             <i id="icon-opsi-tambahan" class="fas fa-chevron-right text-[10px]"></i>
@@ -1079,7 +1061,6 @@
                         <span>Simpan Pelanggaran</span>
                     </button>
 
-                    <!-- Riwayat Log Kilat Terakhir (Bisa Undo 1-Klik jika salah ketuk!) -->
                     <div id="box-undo-terakhir" class="hidden bg-emerald-50 border border-emerald-200 rounded-xl p-2.5 flex items-center justify-between gap-2 text-xs animate-fade-in">
                         <div class="truncate text-emerald-900">
                             <i class="fas fa-check-circle text-emerald-600 mr-1"></i>
@@ -1102,7 +1083,6 @@
                         </h3>
                         <p class="text-[11px] text-slate-400 mt-0.5 no-print">Tip: Ubah dropdown kelas di tabel untuk memindahkan 1 siswa secara instan (tinggal/pindah kelas).</p>
                     </div>
-                    <!-- Filter Pencarian & Filter Kelas Tabel Guru -->
                     <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto no-print">
                         <select id="filter-kelas-master" onchange="renderTabelMaster()" class="w-full sm:w-auto px-3 py-2 sm:py-1.5 bg-slate-50 border border-slate-300 rounded-xl sm:rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
                             <option value="ALL">Semua Kelas (255)</option>
@@ -1144,9 +1124,7 @@
                                 <th class="py-3 px-3 font-semibold text-right no-print">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="tabel-master-siswa" class="divide-y divide-slate-100">
-                            <!-- Diisi dinamis via JS -->
-                        </tbody>
+                        <tbody id="tabel-master-siswa" class="divide-y divide-slate-100"></tbody>
                     </table>
                 </div>
             </div>
@@ -1158,9 +1136,9 @@
                 <div>
                     <h3 class="font-bold text-base sm:text-lg text-slate-800 flex items-center gap-2">
                         <i class="fas fa-hdd text-blue-600"></i>
-                        <span>Manajemen Penyimpanan (Local)</span>
+                        <span>Manajemen Penyimpanan Permanen</span>
                     </h3>
-                    <p class="text-xs text-slate-500 mt-0.5">Aplikasi ini menyimpan data secara lokal di browser Anda. Jika memori penuh, sistem mungkin gagal menyimpan data baru.</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Data tersimpan otomatis secara permanen di browser Anda (LocalStorage + IndexedDB) agar tidak hilang saat logout atau refresh.</p>
                 </div>
                 <div class="bg-blue-50 border border-blue-200 px-3.5 py-2 rounded-xl text-right">
                     <span class="block text-[10px] font-bold uppercase text-blue-600">Status Data Yang Tersimpan</span>
@@ -1187,7 +1165,6 @@
 
             <!-- 3 Kartu Aksi Pengelolaan Data -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-                <!-- Hapus Data Siswa -->
                 <div class="p-4 rounded-xl border border-amber-200 bg-amber-50/50 flex flex-col justify-between gap-3">
                     <div>
                         <h4 class="font-bold text-sm text-amber-950 flex items-center gap-1.5">
@@ -1202,7 +1179,6 @@
                     </button>
                 </div>
 
-                <!-- Hapus Data Poin -->
                 <div class="p-4 rounded-xl border border-orange-200 bg-orange-50/50 flex flex-col justify-between gap-3">
                     <div>
                         <h4 class="font-bold text-sm text-orange-950 flex items-center gap-1.5">
@@ -1217,7 +1193,6 @@
                     </button>
                 </div>
 
-                <!-- RESET TOTAL APLIKASI -->
                 <div class="p-4 rounded-xl border border-rose-200 bg-rose-50/60 flex flex-col justify-between gap-3">
                     <div>
                         <h4 class="font-bold text-sm text-rose-950 flex items-center gap-1.5">
@@ -1236,7 +1211,7 @@
             <!-- Baris Simpan Pengaturan -->
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-slate-100">
                 <p class="text-[11px] text-slate-500">
-                    <i class="fas fa-shield-alt text-emerald-600 mr-1"></i> Pastikan menekan tombol <strong>Simpan Pengaturan</strong> untuk mengamankan status penyimpanan lokal & cloud.
+                    <i class="fas fa-shield-alt text-emerald-600 mr-1"></i> Tekan tombol di samping untuk memastikan seluruh data tersimpan ganda di penyimpanan permanen.
                 </p>
                 <button type="button" onclick="simpanPengaturanStorage()" class="w-full sm:w-auto bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-800 hover:to-indigo-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs sm:text-sm shadow transition flex items-center justify-center gap-2">
                     <i class="fas fa-save"></i>
@@ -1245,6 +1220,48 @@
             </div>
         </div>
     </section>
+
+    <!-- ==================== MODAL DATABASE PERMANEN & BACKUP SUPER SIMPEL ==================== -->
+    <div id="modal-database-simpel" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in">
+            <div class="bg-slate-900 text-white px-5 py-4 flex justify-between items-center">
+                <h3 class="font-bold text-sm sm:text-base flex items-center gap-2">
+                    <i class="fas fa-database text-emerald-400"></i>
+                    <span>Database Permanen & Pindah Perangkat</span>
+                </h3>
+                <button type="button" onclick="closeModalDatabaseSimpel()" class="text-slate-300 hover:text-white">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4 text-xs text-slate-700">
+                <div class="p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-1">
+                    <p class="font-bold"><i class="fas fa-check-circle text-emerald-600 mr-1"></i> Penyimpanan Otomatis Aktif</p>
+                    <p class="leading-relaxed">Seluruh data poin, edit riwayat, kenaikan kelas, dan siswa baru otomatis tersimpan permanen di browser perangkat ini (tetap aman saat refresh, logout, maupun ditutup).</p>
+                </div>
+
+                <!-- Pindah Data ke HP / Laptop Lain (1 File JSON Simpel) -->
+                <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
+                    <span class="font-bold text-slate-800 block"><i class="fas fa-exchange-alt text-blue-600 mr-1"></i> Pindahkan Database ke HP / Laptop Lain</span>
+                    <p class="text-[11px] text-slate-500">Unduh file database lalu kirim lewat WhatsApp, kemudian muat di perangkat lain.</p>
+                    <div class="grid grid-cols-2 gap-2 pt-1">
+                        <button type="button" onclick="eksporFileBackup()" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-2.5 px-3 rounded-xl text-xs shadow-xs flex items-center justify-center gap-1.5">
+                            <i class="fas fa-download"></i>
+                            <span>Unduh Database</span>
+                        </button>
+                        <label class="bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 font-bold py-2.5 px-3 rounded-xl text-xs cursor-pointer flex items-center justify-center gap-1.5">
+                            <i class="fas fa-upload text-emerald-600"></i>
+                            <span>Muat Database</span>
+                            <input type="file" accept=".json" onchange="imporFileBackup(event)" class="hidden">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-1">
+                    <button type="button" onclick="closeModalDatabaseSimpel()" class="px-4 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-100">Tutup</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== MODAL KONFIRMASI PENGHAPUSAN DATA ==================== -->
     <div id="modal-konfirmasi-reset" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -1280,7 +1297,6 @@
             </div>
             
             <div class="p-6 space-y-4">
-                <!-- Pengaturan Kelas Asal & Tujuan -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200">
                     <div>
                         <label class="block text-xs font-bold text-slate-700 mb-1">1. Pilih Kelas Asal</label>
@@ -1310,7 +1326,6 @@
                     </div>
                 </div>
 
-                <!-- Kontrol Ceklis Cepat -->
                 <div class="flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div class="space-x-2">
                         <button type="button" onclick="toggleSemuaCeklisKenaikan(true)" class="text-indigo-700 font-semibold hover:underline">Centang Semua (Naik)</button>
@@ -1320,12 +1335,8 @@
                     <span id="promo-counter-terpilih" class="font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-lg">0 Naik | 0 Tinggal Kelas</span>
                 </div>
 
-                <!-- Daftar Siswa dalam Rombel -->
-                <div id="promo-list-siswa" class="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100">
-                    <!-- Diisi otomatis via JS -->
-                </div>
+                <div id="promo-list-siswa" class="max-h-60 overflow-y-auto border border-slate-200 rounded-xl divide-y divide-slate-100"></div>
 
-                <!-- Info Akumulasi Poin Saat Naik Kelas -->
                 <div class="flex items-start gap-2.5 bg-blue-50 border border-blue-200 p-3 rounded-xl text-xs text-blue-900">
                     <i class="fas fa-info-circle text-blue-600 mt-0.5 flex-shrink-0"></i>
                     <span><strong>Akumulasi Poin Otomatis:</strong> Total poin keseluruhan tetap menyimpan akumulasi dari kelas sebelumnya dan kelas baru secara terpisah (tidak hilang/terhapus).</span>
@@ -1345,7 +1356,6 @@
     <!-- ==================== MODAL PRATINJAU CETAK REKAP LAPORAN ==================== -->
     <div id="modal-pratinjau-cetak" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
         <div class="bg-slate-100 w-full max-w-4xl rounded-2xl shadow-2xl border border-slate-300 overflow-hidden my-4 flex flex-col max-h-[92vh] animate-fade-in">
-            <!-- Toolbar Atas Pratinjau (Tidak ikut tercetak) -->
             <div class="bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3 no-print">
                 <div class="flex items-center gap-2.5">
                     <div class="w-8 h-8 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-bold">
@@ -1358,7 +1368,6 @@
                 </div>
 
                 <div class="flex flex-wrap items-center gap-2">
-                    <!-- Filter Kelas di Pratinjau -->
                     <select id="print-filter-kelas" onchange="renderPratinjauCetak()" class="px-2.5 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none">
                         <option value="ALL">Semua Kelas</option>
                         <option value="VII A">Kelas VII A</option>
@@ -1372,7 +1381,6 @@
                         <option value="IX C">Kelas IX C</option>
                     </select>
 
-                    <!-- Filter Periode Waktu (Semua / Per Bulan / Per 3 Bulan / Per Tahun) -->
                     <select id="print-filter-periode" onchange="ubahModePeriodeCetak()" class="px-2.5 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-amber-300 focus:outline-none">
                         <option value="ALL">Semua Periode</option>
                         <option value="BULAN">Per Bulan</option>
@@ -1380,7 +1388,6 @@
                         <option value="TAHUN">Per Tahun</option>
                     </select>
 
-                    <!-- Sub-Filter Bulan (Muncul saat pilih Per Bulan) -->
                     <select id="print-sub-bulan" onchange="renderPratinjauCetak()" class="hidden px-2 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none">
                         <option value="01">Januari</option>
                         <option value="02">Februari</option>
@@ -1396,7 +1403,6 @@
                         <option value="12">Desember</option>
                     </select>
 
-                    <!-- Sub-Filter Triwulan / 3 Bulan (Muncul saat pilih Per 3 Bulan) -->
                     <select id="print-sub-triwulan" onchange="renderPratinjauCetak()" class="hidden px-2 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none">
                         <option value="1">Triwulan I (Jan – Mar)</option>
                         <option value="2">Triwulan II (Apr – Jun)</option>
@@ -1404,17 +1410,13 @@
                         <option value="4">Triwulan IV (Okt – Des)</option>
                     </select>
 
-                    <!-- Sub-Filter Tahun (Muncul saat pilih Per Bulan / Per 3 Bulan / Per Tahun) -->
-                    <select id="print-sub-tahun" onchange="renderPratinjauCetak()" class="hidden px-2 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none">
-                    </select>
+                    <select id="print-sub-tahun" onchange="renderPratinjauCetak()" class="hidden px-2 py-1.5 bg-slate-800 border border-slate-600 rounded-xl text-xs font-semibold text-white focus:outline-none"></select>
 
-                    <!-- Opsi Tampilkan Hanya Siswa Berpoin -->
                     <label class="inline-flex items-center gap-1.5 bg-slate-800 border border-slate-600 px-2.5 py-1.5 rounded-xl text-xs cursor-pointer">
                         <input type="checkbox" id="print-only-poin" onchange="renderPratinjauCetak()" class="rounded text-amber-400 focus:ring-0">
                         <span>Hanya yang Berpoin (&gt;0)</span>
                     </label>
 
-                    <!-- Pengalih Mode Lihat vs Mode Edit Rekap -->
                     <div class="inline-flex bg-slate-800 border border-slate-600 p-0.5 rounded-xl" role="group">
                         <button type="button" id="btn-print-mode-lihat" onclick="setModePratinjauCetak('lihat')" class="px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-slate-900 shadow transition">
                             <i class="fas fa-eye text-blue-600 mr-1"></i>Lihat
@@ -1435,23 +1437,19 @@
                 </div>
             </div>
 
-            <!-- Banner Info Mode Edit (Muncul hanya saat Mode Edit aktif) -->
             <div id="banner-mode-edit-cetak" class="hidden bg-amber-50 border-b border-amber-200 px-4 sm:px-6 py-2 text-xs text-amber-900 flex items-center justify-between gap-2 no-print">
                 <span><i class="fas fa-pen-to-square text-amber-600 mr-1.5"></i><strong>Mode Edit Rekap Aktif:</strong> Anda dapat mengedit nama/kelas siswa, mengubah nama Kepala Sekolah / Koordinator BK pada lembar surat, atau membuka riwayat pelanggaran siswa langsung dari tabel.</span>
                 <button type="button" onclick="setModePratinjauCetak('lihat')" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-3 py-1 rounded-lg text-[11px] whitespace-nowrap">Selesai Edit</button>
             </div>
 
-            <!-- Area Lembar Kertas Pratinjau (A4 Style) -->
             <div class="p-3 sm:p-6 overflow-y-auto flex-grow bg-slate-200/80">
                 <div id="print-preview-sheet" class="bg-white max-w-3xl mx-auto p-5 sm:p-8 rounded-xl shadow-md border border-slate-300 text-slate-900">
-                    <!-- Kop Surat Resmi Sekolah -->
                     <div class="border-b-2 border-slate-900 pb-3 mb-4 text-center">
                         <p class="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-600">Pemerintah Kota Banjarmasin • Dinas Pendidikan</p>
                         <h2 class="text-base sm:text-xl font-black uppercase tracking-tight text-slate-900 mt-0.5">SMP Negeri 29 Banjarmasin</h2>
                         <p id="print-kop-subjudul" class="text-[11px] text-slate-600">Laporan Rekapitulasi Poin Pelanggaran & Kedisiplinan Siswa</p>
                     </div>
 
-                    <!-- Metadata Laporan -->
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs mb-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
                         <div>
                             <span class="text-slate-500 block text-[10px] uppercase">Filter Kelas</span>
@@ -1471,7 +1469,6 @@
                         </div>
                     </div>
 
-                    <!-- Tabel Rekapitulasi Cetak -->
                     <table class="w-full table-fixed border-collapse border border-slate-300 text-[11px] sm:text-xs">
                         <thead>
                             <tr class="bg-slate-100 text-slate-800 font-bold uppercase">
@@ -1483,12 +1480,9 @@
                                 <th class="border border-slate-300 py-2 px-2 w-[20%] text-center" id="print-th-kolom-akhir">Status Sanksi</th>
                             </tr>
                         </thead>
-                        <tbody id="print-preview-tbody">
-                            <!-- Diisi via JS -->
-                        </tbody>
+                        <tbody id="print-preview-tbody"></tbody>
                     </table>
 
-                    <!-- Blok Tanda Tangan -->
                     <div class="grid grid-cols-2 gap-6 mt-8 pt-4 text-xs text-center">
                         <div>
                             <p class="text-slate-600">Mengetahui,</p>
@@ -1523,7 +1517,6 @@
                 </button>
             </div>
             
-            <!-- Tab Switcher Satuan vs Massal Excel -->
             <div class="flex border-b border-slate-200 bg-slate-50 text-xs font-bold">
                 <button type="button" id="tab-btn-satuan" onclick="switchTabTambahSiswa('satuan')" class="flex-1 py-3 text-emerald-700 border-b-2 border-emerald-600 bg-white">
                     <i class="fas fa-user mr-1"></i> Input 1 Siswa
@@ -1533,7 +1526,6 @@
                 </button>
             </div>
 
-            <!-- Form 1: Satuan -->
             <form id="form-tambah-satuan" onsubmit="handleTambahSiswa(event)" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap Siswa</label>
@@ -1564,7 +1556,6 @@
                 </button>
             </form>
 
-            <!-- Form 2: Paste Massal dari Excel -->
             <form id="form-tambah-massal" onsubmit="handleTambahSiswaMassal(event)" class="hidden p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1">Masukkan ke Kelas Tujuan</label>
@@ -1623,7 +1614,6 @@
 
     <!-- ==================== BOTTOM NAVIGATION BAR (KHUSUS ANDROID MENU) ==================== -->
     <nav id="android-bottom-nav" class="hidden fixed bottom-3 left-1/2 -translate-x-1/2 w-[calc(100%-1.5rem)] max-w-[464px] bg-white/90 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-[0_12px_32px_rgba(15,23,42,0.18)] z-40 px-2 py-1.5 no-print">
-        <!-- Menu Bawah Portal Siswa -->
         <div id="android-nav-siswa" class="grid grid-cols-3 gap-1.5">
             <button type="button" onclick="switchAndroidTab('siswa-cek')" id="nav-tab-siswa-cek" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
                 <i class="fas fa-search text-base mb-0.5"></i>
@@ -1639,7 +1629,6 @@
             </button>
         </div>
 
-        <!-- Menu Bawah Dashboard Guru / BK -->
         <div id="android-nav-guru" class="hidden grid grid-cols-4 gap-1">
             <button type="button" onclick="switchAndroidTab('guru-input')" id="nav-tab-guru-input" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
                 <i class="fas fa-bolt text-base mb-0.5"></i>
@@ -1660,65 +1649,6 @@
         </div>
     </nav>
 
-    <!-- ==================== MODAL PENGATURAN KONEKSI CLOUD (UNTUK GITHUB PAGES & LINTAS PERANGKAT) ==================== -->
-    <div id="modal-cloud-config" class="hidden fixed inset-0 bg-slate-900/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in">
-            <div class="bg-slate-900 text-white px-5 py-4 flex justify-between items-center">
-                <h3 class="font-bold text-sm sm:text-base flex items-center gap-2">
-                    <i class="fas fa-cloud text-amber-400"></i>
-                    <span>Penyimpanan Permanen Lintas Perangkat</span>
-                </h3>
-                <button type="button" onclick="closeModalCloudConfig()" class="text-slate-300 hover:text-white">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="p-5 space-y-4 text-xs text-slate-700">
-                <div id="cloud-config-status-box" class="p-3.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 space-y-1">
-                    <p class="font-bold"><i class="fas fa-globe mr-1"></i> Sinkronisasi Otomatis Semua Perangkat</p>
-                    <p class="leading-relaxed">Agar data tersimpan permanen saat dibuka di HP/Laptop berbeda (termasuk lewat link GitHub Pages), pilih salah satu cara di bawah:</p>
-                </div>
-
-                <!-- Cara 1: Buat / Masukkan Kode Sinkronisasi Sekolah (1-Klik Tanpa Akun) -->
-                <div class="p-3.5 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2.5">
-                    <div class="flex items-center justify-between">
-                        <span class="font-bold text-blue-950"><i class="fas fa-key text-blue-600 mr-1"></i> Cara 1: Kode Sinkronisasi Instan (Gratis)</span>
-                        <span class="text-[10px] font-bold bg-blue-600 text-white px-2 py-0.5 rounded-full">Paling Mudah</span>
-                    </div>
-                    <p class="text-[11px] text-slate-600">Klik <strong>Buat Kode Baru</strong> di perangkat pertama, lalu masukkan kode yang sama di perangkat lain (atau salin link otomatisnya).</p>
-                    <div class="flex gap-1.5">
-                        <input type="text" id="input-sync-room-code" placeholder="Masukkan Kode Sinkronisasi..." class="flex-1 px-3 py-2 bg-white border border-blue-300 rounded-xl font-mono text-xs font-bold text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
-                        <button type="button" onclick="buatKodeSinkronBaru()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-2 rounded-xl text-[11px] whitespace-nowrap shadow-xs">
-                            <i class="fas fa-magic mr-1"></i>Buat Kode
-                        </button>
-                    </div>
-                    <div class="flex gap-1.5">
-                        <button type="button" onclick="hubungkanKodeSinkron()" class="flex-1 bg-blue-700 hover:bg-blue-800 text-white font-bold py-2 rounded-xl text-xs shadow-xs">
-                            <i class="fas fa-link mr-1"></i> Hubungkan Kode Ini
-                        </button>
-                        <button type="button" onclick="salinLinkSinkronisasi()" class="bg-white hover:bg-blue-100 text-blue-800 border border-blue-300 font-bold px-3 py-2 rounded-xl text-xs">
-                            <i class="fas fa-copy mr-1"></i> Salin Link
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Cara 2: Konfigurasi Server Cloud Mandiri (Opsional) -->
-                <details class="border border-slate-200 rounded-xl p-3 bg-slate-50">
-                    <summary class="font-bold text-slate-700 cursor-pointer">Cara 2: Tempel Konfigurasi Web App Cloud (Opsional)</summary>
-                    <div class="mt-2.5 space-y-2">
-                        <textarea id="input-manual-cloud-config" rows="3" placeholder='{"apiKey": "AIzaSy...", "authDomain": "...", "projectId": "...", "appId": "..."}' class="w-full p-2 bg-white border border-slate-300 rounded-lg font-mono text-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600"></textarea>
-                        <button type="button" onclick="simpanManualCloudConfig()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-2 rounded-lg text-xs">
-                            Hubungkan Konfigurasi JSON
-                        </button>
-                    </div>
-                </details>
-
-                <div class="flex justify-end pt-1">
-                    <button type="button" onclick="closeModalCloudConfig()" class="px-4 py-2 rounded-xl font-semibold text-slate-600 hover:bg-slate-100">Tutup</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- ==================== FOOTER ==================== -->
     <footer class="bg-white border-t border-slate-200 py-5 px-4 text-center text-xs text-slate-600 mt-auto no-print space-y-1">
         <p class="font-semibold text-slate-800">Created with ❤️ by <span class="text-blue-800 font-bold">M.abbqari Wahyudi,S.Psi</span></p>
@@ -1732,11 +1662,7 @@
     </div>
 
     <!-- ==================== JAVASCRIPT LOGIC ==================== -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
+    <script>
         // 1. DATABASE LENGKAP 255 SISWA SMP NEGERI 29 BANJARMASIN
         const rawDaftarSiswa = [
             // VII A (32 Siswa)
@@ -1819,25 +1745,27 @@
             ["Vita", "IX C"]
         ];
 
-        // Bangun array objek dataSiswa dengan PIN unik otomatis
-        let dataSiswa = rawDaftarSiswa.map((item, idx) => {
-            const tingkatCode = item[1].startsWith("IX") ? "09" : item[1].startsWith("VIII") ? "08" : "07";
-            return {
-                id: idx + 1,
-                nama: item[0],
-                kelas: item[1],
-                pin: `29${tingkatCode}${String((idx % 99) + 1).padStart(2, '0')}`,
-                riwayat: []
-            };
-        });
+        function buatDataAwalSiswa() {
+            return rawDaftarSiswa.map((item, idx) => {
+                const tingkatCode = item[1].startsWith("IX") ? "09" : item[1].startsWith("VIII") ? "08" : "07";
+                return {
+                    id: idx + 1,
+                    nama: item[0],
+                    kelas: item[1],
+                    pin: `29${tingkatCode}${String((idx % 99) + 1).padStart(2, '0')}`,
+                    riwayat: []
+                };
+            });
+        }
+
+        let dataSiswa = buatDataAwalSiswa();
 
         // Kredensial Guru / BK
         const GURU_USER = "bk29";
         const GURU_PASS = "smpn29bjm";
 
-        // Daftar Lengkap 67 Tata Tertib Resmi SMPN 29 Banjarmasin untuk Pencarian Kilat
+        // Daftar Lengkap 67 Tata Tertib Resmi SMPN 29 Banjarmasin
         const daftarTataTertib = [
-            // KELAKUAN & KEPRIBADIAN
             { grp: "KELAKUAN", val: "[I.1.01] Tidak sopan kepada guru / karyawan|20", label: "01. Tidak sopan kepada guru / karyawan", poin: 20 },
             { grp: "KELAKUAN", val: "[I.1.02] Mengancam atau mengintimidasi|30", label: "02. Mengancam atau mengintimidasi", poin: 30 },
             { grp: "KELAKUAN", val: "[I.1.03] Mencuri / memalak di lingkungan sekolah|20", label: "03. Mencuri / memalak di lingkungan sekolah", poin: 20 },
@@ -1860,7 +1788,6 @@
             { grp: "KELAKUAN", val: "[I.2.09] Masuk Ruang Kepsek/Guru/TU/Lab/BK tanpa izin|5", label: "09. Masuk ruang kantor/lab/BK tanpa izin", poin: 5 },
             { grp: "KELAKUAN", val: "[I.2.10] Membuang sampah tidak pada tempatnya|5", label: "10. Membuang sampah tidak pada tempatnya", poin: 5 },
             { grp: "KELAKUAN", val: "[I.2.11] Tidak tertib saat upacara|5", label: "11. Tidak tertib saat upacara", poin: 5 },
-            // ROKOK, MEDIA, SENJATA, NARKOBA, PERKELAHIAN, PERGAULAN BEBAS
             { grp: "BERAT", val: "[I.3.01] Membawa / menghisap rokok di sekolah|30", label: "Rokok 01. Membawa/menghisap rokok di sekolah", poin: 30 },
             { grp: "BERAT", val: "[I.3.02] Merokok berseragam di luar sekolah|25", label: "Rokok 02. Merokok berseragam di luar sekolah", poin: 25 },
             { grp: "BERAT", val: "[I.4.01] Membawa buku/majalah/gambar terlarang|25", label: "Media 01. Membawa buku/gambar terlarang", poin: 25 },
@@ -1889,7 +1816,6 @@
             { grp: "KELAKUAN", val: "[I.8.08] Mengirim stiker grup menyinggung/merendahkan|25", label: "Medsos 08. Stiker grup menyinggung/merendahkan", poin: 25 },
             { grp: "BERAT", val: "[I.8.09] Menikah atau berzina|300", label: "Pergaulan 09. Menikah atau berzina", poin: 300 },
             { grp: "BERAT", val: "[I.8.10] Siswa hamil|300", label: "Pergaulan 10. Siswa hamil", poin: 300 },
-            // TUGAS & KETERLAMBATAN
             { grp: "TUGAS", val: "[II.1.01] Terlambat (per hari)|1", label: "01. Terlambat per hari", poin: 1 },
             { grp: "TUGAS", val: "[II.1.02] Terlambat >5 kali dalam 1 minggu|5", label: "02. Terlambat >5 kali dalam 1 minggu", poin: 5 },
             { grp: "TUGAS", val: "[II.1.03] Terlambat masuk karena izin keluar|3", label: "03. Terlambat masuk karena izin keluar", poin: 3 },
@@ -1910,7 +1836,6 @@
             { grp: "TUGAS", val: "[II.1.08c] Tidak ikut ekstrakurikuler (ke-3 dst)|15", label: "08c. Tidak ikut ekstrakurikuler ke-3 dst", poin: 15 },
             { grp: "TUGAS", val: "[II.1.09] Ketinggalan kartu ulangan|10", label: "09. Ketinggalan kartu ulangan", poin: 10 },
             { grp: "TUGAS", val: "[II.1.10] Membolos|20", label: "10. Membolos", poin: 20 },
-            // SERAGAM & KEDISIPLINAN FISIK
             { grp: "SERAGAM", val: "[II.2.01] Berambut gondrong / panjang (>3 cm)|10", label: "01. Berambut gondrong / panjang (>3 cm)", poin: 10 },
             { grp: "SERAGAM", val: "[II.2.02] Model rambut tidak sesuai ketentuan|10", label: "02. Model rambut tidak sesuai ketentuan", poin: 10 },
             { grp: "SERAGAM", val: "[II.2.03] Semir rambut, lipstik, kutek, dll|10", label: "03. Semir rambut, lipstik, kutek, dll", poin: 10 },
@@ -1926,234 +1851,162 @@
         ];
         let activeTabKategori = 'SEMUA';
 
-        // Set tanggal hari ini pada form input guru saat halaman dimuat
-        window.onload = async function() {
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('guru-tanggal').value = today;
-            muatCadanganLokal();
-            await initCloudStorage();
-        };
+        // ==================== DATABASE PERMANEN SUPER SIMPEL (LOCALSTORAGE + INDEXEDDB) ====================
+        const DB_KEY = 'smpn29_bjm_database_permanen_v1';
+        const IDB_NAME = 'SMPN29_BJM_DB';
+        const IDB_STORE = 'master_store';
 
-        // ==================== PENYIMPANAN PERMANEN LINTAS PERANGKAT ====================
-        // Kode Default Sinkronisasi Sekolah (otomatis terhubung di semua perangkat & GitHub Pages)
-        const DEFAULT_SCHOOL_SYNC_ID = "88823c1a-7f24-4b9e-91c2-smpn29bjm001";
-        let MANUAL_FIREBASE_CONFIG = null;
-        const STORAGE_KEY_SMPN29 = 'smpn29_bjm_bk_data_v1';
-        let cloudDb = null;
-        let cloudDocRef = null;
-        let isCloudReady = false;
-        let activeSyncMode = 'none'; // 'firestore' | 'jsonblob' | 'none'
-        let activeSyncRoomId = '';
-        let sedangMenyimpanCloud = false;
-        let lastLocalUpdateTs = 0;
-        let pollingIntervalId = null;
-
-        function ambilKodeSinkronAktif() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const kodeDariUrl = urlParams.get('sync');
-            if (kodeDariUrl && kodeDariUrl.trim().length > 5) {
-                return kodeDariUrl.trim();
-            }
-            if (window.location.hash && window.location.hash.startsWith('#sync=')) {
-                const kodeHash = window.location.hash.replace('#sync=', '').trim();
-                if (kodeHash.length > 5) return kodeHash;
-            }
-            return activeSyncRoomId || '';
-        }
-
-        function openModalCloudConfig() {
-            const statusBox = document.getElementById('cloud-config-status-box');
-            const inputKode = document.getElementById('input-sync-room-code');
-            if (inputKode && activeSyncRoomId) {
-                inputKode.value = activeSyncRoomId;
-            }
-            if (isCloudReady) {
-                statusBox.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 space-y-1";
-                statusBox.innerHTML = `<p class="font-bold"><i class="fas fa-check-circle mr-1"></i> Terhubung Permanen Lintas Perangkat!</p><p>Semua perubahan poin, siswa baru, dan kenaikan kelas tersimpan otomatis ke server cloud dan dapat dibuka dari perangkat lain.</p>`;
-            }
-            document.getElementById('modal-cloud-config').classList.remove('hidden');
-        }
-
-        function closeModalCloudConfig() {
-            document.getElementById('modal-cloud-config').classList.add('hidden');
-        }
-
-        async function buatKodeSinkronBaru() {
-            try {
-                updateSyncBadge('saving', 'Membuat Kode Cloud...');
-                const res = await fetch('https://jsonblob.com/api/jsonBlob', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sekolah: 'SMPN 29 Banjarmasin',
-                        siswa: dataSiswa,
-                        updatedAt: new Date().toISOString()
-                    })
-                });
-                if (!res.ok) throw new Error('Gagal membuat ruang cloud');
-                const locationHeader = res.headers.get('Location') || res.headers.get('X-jsonblob') || '';
-                const blobId = locationHeader.split('/').pop();
-                if (!blobId) throw new Error('ID ruang tidak diterima');
-
-                activeSyncRoomId = blobId;
-                activeSyncMode = 'jsonblob';
-                isCloudReady = true;
-                document.getElementById('input-sync-room-code').value = blobId;
-                try {
-                    window.history.replaceState(null, '', `#sync=${blobId}`);
-                } catch (e) {}
-                mulaiPollingJsonBlob();
-                updateSyncBadge('online', 'Tersimpan Cloud');
-                openModalCloudConfig();
-                showToast("Kode Sinkronisasi berhasil dibuat! Bagikan link/kode ini ke perangkat lain.");
-            } catch (err) {
-                updateSyncBadge('offline', 'Gagal Buat Kode');
-                showToast("Gagal membuat kode sinkronisasi. Periksa koneksi internet Anda.");
-            }
-        }
-
-        async function hubungkanKodeSinkron(kodeOverride = null) {
-            const kode = (kodeOverride || document.getElementById('input-sync-room-code').value || '').trim();
-            if (!kode) {
-                showToast("Masukkan Kode Sinkronisasi terlebih dahulu!");
-                return;
-            }
-            try {
-                updateSyncBadge('saving', 'Menghubungkan...');
-                const res = await fetch(`https://jsonblob.com/api/jsonBlob/${encodeURIComponent(kode)}`, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                if (!res.ok) throw new Error('Kode tidak ditemukan');
-                const payload = await res.json();
-                activeSyncRoomId = kode;
-                activeSyncMode = 'jsonblob';
-                isCloudReady = true;
-
-                if (payload && Array.isArray(payload.siswa) && payload.siswa.length > 0) {
-                    dataSiswa = payload.siswa;
-                    simpanCadanganLokal();
-                    if (!document.getElementById('view-guru').classList.contains('hidden')) {
-                        refreshDashboardGuru();
+        function bukaIndexedDB() {
+            return new Promise((resolve) => {
+                if (!window.indexedDB) return resolve(null);
+                const req = indexedDB.open(IDB_NAME, 1);
+                req.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(IDB_STORE)) {
+                        db.createObjectStore(IDB_STORE);
                     }
-                } else {
-                    await simpanKeCloud();
-                }
+                };
+                req.onsuccess = (e) => resolve(e.target.result);
+                req.onerror = () => resolve(null);
+            });
+        }
 
-                try {
-                    window.history.replaceState(null, '', `#sync=${kode}`);
-                } catch (e) {}
-                mulaiPollingJsonBlob();
-                updateSyncBadge('online', 'Tersimpan Cloud');
-                if (!kodeOverride) {
-                    closeModalCloudConfig();
-                    showToast("Berhasil terhubung! Data sinkron otomatis di semua perangkat.");
+        async function simpanDatabasePermanen() {
+            const payload = {
+                key: DB_KEY,
+                updatedAt: Date.now(),
+                siswa: dataSiswa
+            };
+            const jsonStr = JSON.stringify(payload);
+
+            // 1. Simpan ke LocalStorage
+            try { localStorage.setItem(DB_KEY, jsonStr); } catch (e) {}
+
+            // 2. Simpan ke window.name (cadangan sesi anti-hilang)
+            try { window.name = jsonStr; } catch (e) {}
+
+            // 3. Simpan ke IndexedDB (kapasitas besar & permanen di browser)
+            try {
+                const db = await bukaIndexedDB();
+                if (db) {
+                    const tx = db.transaction(IDB_STORE, 'readwrite');
+                    tx.objectStore(IDB_STORE).put(payload, DB_KEY);
                 }
-            } catch (err) {
-                updateSyncBadge('offline', 'Kode Tidak Valid');
-                if (!kodeOverride) {
-                    showToast("Kode Sinkronisasi tidak ditemukan atau koneksi bermasalah.");
-                }
+            } catch (e) {}
+
+            updateIndikatorMemori();
+            const badge = document.getElementById('cloud-sync-badge');
+            if (badge) {
+                badge.innerHTML = `<i class="fas fa-check-circle text-[9px] text-emerald-300"></i><span>Tersimpan Permanen</span>`;
             }
         }
 
-        function salinLinkSinkronisasi() {
-            if (!activeSyncRoomId) {
-                showToast("Klik 'Buat Kode' terlebih dahulu sebelum menyalin link!");
-                return;
-            }
-            const baseUrl = window.location.href.split('#')[0].split('?')[0];
-            const shareUrl = `${baseUrl}#sync=${activeSyncRoomId}`;
-            const tempInput = document.createElement('input');
-            tempInput.value = shareUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            showToast("Link sinkronisasi disalin! Buka link ini di HP/laptop lain.");
-        }
+        async function muatDatabasePermanen() {
+            let sumberTerbaru = null;
 
-        function mulaiPollingJsonBlob() {
-            if (pollingIntervalId) clearInterval(pollingIntervalId);
-            pollingIntervalId = setInterval(async () => {
-                if (activeSyncMode !== 'jsonblob' || !activeSyncRoomId || sedangMenyimpanCloud) return;
-                try {
-                    const res = await fetch(`https://jsonblob.com/api/jsonBlob/${encodeURIComponent(activeSyncRoomId)}`, {
-                        headers: { 'Accept': 'application/json' }
+            // Cek LocalStorage
+            try {
+                const rawLS = localStorage.getItem(DB_KEY);
+                if (rawLS) {
+                    const parsed = JSON.parse(rawLS);
+                    if (parsed && Array.isArray(parsed.siswa)) sumberTerbaru = parsed;
+                }
+            } catch (e) {}
+
+            // Cek IndexedDB (ambil yang paling baru jika ada)
+            try {
+                const db = await bukaIndexedDB();
+                if (db) {
+                    const dataIDB = await new Promise((resolve) => {
+                        const tx = db.transaction(IDB_STORE, 'readonly');
+                        const req = tx.objectStore(IDB_STORE).get(DB_KEY);
+                        req.onsuccess = () => resolve(req.result || null);
+                        req.onerror = () => resolve(null);
                     });
-                    if (!res.ok) return;
-                    const payload = await res.json();
-                    if (payload && Array.isArray(payload.siswa) && payload.siswa.length > 0) {
-                        dataSiswa = gabungkanDataSiswa(dataSiswa, payload.siswa);
-                        simpanCadanganLokal();
-                        if (!document.getElementById('view-guru').classList.contains('hidden')) {
-                            refreshDashboardGuru();
+                    if (dataIDB && Array.isArray(dataIDB.siswa)) {
+                        if (!sumberTerbaru || (dataIDB.updatedAt || 0) > (sumberTerbaru.updatedAt || 0)) {
+                            sumberTerbaru = dataIDB;
+                        }
+                    }
+                }
+            } catch (e) {}
+
+            // Cek window.name jika keduanya kosong
+            if (!sumberTerbaru) {
+                try {
+                    if (window.name && window.name.startsWith('{')) {
+                        const parsedWN = JSON.parse(window.name);
+                        if (parsedWN && parsedWN.key === DB_KEY && Array.isArray(parsedWN.siswa)) {
+                            sumberTerbaru = parsedWN;
                         }
                     }
                 } catch (e) {}
-            }, 8000);
-        }
-
-        async function simpanManualCloudConfig() {
-            const raw = document.getElementById('input-manual-cloud-config').value.trim();
-            if (!raw) {
-                showToast("Tempelkan konfigurasi JSON terlebih dahulu!");
-                return;
             }
-            try {
-                const normalized = raw.replace(/([{,]\s*)([a-zA-Z0-9_]+)\s*:/g, '$1"$2":').replace(/'/g, '"');
-                MANUAL_FIREBASE_CONFIG = JSON.parse(normalized);
-                closeModalCloudConfig();
-                updateSyncBadge('saving', 'Menghubungkan...');
-                await initCloudStorage();
-                if (isCloudReady) {
-                    await simpanKeCloud();
-                    showToast("Berhasil terhubung! Data kini tersimpan permanen.");
-                }
-            } catch (e) {
-                showToast("Format konfigurasi tidak valid. Pastikan tanda kurung kurawal { ... } lengkap.");
+
+            if (sumberTerbaru && Array.isArray(sumberTerbaru.siswa)) {
+                dataSiswa = sumberTerbaru.siswa;
+            } else {
+                // Pertama kali dibuka: langsung simpan 255 data awal ke database permanen
+                await simpanDatabasePermanen();
             }
         }
 
-        function muatCadanganLokal() {
-            try {
-                const rawLocal = localStorage.getItem(STORAGE_KEY_SMPN29);
-                if (rawLocal) {
-                    const parsedLocal = JSON.parse(rawLocal);
-                    if (parsedLocal && Array.isArray(parsedLocal.siswa)) {
-                        dataSiswa = parsedLocal.siswa;
-                        lastLocalUpdateTs = parsedLocal.updatedAt || 0;
-                        return;
+        window.onload = async function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('guru-tanggal').value = today;
+            await muatDatabasePermanen();
+            updateIndikatorMemori();
+        };
+
+        function openModalDatabaseSimpel() {
+            document.getElementById('modal-database-simpel').classList.remove('hidden');
+        }
+
+        function closeModalDatabaseSimpel() {
+            document.getElementById('modal-database-simpel').classList.add('hidden');
+        }
+
+        function eksporFileBackup() {
+            const dataStr = JSON.stringify({
+                sekolah: 'SMPN 29 Banjarmasin',
+                exportedAt: new Date().toISOString(),
+                siswa: dataSiswa
+            }, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const tgl = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `Database_Poin_SMPN29_${tgl}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast("File database berhasil diunduh!");
+        }
+
+        function imporFileBackup(event) {
+            const file = event.target.files?.[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    const listBaru = Array.isArray(parsed) ? parsed : parsed?.siswa;
+                    if (!Array.isArray(listBaru)) throw new Error('Format salah');
+                    dataSiswa = listBaru;
+                    await simpanDatabasePermanen();
+                    if (!document.getElementById('view-guru').classList.contains('hidden')) {
+                        refreshDashboardGuru();
                     }
+                    closeModalDatabaseSimpel();
+                    showToast(`Berhasil memuat ${dataSiswa.length} data siswa ke database permanen!`);
+                } catch (err) {
+                    showToast("File tidak valid. Pilih file .json hasil unduhan aplikasi.");
                 }
-                if (window.name && window.name.startsWith('{')) {
-                    const parsed = JSON.parse(window.name);
-                    if (parsed && parsed.key === STORAGE_KEY_SMPN29 && Array.isArray(parsed.siswa)) {
-                        dataSiswa = parsed.siswa;
-                        lastLocalUpdateTs = parsed.updatedAt || 0;
-                    }
-                }
-            } catch (e) {
-                // Abaikan jika penyimpanan lokal tidak dapat dibaca
-            }
-        }
-
-        function simpanCadanganLokal() {
-            try {
-                lastLocalUpdateTs = Date.now();
-                const payloadStr = JSON.stringify({
-                    key: STORAGE_KEY_SMPN29,
-                    siswa: dataSiswa,
-                    updatedAt: lastLocalUpdateTs
-                });
-                localStorage.setItem(STORAGE_KEY_SMPN29, payloadStr);
-                window.name = payloadStr;
-                updateIndikatorMemori();
-            } catch (e) {
-                // Abaikan jika penyimpanan lokal tidak dapat ditulis
-            }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
         }
 
         function updateIndikatorMemori() {
@@ -2175,7 +2028,7 @@
             }
 
             const kbUsed = totalBytes / 1024;
-            const maxBytes = 5 * 1024 * 1024; // 5.000 MB
+            const maxBytes = 5 * 1024 * 1024;
             const pct = Math.min(100, (totalBytes / maxBytes) * 100);
 
             const totalKasus = dataSiswa.reduce((acc, s) => acc + (s.riwayat ? s.riwayat.length : 0), 0);
@@ -2231,188 +2084,18 @@
                 showToast("Semua riwayat jurnal pelanggaran berhasil dihapus.");
             } else if (jenis === 'total') {
                 dataSiswa = [];
-                try {
-                    localStorage.removeItem(STORAGE_KEY_SMPN29);
-                    window.name = '';
-                } catch (e) {}
                 showToast("RESET TOTAL APLIKASI berhasil! Aplikasi dimulai dari nol.");
             }
 
             antreanSiswaTerpilih = [];
             renderAntreanSiswa();
             refreshDashboardGuru();
-            await simpanKeCloud();
+            await simpanDatabasePermanen();
         }
 
         async function simpanPengaturanStorage() {
-            simpanCadanganLokal();
-            await simpanKeCloud();
-            updateIndikatorMemori();
-            showToast("Pengaturan & data penyimpanan lokal berhasil disimpan!");
-        }
-
-        function gabungkanDataSiswa(lokalList, cloudList) {
-            if (!Array.isArray(cloudList) || cloudList.length === 0) return lokalList;
-            if (!Array.isArray(lokalList) || lokalList.length === 0) return cloudList;
-
-            // Jika lokal punya perubahan lebih baru dalam 5 detik terakhir, pertahankan perubahan lokal
-            if (Date.now() - lastLocalUpdateTs < 5000) {
-                return lokalList;
-            }
-            return cloudList;
-        }
-
-        function updateSyncBadge(status, text) {
-            const badge = document.getElementById('cloud-sync-badge');
-            if (!badge) return;
-            if (status === 'online') {
-                badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30";
-                badge.innerHTML = `<i class="fas fa-cloud-check text-[9px] text-emerald-300"></i><span>${text}</span>`;
-            } else if (status === 'saving') {
-                badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-200 border border-amber-400/30";
-                badge.innerHTML = `<i class="fas fa-sync fa-spin text-[9px] text-amber-300"></i><span>${text}</span>`;
-            } else {
-                badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/20 text-amber-200 border border-amber-400/30";
-                badge.innerHTML = `<i class="fas fa-exclamation-triangle text-[9px] text-amber-300"></i><span>${text}</span>`;
-            }
-        }
-
-        async function initCloudStorage() {
-            try {
-                const rawConfig = (typeof __firebase_config !== 'undefined' && __firebase_config)
-                    ? JSON.parse(__firebase_config)
-                    : MANUAL_FIREBASE_CONFIG;
-
-                // Prioritas 1: Jika ada kode sinkronisasi di URL (#sync=...)
-                const kodeUrl = ambilKodeSinkronAktif();
-                if (kodeUrl) {
-                    await hubungkanKodeSinkron(kodeUrl);
-                    if (isCloudReady) return;
-                }
-
-                // Prioritas 2: Gunakan Firestore bawaan jika tersedia
-                if (rawConfig) {
-                    const appId = typeof __app_id !== 'undefined' ? __app_id : 'smpn29-banjarmasin-bk';
-                    const app = initializeApp(rawConfig);
-                    const auth = getAuth(app);
-                    cloudDb = getFirestore(app);
-
-                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                        await signInWithCustomToken(auth, __initial_auth_token);
-                    } else {
-                        await signInAnonymously(auth);
-                    }
-
-                    if (auth.currentUser) {
-                        cloudDocRef = doc(cloudDb, 'artifacts', appId, 'public', 'data', 'smpn29_bk_records', 'master_siswa_v1');
-
-                        onSnapshot(cloudDocRef, async (snapshot) => {
-                            if (sedangMenyimpanCloud) return;
-                            if (snapshot.exists()) {
-                                const payload = snapshot.data();
-                                if (payload && Array.isArray(payload.siswa) && payload.siswa.length > 0) {
-                                    dataSiswa = gabungkanDataSiswa(dataSiswa, payload.siswa);
-                                    simpanCadanganLokal();
-                                    if (!document.getElementById('view-guru').classList.contains('hidden')) {
-                                        refreshDashboardGuru();
-                                    }
-                                    if (!document.getElementById('modal-pratinjau-cetak').classList.contains('hidden')) {
-                                        renderPratinjauCetak();
-                                    }
-                                }
-                                activeSyncMode = 'firestore';
-                                isCloudReady = true;
-                                updateSyncBadge('online', 'Tersimpan Cloud');
-                            } else {
-                                activeSyncMode = 'firestore';
-                                isCloudReady = true;
-                                await simpanKeCloud();
-                            }
-                        }, (error) => {
-                            console.error("Gagal sinkronisasi Firestore:", error);
-                            updateSyncBadge('offline', 'Klik Sinkron Cloud');
-                        });
-                        return;
-                    }
-                }
-
-                // Prioritas 3 (Untuk GitHub Pages langsung): Buat ruang sinkronisasi otomatis agar tidak pernah offline
-                await buatKodeSinkronOtomatisSilent();
-            } catch (err) {
-                console.error("Inisialisasi penyimpanan:", err);
-                await buatKodeSinkronOtomatisSilent();
-            }
-        }
-
-        async function buatKodeSinkronOtomatisSilent() {
-            try {
-                const res = await fetch('https://jsonblob.com/api/jsonBlob', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        sekolah: 'SMPN 29 Banjarmasin',
-                        siswa: dataSiswa,
-                        updatedAt: new Date().toISOString()
-                    })
-                });
-                if (!res.ok) throw new Error('Offline');
-                const locationHeader = res.headers.get('Location') || res.headers.get('X-jsonblob') || '';
-                const blobId = locationHeader.split('/').pop();
-                if (!blobId) throw new Error('No ID');
-
-                activeSyncRoomId = blobId;
-                activeSyncMode = 'jsonblob';
-                isCloudReady = true;
-                try {
-                    window.history.replaceState(null, '', `#sync=${blobId}`);
-                } catch (e) {}
-                mulaiPollingJsonBlob();
-                updateSyncBadge('online', 'Tersimpan Cloud');
-            } catch (e) {
-                updateSyncBadge('offline', 'Klik Sinkron Cloud');
-            }
-        }
-
-        async function simpanKeCloud() {
-            simpanCadanganLokal();
-            if (!isCloudReady) {
-                updateSyncBadge('offline', 'Klik Sinkron Cloud');
-                return;
-            }
-            try {
-                sedangMenyimpanCloud = true;
-                updateSyncBadge('saving', 'Menyimpan...');
-
-                if (activeSyncMode === 'firestore' && cloudDocRef) {
-                    await setDoc(cloudDocRef, {
-                        siswa: dataSiswa,
-                        updatedAt: new Date().toISOString()
-                    });
-                } else if (activeSyncMode === 'jsonblob' && activeSyncRoomId) {
-                    await fetch(`https://jsonblob.com/api/jsonBlob/${encodeURIComponent(activeSyncRoomId)}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            sekolah: 'SMPN 29 Banjarmasin',
-                            siswa: dataSiswa,
-                            updatedAt: new Date().toISOString()
-                        })
-                    });
-                }
-
-                updateSyncBadge('online', 'Tersimpan Cloud');
-            } catch (err) {
-                console.error("Gagal menyimpan ke cloud:", err);
-                updateSyncBadge('offline', 'Gagal Cloud');
-            } finally {
-                sedangMenyimpanCloud = false;
-            }
+            await simpanDatabasePermanen();
+            showToast("Seluruh data & pengaturan berhasil disimpan permanen!");
         }
 
         // ==================== FUNGSI PORTAL SISWA ====================
@@ -2505,8 +2188,6 @@
             const rincian = hitungRincianPoin(siswa);
             const totalPoin = rincian.total;
             document.getElementById('res-total-poin').textContent = totalPoin;
-            document.getElementById('res-label-sekarang').innerHTML = `Kelas Saat Ini [${rincian.labelKelasSekarang}]: <strong>${rincian.saatIni}</strong>`;
-            document.getElementById('res-label-sebelumnya').innerHTML = `Kelas Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong>${rincian.sebelumnya}</strong>`;
             document.getElementById('res-rincian-tingkat').innerHTML = `
                 <span id="res-label-sekarang" class="bg-white/65 px-2 py-0.5 rounded">Kelas Saat Ini [${rincian.labelKelasSekarang}]: <strong>${rincian.saatIni}</strong></span>
                 <span id="res-label-sebelumnya" class="bg-white/65 px-2 py-0.5 rounded">Kelas Sebelumnya [${rincian.labelKelasSebelumnya}]: <strong>${rincian.sebelumnya}</strong></span>
@@ -2595,13 +2276,6 @@
             document.getElementById('icon-eye').classList.remove('fa-eye-slash');
             document.getElementById('icon-eye').classList.add('fa-eye');
             document.getElementById('alert-gagal').classList.add('hidden');
-
-            document.getElementById('res-nama').textContent = '-';
-            document.getElementById('res-kelas').textContent = '-';
-            document.getElementById('res-total-poin').textContent = '0';
-            document.getElementById('res-label-sekarang').textContent = 'Kelas Saat Ini: 0';
-            document.getElementById('res-label-sebelumnya').textContent = 'Kelas Sebelumnya: 0';
-            document.getElementById('res-tabel-riwayat').innerHTML = '';
         }
 
         // ==================== FUNGSI LOGIN & DASHBOARD GURU ====================
@@ -2638,8 +2312,8 @@
             }
         }
 
-        function logoutGuru() {
-            simpanKeCloud();
+        async function logoutGuru() {
+            await simpanDatabasePermanen();
             document.getElementById('view-guru').classList.add('hidden');
             document.getElementById('view-siswa').classList.remove('hidden');
             document.getElementById('btn-nav-logout').classList.add('hidden');
@@ -2673,7 +2347,6 @@
                 bottomNav.classList.add('hidden');
                 if (quickKelasBar) quickKelasBar.classList.add('hidden');
 
-                // Kembalikan semua kartu agar terlihat utuh di Website Menu
                 document.getElementById('siswa-card-cek').classList.remove('hidden');
                 document.getElementById('siswa-card-info').classList.add('hidden');
                 document.getElementById('siswa-card-demo').classList.remove('hidden');
@@ -2770,7 +2443,7 @@
             updateIndikatorMemori();
         }
 
-        // ==================== SISTEM INPUT SUPER CEPAT (MULTI-SISWA & 1-KLIK) ====================
+        // ==================== SISTEM INPUT SUPER CEPAT ====================
         let antreanSiswaTerpilih = [];
         let riwayatUndoTerakhir = null;
         let filterKelasCepatInput = 'ALL';
@@ -3032,14 +2705,13 @@
             document.getElementById('text-undo-terakhir').textContent = `Tercatat: ${labelUndo}`;
             document.getElementById('box-undo-terakhir').classList.remove('hidden');
 
-            // Reset antrean siswa dan catatan setelah simpan
             antreanSiswaTerpilih = [];
             renderAntreanSiswa();
             document.getElementById('guru-catatan').value = '';
 
             refreshDashboardGuru();
-            simpanKeCloud();
-            showToast(`⚡ Tercatat +${poin} poin untuk ${labelUndo}!`);
+            simpanDatabasePermanen();
+            showToast(`⚡ Tersimpan permanen: +${poin} poin untuk ${labelUndo}!`);
             document.getElementById('guru-pilih-siswa').focus();
         }
 
@@ -3056,7 +2728,7 @@
             riwayatUndoTerakhir = null;
             document.getElementById('box-undo-terakhir').classList.add('hidden');
             refreshDashboardGuru();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast("Catatan pelanggaran terakhir dibatalkan!");
         }
 
@@ -3146,7 +2818,7 @@
             const kelasLama = siswa.kelas;
             siswa.kelas = kelasBaru;
             renderTabelMaster();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast(`${siswa.nama} dipindahkan: ${kelasLama} → ${kelasBaru}`);
         }
 
@@ -3237,8 +2909,8 @@
 
             closeModalKenaikanKelas();
             refreshDashboardGuru();
-            simpanKeCloud();
-            showToast(`${tercentangIds.length} siswa naik ke ${kelasTujuan} (${tinggalCount} tinggal di ${kelasAsal}). Total poin tetap terakumulasi.`);
+            simpanDatabasePermanen();
+            showToast(`${tercentangIds.length} siswa naik ke ${kelasTujuan} (${tinggalCount} tinggal di ${kelasAsal}).`);
         }
 
         function bukaDetailGuru(siswaId) {
@@ -3429,8 +3101,8 @@
 
             bukaDetailGuru(siswaId);
             refreshDashboardGuru();
-            simpanKeCloud();
-            showToast(`Perubahan pelanggaran ${siswa.nama} berhasil disimpan!`);
+            simpanDatabasePermanen();
+            showToast(`Perubahan pelanggaran ${siswa.nama} berhasil disimpan permanen!`);
         }
 
         function hapusSatuPelanggaran(siswaId, riwayatId) {
@@ -3439,7 +3111,7 @@
             siswa.riwayat = siswa.riwayat.filter(r => r.id !== riwayatId);
             bukaDetailGuru(siswaId);
             refreshDashboardGuru();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast("Catatan pelanggaran berhasil dihapus!");
         }
 
@@ -3495,8 +3167,8 @@
             document.getElementById('form-tambah-satuan').reset();
             closeModalTambahSiswa();
             refreshDashboardGuru();
-            simpanKeCloud();
-            showToast(`Siswa baru "${nama}" (${kelas}) berhasil ditambahkan!`);
+            simpanDatabasePermanen();
+            showToast(`Siswa baru "${nama}" (${kelas}) berhasil disimpan!`);
         }
 
         function handleTambahSiswaMassal(event) {
@@ -3513,7 +3185,7 @@
             let maxId = dataSiswa.reduce((max, s) => Math.max(max, s.id), 0);
             const tingkatCode = kelasTujuan.startsWith("IX") ? "09" : kelasTujuan.startsWith("VIII") ? "08" : "07";
 
-            barisNama.forEach((nama, idx) => {
+            barisNama.forEach((nama) => {
                 maxId++;
                 const autoPin = `29${tingkatCode}${String((maxId % 99) + 1).padStart(2, '0')}`;
                 dataSiswa.push({
@@ -3528,7 +3200,7 @@
             document.getElementById('form-tambah-massal').reset();
             closeModalTambahSiswa();
             refreshDashboardGuru();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast(`${barisNama.length} siswa baru berhasil diimpor ke kelas ${kelasTujuan}!`);
         }
 
@@ -3537,7 +3209,7 @@
             if (!siswa) return;
             dataSiswa = dataSiswa.filter(s => s.id !== siswaId);
             refreshDashboardGuru();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast(`Data siswa "${siswa.nama}" telah dihapus.`);
         }
 
@@ -3550,7 +3222,6 @@
                 selectPrint.value = filterAktif;
             }
 
-            // Inisialisasi pilihan tahun & bulan saat ini
             const now = new Date();
             const tahunSkrg = now.getFullYear();
             const bulanSkrg = String(now.getMonth() + 1).padStart(2, '0');
@@ -3629,7 +3300,7 @@
             if (!siswa || !bersih || siswa.nama === bersih) return;
             siswa.nama = bersih;
             refreshDashboardGuru();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast(`Nama diperbarui menjadi "${bersih}"`);
         }
 
@@ -3639,7 +3310,7 @@
             siswa.kelas = kelasBaru;
             refreshDashboardGuru();
             renderPratinjauCetak();
-            simpanKeCloud();
+            simpanDatabasePermanen();
             showToast(`Kelas ${siswa.nama} diubah ke ${kelasBaru}`);
         }
 
@@ -3716,7 +3387,6 @@
             document.getElementById('print-meta-tanggal').textContent = tglSekarang;
             document.getElementById('print-ttd-tanggal').textContent = tglSekarang;
 
-            // Fungsi penyaring riwayat sesuai periode yang dipilih
             const filterRiwayatPeriode = (riwayat) => {
                 if (modePeriode === 'ALL') return riwayat;
                 return riwayat.filter(item => {
@@ -3731,7 +3401,7 @@
                         const twItem = Math.floor((blnNum - 1) / 3) + 1;
                         return twItem === triwulanVal;
                     }
-                    return true; // TAHUN
+                    return true;
                 });
             };
 
@@ -3825,29 +3495,6 @@
                 toast.classList.add('hidden');
             }, 3000);
         }
-
-        // Ekspos fungsi ke window agar atribut onclick/onsubmit di HTML tetap berfungsi pada <script type="module">
-        Object.assign(window, {
-            openModalCloudConfig, closeModalCloudConfig, simpanManualCloudConfig,
-            buatKodeSinkronBaru, hubungkanKodeSinkron, salinLinkSinkronisasi,
-            togglePinVisibility, handleCekPoin, tutupDanBersihkan,
-            openLoginModal, closeLoginModal, handleLoginGuru, logoutGuru,
-            setAppMode, switchAndroidTab,
-            pilihFilterKelasCepatInput, tutupDropdownSiswa, handleLiveSearchSiswa, handleEnterSiswa,
-            tambahSiswaKeAntrean, hapusSiswaDariAntrean, resetPilihSiswa, pilihSiswaCepat,
-            eksekusiAtauPilihCepat, pilihTabKategori, filterKategoriCepat, pilihDariHasilCariKategori,
-            clearSearchKategori, toggleOpsiTambahan, handleSimpanPelanggaran, batalkanInputTerakhir,
-            renderTabelMaster, ubahKelasCepat,
-            openModalKenaikanKelas, closeModalKenaikanKelas, loadDaftarKenaikanKelas,
-            toggleSemuaCeklisKenaikan, updateCounterKenaikan, prosesKenaikanKelas,
-            bukaDetailGuru, aktifkanEditCepatRiwayat, filterAturanEditCepat,
-            sinkronPoinEditCepat, simpanEditCepatRiwayat, hapusSatuPelanggaran, closeModalDetailGuru,
-            openModalTambahSiswa, closeModalTambahSiswa, switchTabTambahSiswa,
-            handleTambahSiswa, handleTambahSiswaMassal, hapusSiswa,
-            cetakLaporan, setModePratinjauCetak, editNamaDariCetak, editKelasDariCetak,
-            bukaEditRiwayatDariCetak, ubahModePeriodeCetak, closeModalPratinjauCetak, renderPratinjauCetak,
-            konfirmasiResetData, tutupModalKonfirmasiReset, eksekusiResetData, simpanPengaturanStorage
-        });
     </script>
 </body>
 </html>
