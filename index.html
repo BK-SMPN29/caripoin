@@ -27,34 +27,76 @@
             margin: 12mm;
         }
         @media print {
-            body {
+            html, body {
                 background: white !important;
                 margin: 0 !important;
                 padding: 0 !important;
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
             }
-            body * {
-                visibility: hidden;
+            /* Sembunyikan seluruh elemen utama halaman agar tidak menyisakan ruang kosong */
+            body > header,
+            body > main,
+            body > section,
+            body > nav,
+            body > footer,
+            #toast-notif,
+            #modal-hasil-siswa,
+            #modal-login-guru,
+            #modal-database-simpel,
+            #modal-konfirmasi-reset,
+            #modal-kenaikan-kelas,
+            #modal-tambah-siswa,
+            #modal-detail-guru {
+                display: none !important;
             }
-            body.printing-rekap #print-preview-sheet,
-            body.printing-rekap #print-preview-sheet *,
-            body:not(.printing-surat) #print-preview-sheet,
-            body:not(.printing-surat) #print-preview-sheet * {
-                visibility: visible;
+            /* Buka kunci scroll & tinggi modal cetak agar tidak terpotong di halaman 1 */
+            body.printing-rekap #modal-surat-panggilan,
+            body:not(.printing-surat) #modal-surat-panggilan {
+                display: none !important;
             }
-            body.printing-surat #print-surat-sheet,
-            body.printing-surat #print-surat-sheet * {
-                visibility: visible;
+            body.printing-surat #modal-pratinjau-cetak {
+                display: none !important;
+            }
+            #modal-pratinjau-cetak,
+            #modal-surat-panggilan {
+                position: static !important;
+                inset: auto !important;
+                display: block !important;
+                width: 100% !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+            #modal-pratinjau-cetak > div,
+            #modal-surat-panggilan > div,
+            #modal-pratinjau-cetak > div > div,
+            #modal-surat-panggilan > div > div {
+                position: static !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                height: auto !important;
+                max-height: none !important;
+                overflow: visible !important;
+                background: white !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                box-shadow: none !important;
+                border-radius: 0 !important;
             }
             #print-preview-sheet,
             #print-surat-sheet {
-                position: absolute;
-                left: 0;
-                top: 0;
+                position: static !important;
                 width: 100% !important;
                 max-width: 100% !important;
                 margin: 0 !important;
+                padding: 0 !important;
                 background: white !important;
-                padding: 4mm !important;
                 box-shadow: none !important;
                 border: none !important;
                 color: #000 !important;
