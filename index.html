@@ -902,6 +902,44 @@
             </div>
         </div>
 
+        <!-- ==================== PANEL PERINGKAT POIN TERTINGGI - TERENDAH PER KELAS ==================== -->
+        <div id="panel-peringkat-kelas" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4 no-print">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                <div>
+                    <h3 class="font-bold text-base sm:text-lg text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-sort-amount-down text-rose-600"></i>
+                        <span>Peringkat Poin Siswa per Kelas (Tertinggi → Terendah)</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 mt-0.5">Rincian urutan poin pelanggaran masing-masing rombel untuk pemantauan pembinaan wali kelas & BK.</p>
+                </div>
+                <div class="flex flex-wrap items-center gap-2">
+                    <select id="rank-filter-kelas" onchange="renderPeringkatPerKelas()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <option value="ALL">Semua Kelas (9 Rombel)</option>
+                        <option value="VII A">Kelas VII A</option>
+                        <option value="VII B">Kelas VII B</option>
+                        <option value="VII C">Kelas VII C</option>
+                        <option value="VIII A">Kelas VIII A</option>
+                        <option value="VIII B">Kelas VIII B</option>
+                        <option value="VIII C">Kelas VIII C</option>
+                        <option value="IX A">Kelas IX A</option>
+                        <option value="IX B">Kelas IX B</option>
+                        <option value="IX C">Kelas IX C</option>
+                    </select>
+                    <select id="rank-urutan" onchange="renderPeringkatPerKelas()" class="px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
+                        <option value="DESC">Tertinggi → Terendah</option>
+                        <option value="ASC">Terendah → Tertinggi</option>
+                    </select>
+                    <label class="inline-flex items-center gap-1.5 bg-rose-50 border border-rose-200 px-3 py-2 rounded-xl text-xs font-semibold text-rose-800 cursor-pointer">
+                        <input type="checkbox" id="rank-only-berpoin" onchange="renderPeringkatPerKelas()" class="rounded text-rose-600 focus:ring-rose-500">
+                        <span>Hanya Berpoin (&gt;0)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Grid Kartu Rombel Per Kelas -->
+            <div id="grid-peringkat-per-kelas" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        </div>
+
         <!-- Grid Utama Dashboard (Form Input Cepat + Tabel Master Siswa) -->
         <div class="guru-grid-utama grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Form Input Pelanggaran Baru (Kolom Kiri - Mode Turbo 1-Klik & Multi-Siswa) -->
@@ -1084,6 +1122,11 @@
                         <p class="text-[11px] text-slate-400 mt-0.5 no-print">Tip: Ubah dropdown kelas di tabel untuk memindahkan 1 siswa secara instan (tinggal/pindah kelas).</p>
                     </div>
                     <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 w-full sm:w-auto no-print">
+                        <select id="sort-master-siswa" onchange="renderTabelMaster()" class="w-full sm:w-auto px-3 py-2 sm:py-1.5 bg-amber-50 border border-amber-300 rounded-xl sm:rounded-lg text-xs font-bold text-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            <option value="POIN_DESC">Urut: Poin Tertinggi</option>
+                            <option value="POIN_ASC">Urut: Poin Terendah</option>
+                            <option value="NAMA_ASC">Urut: Nama A–Z</option>
+                        </select>
                         <select id="filter-kelas-master" onchange="renderTabelMaster()" class="w-full sm:w-auto px-3 py-2 sm:py-1.5 bg-slate-50 border border-slate-300 rounded-xl sm:rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600">
                             <option value="ALL">Semua Kelas (255)</option>
                             <option value="VII A">VII A</option>
@@ -1625,18 +1668,18 @@
             </button>
             <button type="button" onclick="openLoginModal()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-amber-700 bg-amber-50/80 hover:bg-amber-100 font-bold transition-all duration-200">
                 <i class="fas fa-user-shield text-base mb-0.5 text-amber-500"></i>
-                <span class="text-[11px] tracking-tight">Menu Guru</span>
-            </button>
-        </div>
-
-        <div id="android-nav-guru" class="hidden grid grid-cols-4 gap-1">
+        <div id="android-nav-guru" class="hidden grid grid-cols-5 gap-1">
             <button type="button" onclick="switchAndroidTab('guru-input')" id="nav-tab-guru-input" class="android-tab-item android-tab-active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-blue-700 font-bold transition-all duration-200">
                 <i class="fas fa-bolt text-base mb-0.5"></i>
-                <span class="text-[10px] tracking-tight">Input Cepat</span>
+                <span class="text-[10px] tracking-tight">Input</span>
+            </button>
+            <button type="button" onclick="switchAndroidTab('guru-ranking')" id="nav-tab-guru-ranking" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
+                <i class="fas fa-sort-amount-down text-base mb-0.5 text-rose-600"></i>
+                <span class="text-[10px] tracking-tight">Peringkat</span>
             </button>
             <button type="button" onclick="switchAndroidTab('guru-data')" id="nav-tab-guru-data" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100/70 font-semibold transition-all duration-200">
                 <i class="fas fa-users text-base mb-0.5"></i>
-                <span class="text-[10px] tracking-tight">Data Siswa</span>
+                <span class="text-[10px] tracking-tight">Siswa</span>
             </button>
             <button type="button" onclick="openModalKenaikanKelas()" class="android-tab-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-indigo-700 hover:bg-indigo-50 font-semibold transition-all duration-200">
                 <i class="fas fa-graduation-cap text-base mb-0.5"></i>
@@ -2351,6 +2394,7 @@
                 document.getElementById('siswa-card-info').classList.add('hidden');
                 document.getElementById('siswa-card-demo').classList.remove('hidden');
                 document.getElementById('box-form-pelanggaran').classList.remove('hidden');
+                document.getElementById('panel-peringkat-kelas').classList.remove('hidden');
                 document.getElementById('print-area').classList.remove('hidden');
                 showToast("Beralih ke Tampilan Website Menu");
             }
@@ -2400,22 +2444,31 @@
                 }
             } else if (tabName.startsWith('guru-')) {
                 const boxInput = document.getElementById('box-form-pelanggaran');
+                const boxRanking = document.getElementById('panel-peringkat-kelas');
                 const boxData = document.getElementById('print-area');
                 const tabInput = document.getElementById('nav-tab-guru-input');
+                const tabRanking = document.getElementById('nav-tab-guru-ranking');
                 const tabData = document.getElementById('nav-tab-guru-data');
 
-                tabInput.classList.remove('android-tab-active', 'text-blue-700', 'font-bold');
-                tabData.classList.remove('android-tab-active', 'text-blue-700', 'font-bold');
-                tabInput.classList.add('text-slate-500', 'font-semibold');
-                tabData.classList.add('text-slate-500', 'font-semibold');
+                [tabInput, tabRanking, tabData].forEach(t => {
+                    if (!t) return;
+                    t.classList.remove('android-tab-active', 'text-blue-700', 'font-bold');
+                    t.classList.add('text-slate-500', 'font-semibold');
+                });
+
+                boxInput.classList.add('hidden');
+                boxRanking.classList.add('hidden');
+                boxData.classList.add('hidden');
 
                 if (tabName === 'guru-input') {
                     boxInput.classList.remove('hidden');
-                    boxData.classList.add('hidden');
                     tabInput.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
                     tabInput.classList.remove('text-slate-500', 'font-semibold');
+                } else if (tabName === 'guru-ranking') {
+                    boxRanking.classList.remove('hidden');
+                    tabRanking.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
+                    tabRanking.classList.remove('text-slate-500', 'font-semibold');
                 } else {
-                    boxInput.classList.add('hidden');
                     boxData.classList.remove('hidden');
                     tabData.classList.add('android-tab-active', 'text-blue-700', 'font-bold');
                     tabData.classList.remove('text-slate-500', 'font-semibold');
@@ -2439,8 +2492,96 @@
             document.getElementById('stat-total-kasus').textContent = totalKasus;
             document.getElementById('stat-perlu-pembinaan').textContent = perluPembinaan;
 
+            renderPeringkatPerKelas();
             renderTabelMaster();
             updateIndikatorMemori();
+        }
+
+        function renderPeringkatPerKelas() {
+            const container = document.getElementById('grid-peringkat-per-kelas');
+            if (!container) return;
+
+            const kelasTerpilih = document.getElementById('rank-filter-kelas')?.value || 'ALL';
+            const urutan = document.getElementById('rank-urutan')?.value || 'DESC';
+            const hanyaBerpoin = document.getElementById('rank-only-berpoin')?.checked || false;
+
+            const daftarRombelAktif = ["VII A", "VII B", "VII C", "VIII A", "VIII B", "VIII C", "IX A", "IX B", "IX C"];
+            const rombelDitampilkan = kelasTerpilih === 'ALL' ? daftarRombelAktif : [kelasTerpilih];
+
+            container.innerHTML = rombelDitampilkan.map(namaKelas => {
+                let siswaKelas = dataSiswa
+                    .filter(s => s.kelas === namaKelas)
+                    .map(s => ({
+                        ...s,
+                        totalPoin: hitungTotalPoin(s.riwayat)
+                    }));
+
+                const totalSiswaRombel = siswaKelas.length;
+                const jumlahBerpoin = siswaKelas.filter(s => s.totalPoin > 0).length;
+
+                if (hanyaBerpoin) {
+                    siswaKelas = siswaKelas.filter(s => s.totalPoin > 0);
+                }
+
+                siswaKelas.sort((a, b) => {
+                    if (urutan === 'DESC') {
+                        return b.totalPoin - a.totalPoin || a.nama.localeCompare(b.nama);
+                    }
+                    return a.totalPoin - b.totalPoin || a.nama.localeCompare(b.nama);
+                });
+
+                const barisSiswaHTML = siswaKelas.length === 0
+                    ? `<div class="py-6 px-3 text-center text-xs text-slate-400">Tidak ada siswa yang memiliki catatan poin di kelas ${namaKelas}.</div>`
+                    : siswaKelas.map((s, idx) => {
+                        const rankNum = idx + 1;
+                        let badgeRank = `<span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 font-bold text-[10px] inline-flex items-center justify-center flex-shrink-0">${rankNum}</span>`;
+                        if (urutan === 'DESC' && s.totalPoin > 0) {
+                            if (rankNum === 1) badgeRank = `<span class="w-5 h-5 rounded-full bg-rose-600 text-white font-extrabold text-[10px] inline-flex items-center justify-center flex-shrink-0 shadow-2xs" title="Poin Tertinggi #1">1</span>`;
+                            else if (rankNum === 2) badgeRank = `<span class="w-5 h-5 rounded-full bg-orange-500 text-white font-extrabold text-[10px] inline-flex items-center justify-center flex-shrink-0">2</span>`;
+                            else if (rankNum === 3) badgeRank = `<span class="w-5 h-5 rounded-full bg-amber-500 text-white font-extrabold text-[10px] inline-flex items-center justify-center flex-shrink-0">3</span>`;
+                        }
+
+                        let badgePoin = `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-emerald-100 text-emerald-800">0 Poin</span>`;
+                        if (s.totalPoin >= 300) badgePoin = `<span class="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-red-900 text-amber-200">${s.totalPoin} Poin</span>`;
+                        else if (s.totalPoin >= 100) badgePoin = `<span class="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-rose-100 text-rose-700">${s.totalPoin} Poin</span>`;
+                        else if (s.totalPoin > 20) badgePoin = `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-amber-100 text-amber-800">${s.totalPoin} Poin</span>`;
+                        else if (s.totalPoin > 0) badgePoin = `<span class="px-2 py-0.5 rounded-md text-[11px] font-bold bg-blue-100 text-blue-800">${s.totalPoin} Poin</span>`;
+
+                        return `
+                            <div class="flex items-center justify-between gap-2 px-3 py-2 hover:bg-slate-50 transition text-xs">
+                                <div class="flex items-center gap-2 min-w-0">
+                                    ${badgeRank}
+                                    <button type="button" onclick="bukaDetailGuru(${s.id})" class="font-semibold text-slate-800 hover:text-blue-700 truncate text-left" title="Klik untuk lihat rincian pelanggaran ${s.nama}">
+                                        ${s.nama}
+                                    </button>
+                                </div>
+                                <div class="flex items-center gap-1.5 flex-shrink-0">
+                                    ${badgePoin}
+                                    <button type="button" onclick="pilihSiswaCepat(${s.id})" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-amber-100 text-slate-600 hover:text-amber-800 flex items-center justify-center transition" title="Tambah Poin Cepat">
+                                        <i class="fas fa-plus text-[10px]"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                return `
+                    <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white flex flex-col shadow-2xs">
+                        <div class="bg-gradient-to-r from-slate-800 to-blue-950 text-white px-3.5 py-2.5 flex items-center justify-between">
+                            <div class="flex items-center gap-2">
+                                <span class="bg-amber-400 text-slate-950 font-black text-xs px-2 py-0.5 rounded-lg">${namaKelas}</span>
+                                <span class="text-xs font-bold text-blue-100">${totalSiswaRombel} Siswa</span>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full ${jumlahBerpoin > 0 ? 'bg-rose-500/25 text-rose-200 border border-rose-400/30' : 'bg-emerald-500/20 text-emerald-200'}">
+                                ${jumlahBerpoin} Berpoin
+                            </span>
+                        </div>
+                        <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto">
+                            ${barisSiswaHTML}
+                        </div>
+                    </div>
+                `;
+            }).join('');
         }
 
         // ==================== SISTEM INPUT SUPER CEPAT ====================
@@ -2737,6 +2878,7 @@
         function renderTabelMaster() {
             const filterKeyword = document.getElementById('search-master-siswa').value.toLowerCase();
             const filterKelas = document.getElementById('filter-kelas-master').value;
+            const sortMode = document.getElementById('sort-master-siswa')?.value || 'POIN_DESC';
             const tbody = document.getElementById('tabel-master-siswa');
             tbody.innerHTML = '';
 
@@ -2745,6 +2887,14 @@
                 const matchKata = s.nama.toLowerCase().includes(filterKeyword) ||
                                   s.kelas.toLowerCase().includes(filterKeyword);
                 return matchKelas && matchKata;
+            });
+
+            filtered.sort((a, b) => {
+                const poinA = hitungTotalPoin(a.riwayat);
+                const poinB = hitungTotalPoin(b.riwayat);
+                if (sortMode === 'POIN_DESC') return poinB - poinA || a.nama.localeCompare(b.nama);
+                if (sortMode === 'POIN_ASC') return poinA - poinB || a.nama.localeCompare(b.nama);
+                return a.nama.localeCompare(b.nama);
             });
 
             if (filtered.length === 0) {
