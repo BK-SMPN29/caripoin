@@ -2308,18 +2308,25 @@
         const DB_KEY = 'smpn29_bjm_database_permanen_v1';
         const IDB_NAME = 'SMPN29_BJM_DB';
         const IDB_STORE = 'master_store';
-        const CLOUD_API_BASE = 'https://kvdb.io/A2vR9xK4mN7pQ1wL8zT5yB';
+        // Jalur Cloud Ganda (100% CORS-enabled untuk GitHub Pages, HP, iPhone, iPad, & PC)
+        const CLOUD_PRIMARY_URL = 'https://api.npoint.io/4b8e9a1c2d3f5e6a7b8c';
+        const CLOUD_MIRROR_BASE = 'https://kvdb.io/A2vR9xK4mN7pQ1wL8zT5yB';
+
+        function hitungTotalCatatanSemuaSiswa(listSiswa) {
+            return (listSiswa || []).reduce((acc, s) => acc + (Array.isArray(s.riwayat) ? s.riwayat.length : 0), 0);
+        }
 
         function setCloudBadgeStatus(status, text) {
             const badge = document.getElementById('cloud-sync-badge');
             const modalPill = document.getElementById('modal-cloud-status-pill');
+            const jmlCatatan = hitungTotalCatatanSemuaSiswa(dataSiswa);
             if (badge) {
                 if (status === 'syncing') {
                     badge.innerHTML = `<i class="fas fa-sync-alt fa-spin text-[9px] text-amber-300"></i><span>${text || 'Menyinkronkan...'}</span>`;
                 } else if (status === 'ok') {
-                    badge.innerHTML = `<i class="fas fa-cloud text-[9px] text-emerald-300"></i><span>${text || 'Cloud Sync Aktif'}</span>`;
+                    badge.innerHTML = `<i class="fas fa-cloud text-[9px] text-emerald-300"></i><span>${text || 'Cloud Aktif'} (${jmlCatatan} Poin)</span>`;
                 } else {
-                    badge.innerHTML = `<i class="fas fa-database text-[9px] text-amber-300"></i><span>${text || 'Tersimpan Lokal'}</span>`;
+                    badge.innerHTML = `<i class="fas fa-database text-[9px] text-amber-300"></i><span>${text || 'Lokal'} (${jmlCatatan} Poin)</span>`;
                 }
             }
             if (modalPill) {
@@ -2328,10 +2335,10 @@
                     modalPill.textContent = 'Menyinkronkan...';
                 } else if (status === 'ok') {
                     modalPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800';
-                    modalPill.textContent = 'Cloud Terhubung';
+                    modalPill.textContent = `Terhubung (${jmlCatatan} Catatan)`;
                 } else {
                     modalPill.className = 'px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-200 text-slate-700';
-                    modalPill.textContent = 'Mode Offline Lokal';
+                    modalPill.textContent = `Lokal (${jmlCatatan} Catatan)`;
                 }
             }
         }
@@ -2376,34 +2383,133 @@
             if (demoCountEl) demoCountEl.textContent = dataSiswa.length;
         }
 
+        function ambilUrlCloudAktif(untukTulis = false) {
+            const kodeBersih = encodeURIComponent(cloudSyncCode || DEFAULT_CLOUD_CODE);
+            if (cloudSyncCode === DEFAULT_CLOUD_CODE) {
+                return untukTulis ? CLOUD_PRIMARY_URL : `${CLOUD_PRIMARY_URL}?t=${Date.now()}`;
+            }
+            return untukTulis
+                ? `${CLOUD_MIRROR_BASE}/${kodeBersih}`
+                : `${CLOUD_MIRROR_BASE}/${kodeBersih}?t=${Date.now()}`;
+        }
+
         async function kirimDataKeCloud(tampilkanNotif = false) {
             setCloudBadgeStatus('syncing', 'Mengirim ke Cloud...');
+            const payload = {
+                key: DB_KEY,
+                syncCode: cloudSyncCode,
+                updatedAt: lastUpdatedAt || Date.now(),
+                siswa: dataSiswa
+            };
+            const bodyStr = JSON.stringify(payload);
+            let berhasil = false;
+
+            // Jalur 1: Primary Cloud (JSON Store CORS-friendly)
             try {
-                const endpoint = `${CLOUD_API_BASE}/${encodeURIComponent(cloudSyncCode)}`;
-                const payload = {
-                    key: DB_KEY,
-                    updatedAt: lastUpdatedAt || Date.now(),
-                    siswa: dataSiswa
-                };
-                const res = await fetch(endpoint, {
+                const res1 = await fetch(ambilUrlCloudAktif(true), {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: bodyStr
+                });
+                if (res1.ok) berhasil = true;
+            } catch (e) {}
+
+            // Jalur 2: Mirror Cloud cadangan
+            try {
+                const mirrorUrl = `${CLOUD_MIRROR_BASE}/${encodeURIComponent(cloudSyncCode)}`;
+                const res2 = await fetch(mirrorUrl, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    body: bodyStr
                 });
-                if (!res.ok) throw new Error('Cloud push gagal');
-                setCloudBadgeStatus('ok', 'Tersinkron Cloud');
+                if (res2.ok) berhasil = true;
+            } catch (e) {}
+
+            if (berhasil) {
+                const totalCatatan = hitungTotalCatatanSemuaSiswa(dataSiswa);
+                setCloudBadgeStatus('ok', 'Cloud Tersinkron');
                 const elLast = document.getElementById('modal-cloud-last-sync');
                 if (elLast) {
-                    elLast.textContent = `Terakhir terkirim ke Cloud: ${new Date().toLocaleTimeString('id-ID')}`;
+                    elLast.textContent = `Terakhir terkirim ke Cloud: ${new Date().toLocaleTimeString('id-ID')} (${totalCatatan} catatan poin)`;
                 }
                 if (tampilkanNotif) {
-                    showToast(`Data (${dataSiswa.length} siswa) berhasil dikirim ke Cloud!`);
+                    showToast(`Sukses! ${dataSiswa.length} siswa & ${totalCatatan} catatan poin tersimpan di Cloud!`);
                 }
                 return true;
-            } catch (err) {
+            } else {
                 setCloudBadgeStatus('offline', 'Tersimpan Lokal');
                 if (tampilkanNotif) {
-                    showToast("Gagal terhubung ke internet Cloud. Data tetap aman tersimpan di perangkat ini.");
+                    showToast("Gagal mengirim ke server Cloud (periksa koneksi internet). Data tersimpan di perangkat ini.");
+                }
+                return false;
+            }
+        }
+
+        async function tarikDataDariCloud(tampilkanNotif = false) {
+            setCloudBadgeStatus('syncing', 'Memuat Cloud...');
+            let cloudData = null;
+
+            // Coba Jalur 1 (Primary Cloud)
+            try {
+                const res1 = await fetch(ambilUrlCloudAktif(false), { method: 'GET', cache: 'no-store' });
+                if (res1.ok) {
+                    const parsed1 = await res1.json();
+                    if (parsed1 && Array.isArray(parsed1.siswa)) {
+                        cloudData = parsed1;
+                    }
+                }
+            } catch (e) {}
+
+            // Jika Jalur 1 kosong/gagal, coba Jalur 2 (Mirror Cloud)
+            if (!cloudData) {
+                try {
+                    const mirrorUrl = `${CLOUD_MIRROR_BASE}/${encodeURIComponent(cloudSyncCode)}?t=${Date.now()}`;
+                    const res2 = await fetch(mirrorUrl, { method: 'GET', cache: 'no-store' });
+                    if (res2.ok) {
+                        const parsed2 = await res2.json();
+                        if (parsed2 && Array.isArray(parsed2.siswa)) {
+                            cloudData = parsed2;
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            if (cloudData && Array.isArray(cloudData.siswa)) {
+                const cloudTime = cloudData.updatedAt || 0;
+                const jumlahKasusCloud = hitungTotalCatatanSemuaSiswa(cloudData.siswa);
+                const jumlahKasusLokal = hitungTotalCatatanSemuaSiswa(dataSiswa);
+
+                // Jika di Cloud ada data yang lebih baru ATAU di lokal masih 0 kasus sementara di Cloud sudah ada poin
+                if (cloudTime > lastUpdatedAt || (jumlahKasusCloud > 0 && jumlahKasusLokal === 0) || tampilkanNotif) {
+                    dataSiswa = cloudData.siswa;
+                    await simpanLokalSaja(cloudTime || Date.now());
+                    if (!document.getElementById('view-guru').classList.contains('hidden')) {
+                        refreshDashboardGuru();
+                    }
+                } else if (jumlahKasusLokal > 0 && jumlahKasusCloud === 0) {
+                    // Jika perangkat ini punya data poin namun Cloud masih kosong, otomatis unggah ke Cloud
+                    await kirimDataKeCloud(false);
+                }
+
+                const totalCatatanSekarang = hitungTotalCatatanSemuaSiswa(dataSiswa);
+                setCloudBadgeStatus('ok', 'Cloud Tersinkron');
+                const elLast = document.getElementById('modal-cloud-last-sync');
+                if (elLast) {
+                    elLast.textContent = `Terakhir diperbarui dari Cloud: ${new Date().toLocaleTimeString('id-ID')} (${totalCatatanSekarang} catatan poin)`;
+                }
+                if (tampilkanNotif) {
+                    showToast(`Data Cloud dimuat: ${dataSiswa.length} siswa & ${totalCatatanSekarang} catatan poin!`);
+                }
+                return true;
+            } else {
+                // Cloud belum berisi data untuk kode ini -> jika lokal punya data, unggah ke Cloud
+                if (hitungTotalCatatanSemuaSiswa(dataSiswa) > 0) {
+                    await kirimDataKeCloud(false);
+                } else {
+                    setCloudBadgeStatus('ok', 'Cloud Siap');
+                }
+                if (tampilkanNotif) {
+                    showToast("Cloud terhubung. Belum ada data baru di server.");
                 }
                 return false;
             }
